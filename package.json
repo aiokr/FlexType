@@ -3,12 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "prisma generate && next dev",
+    "build": "prisma generate && prisma migrate deploy && next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^1.5.2",
+    "@prisma/client": "^5.12.0",
+    "@prisma/extension-accelerate": "^1.0.0",
+    "@supabase/ssr": "^0.1.0",
+    "@supabase/supabase-js": "^2.41.1",
     "@vercel/postgres": "^0.7.2",
     "next": "14.1.4",
     "next-auth": "^5.0.0-beta.16",
@@ -23,6 +28,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.1.4",
     "postcss": "^8",
+    "prisma": "^5.12.0",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
   }
