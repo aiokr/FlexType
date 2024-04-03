@@ -10,11 +10,7 @@ export const metadata: Metadata = {
   title: "Tripper CMS",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default async function DashboardLayout({ children, }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={inter.className}>
