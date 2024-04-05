@@ -4,8 +4,6 @@ import React from 'react';
 import Link from 'next/link'
 import { Nav, Avatar, Dropdown, Select, Button } from '@douyinfe/semi-ui';
 import { createContext, useContext, useState } from 'react';
-import { useFormState } from 'react-dom';
-import useSWR from 'swr'
 
 // 定义横向导航
 export function RenderHorizontal() {
@@ -18,7 +16,7 @@ export function RenderHorizontal() {
     <Nav
       mode={'horizontal'}
       header={{
-        text: '内容管理'
+        text: '内容管理平台'
       }}
       items={horizontalItems}
       onSelect={key => console.log(key)}
@@ -27,13 +25,12 @@ export function RenderHorizontal() {
           position="bottomRight"
           render={
             <Dropdown.Menu>
-              <Dropdown.Item>详情</Dropdown.Item>
-              <Dropdown.Item onClick={() => console.log('退出')}>退出</Dropdown.Item>
+              <Dropdown.Item><Link href={'/auth/signin'}>登录</Link></Dropdown.Item>
+              <Dropdown.Item><Link href={'/auth/signout'}>退出</Link></Dropdown.Item>
             </Dropdown.Menu>
           }
         >
-          <Avatar size="small" color='light-blue' style={{ margin: 4 }}></Avatar>
-          <span>{'UserName'}</span>
+        <Avatar size="small" color='light-blue' style={{ margin: 4 }}>MC</Avatar>
         </Dropdown>
       }
     />
@@ -44,8 +41,12 @@ export function RenderHorizontal() {
 export function RenderVertical() {
 
   const [verticalItems, setverticalItems] = useState([
-    { itemKey: 'user', text: '用户管理' },
-    { itemKey: 'union', text: '活动管理' },
+    { itemKey: 'posts', text: '文章管理' },
+    { itemKey: 'tags', text: '标签管理' },
+    { itemKey: 'categories', text: '分类管理' },
+    { itemKey: 'photos', text: '图片管理' },
+    { itemKey: 'albums', text: '影集管理' },
+    { itemKey: 'assets', text: '文件管理' },
   ]);
 
   return (
