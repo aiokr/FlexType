@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
+
 import { RenderHorizontal, RenderVertical } from "../components/rootNav";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -15,7 +16,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <html lang="en">
       <body className="max-h-screen">
         <RenderHorizontal />
-        <div className="flex h-[calc(100vh-60px)]">
+        <div className="flex gap-4 h-[calc(100vh-60px)]">
           <RenderVertical />
           {children}
         </div>

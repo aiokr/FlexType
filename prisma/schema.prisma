@@ -32,6 +32,7 @@ model Assets {
   uploadUser       User?      @relation(fields: [uploadUserId], references: [id])
   uploadUserId     String
   uplishedAt       DateTime   @default(now())
+  type             String
 }
 
 model Account {

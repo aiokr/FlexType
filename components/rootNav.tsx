@@ -30,7 +30,7 @@ export function RenderHorizontal() {
             </Dropdown.Menu>
           }
         >
-        <Avatar size="small" color='light-blue' style={{ margin: 4 }}>MC</Avatar>
+          <Avatar size="small" color='light-blue' style={{ margin: 4 }}>MC</Avatar>
         </Dropdown>
       }
     />
@@ -46,7 +46,7 @@ export function RenderVertical() {
     { itemKey: 'categories', text: '分类管理' },
     { itemKey: 'photos', text: '图片管理' },
     { itemKey: 'albums', text: '影集管理' },
-    { itemKey: 'assets', text: '文件管理' },
+    { itemKey: 'assets', text: '文件管理', link: '/dashboard/assets' },
   ]);
 
   return (

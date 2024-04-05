@@ -23,7 +23,7 @@ export default async function DashboardLayout({ children, }: { children: React.R
   // 有管理员账户, 且管理员账户属于环境变量中配置的授权邮箱
   if (isAuthorized && existingUser.length !== 0) {
     return (
-      <div className="dashboard-container">
+      <div className="dashboard-container mt-4">
         {children}
       </div>
     );
