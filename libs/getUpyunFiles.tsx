@@ -29,21 +29,30 @@ export async function getAllFileInUpyunDir() {
     headers: headers,
   })
   const fileListjson = await fileList.json()
-  console.log(fileListjson)
+  // console.log(fileListjson)
   return fileListjson
 }
 
 // 上传文件
 
-export async function uploadFileToUpyun() {
+export function uploadFileToUpyunUrl() {
   const signsecret = sign(key, getMD5(secret), 'PUT', uri, date)
   const headers = new Headers();
   headers.append('Authorization', signsecret);
   headers.append('Date', date);
-  headers.append('Accept', 'application/json');
+  return (signsecret)
+}
+
+export async function uploadFileToUpyun(formData: any) {
+  const signsecret = sign(key, getMD5(secret), 'PUT', uri, date)
+  const headers = new Headers();
+  headers.append('Authorization', signsecret);
+  headers.append('Date', date);
   const uploadFile = await fetch(upyunUrl + serverName + path, {
     method: 'PUT',
     headers: headers,
+    body: formData,
   })
+  return (uploadFile)
 
 }

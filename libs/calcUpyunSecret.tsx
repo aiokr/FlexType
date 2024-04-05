@@ -2,7 +2,8 @@ import crypto from 'crypto'
 
 // 计算 MD5
 export function getMD5(value: string) {
-  return crypto.createHash('md5').update(value).digest('hex');
+  const stringValue = String(value);
+  return crypto.createHash('md5').update(stringValue).digest('hex');
 }
 
 // 计算 HmacSHA1
