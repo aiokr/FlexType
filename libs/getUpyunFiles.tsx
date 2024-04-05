@@ -11,13 +11,13 @@ const key: any = operator?.toString();
 const secret: any = password?.toString();
 // const method = 'GET';
 
-const upyunUrl = "http://v0.api.upyun.com/"
+const upyunUrl = "https://v0.api.upyun.com/"
 
 // 拼接服务名称 + 目录
 const uri = '/' + serverName + path;
 
 // 获取目录下的所有文件列表
-export async function getAllFileInUpyunDir() {
+async function getAllFileInUpyunDir() {
   const signsecret = sign(key, getMD5(secret), 'GET', uri, date)
   const headers = new Headers();
   headers.append('Authorization', signsecret);
@@ -29,30 +29,31 @@ export async function getAllFileInUpyunDir() {
     headers: headers,
   })
   const fileListjson = await fileList.json()
-  // console.log(fileListjson)
   return fileListjson
 }
 
 // 上传文件
 
-export function uploadFileToUpyunUrl() {
-  const signsecret = sign(key, getMD5(secret), 'PUT', uri, date)
+async function uploadFileToUpyun(formData: any) {
+  const upuri = uri + '/' + formData.name
+  const signsecret = sign(key, getMD5(secret), 'PUT', upuri, date)
   const headers = new Headers();
   headers.append('Authorization', signsecret);
   headers.append('Date', date);
-  return (signsecret)
-}
-
-export async function uploadFileToUpyun(formData: any) {
-  const signsecret = sign(key, getMD5(secret), 'PUT', uri, date)
-  const headers = new Headers();
-  headers.append('Authorization', signsecret);
-  headers.append('Date', date);
-  const uploadFile = await fetch(upyunUrl + serverName + path, {
+  const fileName = formData.name
+  const uploadFile = await fetch(upyunUrl + serverName + path + '/' + fileName, {
     method: 'PUT',
     headers: headers,
     body: formData,
   })
+  setFileDatabase()
   return (uploadFile)
+}
 
+async function setFileDatabase() {
+
+}
+
+export {
+  getAllFileInUpyunDir, uploadFileToUpyun
 }

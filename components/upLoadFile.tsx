@@ -1,57 +1,34 @@
 'use client'
-import React, { useState } from 'react';
-import { uploadFileToUpyun, uploadFileToUpyunUrl } from '@/libs/getUpyunFiles'
-import { Button, Upload } from '@douyinfe/semi-ui'
 
-const dateJson = new Date().toJSON();
-const date = new Date().toUTCString();
-console.log(dateJson)
+const ImageUploader = () => {
 
-export default function UpLoadFile() {
+  const fileInputChange = async (e: any) => { // 将函数标记为异步
+    const selectedFile = e.target.files[0];
+    const formData = new FormData();
+    formData.append("file", selectedFile);
 
-  const serverName = process.env.UPYUN_FILE_SERVER_NAME // 服务名称
-  const path = process.env.UPYUN_FILE_SERVER_FILE_DIRECTORY // 目录
-  const upyunUrl = "http://v0.api.upyun.com/"
-  const action = upyunUrl + serverName + path
-
-  const signsecret = uploadFileToUpyunUrl()
-  const headers = new Headers()
-  headers.append('Authorization', signsecret);
-  headers.append('Date', date);
-  // console.log(headers)
-
-  const [selectedFile, setSelectedFile] = useState(null)
-  const fileInputChange = (e: any) => {
-    setSelectedFile(e.target.files[0])
-  }
-
-  const handleUpload = () => {
-    if (selectedFile) {
-
-      const formData = new FormData()
-      formData.append('file', selectedFile)
-
-      fetch(action, {
+    try {
+      const response = await fetch('/api/upload', { // 等待fetch调用完成
         method: 'PUT',
-        headers: headers,
         body: formData
-      }).then((response) => response.json())
-        .then((data) => console.log(data))
-        .catch(error => {
-          console.log(error)
-        })
+      });
+
+      if (response.ok) { // 检查响应是否成功
+        const data = await response.json(); // 等待响应的JSON数据
+        console.log(data); // 打印成功的信息
+      } else {
+        console.error('Server responded with a status:', response.status);
+      }
+    } catch (error) {
+      console.error(error); // 捕获在请求过程中发生的错误
     }
   }
 
-  const uploadFile = uploadFileToUpyun.bind(selectedFile)
-
   return (
     <div>
-      <form action={uploadFile}>
-        <input type='file' onChange={fileInputChange}></input>
-        <button type='submit' >提交</button>
-      </form>
+      <input type='file' onChange={fileInputChange}></input>
     </div>
   )
 }
 
+export default ImageUploader;
