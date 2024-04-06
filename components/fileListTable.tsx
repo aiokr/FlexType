@@ -1,38 +1,43 @@
 "use client"
 
-import React, { useState, useMemo } from 'react';
-import { Table, Avatar, Modal } from '@douyinfe/semi-ui';
+import React, { useState, useEffect } from 'react';
+import { Table, Avatar, Toast, Popconfirm } from '@douyinfe/semi-ui';
 const { Column } = Table;
 import Link from 'next/link'
 
 export default function TableComponent(data: any) {
 
-const deleteItem = (id: string) => {
-  Modal.confirm({
-    title: '删除文件',
-    content: '确定删除吗？',
-    onOk: () => {
-      const url = `/api/delete/${id}`; // 确保这里的 id 是一个字符串或数字
-      fetch(url, {
-        method: 'DELETE',
-      })
+  const [tableData, setTableData] = useState(data);
+
+  useEffect(() => {
+    // 每当传入的 data 更新时，更新表格数据
+    setTableData(data);
+  }, [data]); // 将 data 加入依赖数组，这样任何 data 的改变都会触发这个 effect
+
+  const deleteItem = (id: string) => {
+    // 删除操作的实现
+    const url = `/api/delete/${id}`;
+    fetch(url, {
+      method: 'DELETE',
+    })
       .then(response => {
         if (response.ok) {
-          // Handle successful deletion here, e.g., remove the item from the state
-          console.log(`File with id ${id} deleted successfully.`);
+          Toast.success(`File ID ${id} deleted successfully.`);
+          // 可以在这里刷新列表或删除状态中的项目
         } else {
-          // Handle error here
+          Toast.error('Error deleting file.');
           console.error('Error deleting file:', response);
         }
       })
       .catch(error => {
-        // Handle network errors here
+        Toast.error('Network error.');
         console.error('Network error:', error);
       });
-    }
-  });
-};
-  
+
+
+
+  };
+
   const renderTitle = (text: any, record: any) => {
     return (
       <span>
@@ -41,23 +46,32 @@ const deleteItem = (id: string) => {
       </span>
     )
   }
-  const operateAsset = (text: any, record: any) => {
-    return (
-      <span className='flex gap-2'>
-        <Link href={record.url} target="_blank">下载</Link>
-        <button onClick={() => deleteItem(record.assetId)} className='text-red-500'>删除</button>
-      </span>
-    )
-  }
+
+  const operateAsset = (text: any, record: any) => (
+    <span className='flex gap-2'>
+      <Popconfirm
+        title="确定删除吗？"
+        onConfirm={() => deleteItem(record.assetId)}
+        okText="删除"
+        okType='danger'
+        cancelText="取消"
+        cancelButtonProps={{
+          autoFocus: true,
+        }}
+      >
+        <button className='text-red-500'>删除</button>
+      </Popconfirm>
+    </span>
+  );
 
   return (
     <Table dataSource={data.data} pagination={false}>
+      <Column title="ID" dataIndex="assetId" key="assetId" />
       <Column title="标题" dataIndex="name" key="name" render={renderTitle} />
       <Column title="大小" dataIndex="size" key="size" />
       <Column title="类型" dataIndex="type" key="type" />
       <Column title="上传时间" dataIndex="date" key="date" sorter={(a, b) => (a.date - b.date > 0 ? 1 : -1)} />
       <Column title="操作" dataIndex="operate" key="operate" render={operateAsset} />
-      <Column title="assetsID" dataIndex="assetId" key="assetId" />
     </Table>
   )
 }
