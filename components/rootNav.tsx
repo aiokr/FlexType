@@ -16,7 +16,7 @@ export function RenderHorizontal() {
     <Nav
       mode={'horizontal'}
       header={{
-        text: '内容管理平台'
+        text: 'FlexType'
       }}
       items={horizontalItems}
       onSelect={key => console.log(key)}
@@ -47,6 +47,8 @@ export function RenderVertical() {
     { itemKey: 'photos', text: '图片管理' },
     { itemKey: 'albums', text: '影集管理' },
     { itemKey: 'assets', text: '文件管理', link: '/dashboard/assets' },
+    { itemKey: 'sites', text: '站点管理' },
+    { itemKey: 'settings', text: '设置' },
   ]);
 
   return (

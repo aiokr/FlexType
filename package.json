@@ -1,6 +1,7 @@
 {
-  "name": "tripper-cms",
+  "name": "flextype",
   "version": "0.1.0",
+  "author": "aiokr",
   "private": true,
   "scripts": {
     "dev": "prisma generate && next dev",

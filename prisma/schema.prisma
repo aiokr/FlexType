@@ -22,6 +22,7 @@ model User {
 
 enum Role {
   USER
+  EDITOR
   ADMIN
 }
 
@@ -33,6 +34,8 @@ model Assets {
   uploadUserId     String
   uplishedAt       DateTime   @default(now())
   type             String
+  size             Int
+  base             String
 }
 
 model Account {
@@ -68,4 +71,10 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Site {
+  id       String  @id @default(cuid())
+  name     String
+  url      String
 }
