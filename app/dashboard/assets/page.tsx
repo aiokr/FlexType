@@ -1,19 +1,20 @@
 import { getAllFileInUpyunDir, getAllFileInDatabase } from '@/libs/getUpyunFiles'
 import Link from 'next/link'
 import UpLoadFile from '@/components/upLoadFile'
-import TableComponent from '@/components/table'
+import TableComponent from '@/components/fileListTable'
 import * as dateFns from 'date-fns';
 
 export default async function Assets() {
   const fileData = await getAllFileInDatabase();
-
   const fileList = fileData.map((file: any) => ({
     title: file.title,
     size: (file.size / 1024 / 1024).toFixed(2) + ' MB',
     url: file.url,
+    delurl: file.delurl || '',
     type: file.type,
     date: dateFns.format(new Date(file.uplishedAt), 'yyyy-MM-dd HH:mm:ss'),
-    uploader: file.uploader
+    uploader: file.uploader,
+    assetId: file.assetId
   }));
 
   return (

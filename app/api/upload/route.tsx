@@ -2,7 +2,7 @@ import { uploadFileToUpyun } from "@/libs/getUpyunFiles"
 import AuthSession from '@/components/getAuthSession'
 import prisma from '@/libs/prisma'
 
-export async function PUT(req: any, res: any, auth: any) {
+export async function PUT(req: any, res: any) {
   const session = await AuthSession()
   const userName = session.user.name
   const existingUser = await prisma.user.findMany({

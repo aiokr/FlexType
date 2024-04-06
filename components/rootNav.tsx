@@ -16,7 +16,7 @@ export function RenderHorizontal() {
     <Nav
       mode={'horizontal'}
       header={{
-        text: '内容管理平台'
+        text: 'FlexType'
       }}
       items={horizontalItems}
       onSelect={key => console.log(key)}

@@ -52,7 +52,7 @@ async function uploadFileToUpyun(formData: any, userID: string) {
   headers.append('Authorization', signsecret);
   headers.append('Date', date);
   const fileName = formData.name
-  
+
   // 上传文件
   const uploadFile = await fetch(upyunUrl + serverName + path + '/' + fileName, {
     method: 'PUT',
@@ -90,36 +90,54 @@ async function setFileDatabase(formData: any, userID: string, ossProvider: strin
 }
 
 // 从数据库获取文件ID
-async function getFileAssetsID(fileName: string) {
-  const getAssetsID = await prisma.assets.findFirst({
+async function getAssetsID(fileName: string) {
+  const AssetsID = await prisma.assets.findFirst({
     where: {
       title: fileName
     }
   });
-  return getAssetsID
+  return AssetsID
+}
+
+// 从数据库获取文件信息
+async function getAssets(assetId: number) {
+  const assets = await prisma.assets.findUnique({
+    where: {
+      assetId: assetId
+    }
+  });
+  return assets
 }
 
 // 删除文件
-async function deleteFileFromUpyun(fileName: string) {
-  console.log(fileName)
+async function deleteFileFromUpyun(assetId: number) {
+  const asset = await getAssets(assetId)
+  const fileName = asset?.title
   const deluri = uri + '/' + fileName
   const signsecret = sign(key, getMD5(secret), 'DELETE', deluri, date)
   const headers = new Headers();
   headers.append('Authorization', signsecret);
   headers.append('Date', date);
   const deleteFile = await fetch(upyunUrl + serverName + path + '/' + fileName, {
+    headers: headers,
     method: 'DELETE',
   })
-
-  setDelFileDatabase(fileName)
+  if (deleteFile.status === 200) {
+    setDelFileDatabase(assetId)
+  }
   return deleteFile
 }
 
 // 从数据库删除文件记录
-async function setDelFileDatabase(fileName: string) {
-  return
+async function setDelFileDatabase(assetId: number) {
+  const delFileDatabase = await prisma.assets.delete({
+    where: {
+      assetId: assetId
+    }
+  })
+  return delFileDatabase
 }
 
 export {
-  getAllFileInUpyunDir, uploadFileToUpyun, getAllFileInDatabase, deleteFileFromUpyun
+  getAllFileInUpyunDir, uploadFileToUpyun, getAllFileInDatabase, deleteFileFromUpyun, getAssetsID
 }
