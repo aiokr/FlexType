@@ -52,13 +52,14 @@ async function uploadFileToUpyun(formData: any, userID: string) {
   headers.append('Authorization', signsecret);
   headers.append('Date', date);
   const fileName = formData.name
+  
   // 上传文件
   const uploadFile = await fetch(upyunUrl + serverName + path + '/' + fileName, {
     method: 'PUT',
     headers: headers,
     body: formData,
   })
-  console.log(uploadFile)
+  console.log(fileName)
 
   // 写入数据库
   if (uploadFile.status === 200) {

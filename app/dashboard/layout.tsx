@@ -7,7 +7,6 @@ export default async function DashboardLayout({ children, }: { children: React.R
   // const loginUserName: string = session.user.name
   const loginUserEmail: string = session.user.email
   // const loginUserAvatar: string = session.user.image
-  // console.log(loginUserEmail)
 
   // 检查是否已存在管理员账户
   const existingUser = await prisma.user.findMany({
