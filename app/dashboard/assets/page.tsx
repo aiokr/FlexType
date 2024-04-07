@@ -1,4 +1,4 @@
-import { getAllFileInUpyunDir, getAllFileInDatabase } from '@/libs/getUpyunFiles'
+import { getAllFileInUpyunDir, getAllFileInDatabase } from '@/libs/upyunFilesOperator'
 import Link from 'next/link'
 import UpLoadFile from '@/components/upLoadFile'
 import TableComponent from '@/components/fileListTable'

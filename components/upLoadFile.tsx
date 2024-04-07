@@ -39,10 +39,10 @@ const ImageUploader = () => {
 
         if (response.ok) {
           const data = await response.json(); // 等待响应的JSON数据
-          Toast.success(`Upload success`);
+          Toast.success(`${data.message}`);
           console.log(data); // 打印成功的信息
         } else {
-          console.error('Server responded with a status:', response.status);
+          console.error('Server responded with status:', response.status, response.statusText);
         }
       } catch (error) {
         console.error(error); // 捕获在请求过程中发生的错误

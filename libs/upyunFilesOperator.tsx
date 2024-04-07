@@ -53,21 +53,34 @@ async function uploadFileToUpyun(formData: any, userID: string) {
   headers.append('Date', date);
   const fileName = formData.name
 
+  let uploadFileResult = null
+
   // 上传文件
   const uploadFile = await fetch(upyunUrl + serverName + path + '/' + fileName, {
     method: 'PUT',
     headers: headers,
     body: formData,
   })
-  console.log(fileName)
+  console.log(fileName, uploadFile)
 
   // 写入数据库
   if (uploadFile.status === 200) {
-    setFileDatabase(formData, userID, 'upyun')
+    const writeFileRecord = await setFileDatabase(formData, userID, 'upyun')
+    if (writeFileRecord) {
+      uploadFileResult = writeFileRecord.assetId
+    } else {
+      console.error('上传到又拍云成功，写入数据库失败')
+      uploadFileResult = { error: "Failed to save file information to the database." }
+    }
+  } else {
+    console.error('上传到又拍云失败，状态码:', uploadFile.status)
+    uploadFileResult = { error: `Failed to upload file to UPYUN. Status code: ${uploadFile.status}` }
   }
 
+  console.log(uploadFileResult)
+
   // 返回上传结果
-  return { uploadFile, setFileDatabase }
+  return { uploadFile, setFileDatabase, uploadFileResult }
 }
 
 // 将文件列表存入数据库
@@ -76,7 +89,7 @@ async function setFileDatabase(formData: any, userID: string, ossProvider: strin
   const fileType = formData.type
   const fileSize = formData.size
   const fileUrl = 'https://' + serverDomain + path + '/' + fileName
-  const addFileDatabase = await prisma.assets.create({
+  const createFileRecord = await prisma.assets.create({
     data: {
       title: fileName,
       url: fileUrl,
@@ -85,8 +98,11 @@ async function setFileDatabase(formData: any, userID: string, ossProvider: strin
       size: fileSize,
       base: ossProvider
     }
-  });
-  return (addFileDatabase)
+  }).then().catch(e => {
+    console.log(e)
+    return e
+  })
+  return createFileRecord
 }
 
 // 从数据库获取文件ID
