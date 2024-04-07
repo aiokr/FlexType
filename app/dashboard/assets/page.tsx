@@ -18,7 +18,7 @@ export default async function Assets() {
   }));
 
   return (
-    <main>
+    <main className='container max-w-[100vw] mx-auto p-6 overflow-hidden'>
       <div className='text-2xl font-bold pb-6'>文件管理</div>
       <UpLoadFile />
       <div className='text-2xl font-bold py-6'>Database File List</div>

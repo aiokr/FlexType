@@ -58,6 +58,7 @@ export default function TableComponent(data: any) {
         cancelButtonProps={{
           autoFocus: true,
         }}
+        position="bottomRight"
       >
         <button className='text-red-500'>删除</button>
       </Popconfirm>
@@ -65,7 +66,7 @@ export default function TableComponent(data: any) {
   );
 
   return (
-    <Table dataSource={data.data} pagination={false}>
+    <Table dataSource={data.data} pagination={false} className='container !mr-12 overflow-x-auto table-fixed'>
       <Column title="ID" dataIndex="assetId" key="assetId" />
       <Column title="标题" dataIndex="name" key="name" render={renderTitle} />
       <Column title="大小" dataIndex="size" key="size" />
