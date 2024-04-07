@@ -1,4 +1,4 @@
-import { uploadFileToUpyun } from "@/libs/getUpyunFiles"
+import { uploadFileToUpyun } from "@/libs/upyunFilesOperator"
 import AuthSession from '@/components/getAuthSession'
 import prisma from '@/libs/prisma'
 
@@ -15,7 +15,7 @@ export async function PUT(req: any, res: any) {
 
   if (session && existingUser.length !== 0) {
     const formData = await req.formData();
-    
+
     // 假设只有一个文件和其他字段
     let file;
     for (let [key, value] of formData.entries()) {
@@ -37,7 +37,7 @@ export async function PUT(req: any, res: any) {
     if (!response) {
       return Response.json({ message: "Upload failed no response" }, { status: 500 })
     } else if (response.uploadFile.status == 200) {
-      return Response.json({ message: "Upload success" }, { status: 200 })
+      return Response.json({ message: `Upload success, File ID is ${response.uploadFileResult}` }, { status: 200 })
     } else if (response.uploadFile.status) {
       return Response.json({ message: response.uploadFile.statusText }, { status: response.uploadFile.status })
     }

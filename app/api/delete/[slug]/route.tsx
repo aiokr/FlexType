@@ -1,4 +1,4 @@
-import { deleteFileFromUpyun } from "@/libs/getUpyunFiles"
+import { deleteFileFromUpyun } from "@/libs/upyunFilesOperator"
 import AuthSession from '@/components/getAuthSession'
 import prisma from '@/libs/prisma'
 

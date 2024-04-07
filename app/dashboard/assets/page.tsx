@@ -1,4 +1,4 @@
-import { getAllFileInUpyunDir, getAllFileInDatabase } from '@/libs/getUpyunFiles'
+import { getAllFileInUpyunDir, getAllFileInDatabase } from '@/libs/upyunFilesOperator'
 import Link from 'next/link'
 import UpLoadFile from '@/components/upLoadFile'
 import TableComponent from '@/components/fileListTable'
@@ -20,7 +20,6 @@ export default async function Assets() {
   return (
     <main>
       <div className='text-2xl font-bold pb-6'>文件管理</div>
-      <div>上传文件</div>
       <UpLoadFile />
       <div className='text-2xl font-bold py-6'>Database File List</div>
       <TableComponent data={fileList} />
