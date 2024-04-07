@@ -134,14 +134,23 @@ async function deleteFileFromUpyun(assetId: number) {
   const headers = new Headers();
   headers.append('Authorization', signsecret);
   headers.append('Date', date);
+  let deleteFileResult = null
   const deleteFile = await fetch(upyunUrl + serverName + path + '/' + fileName, {
     headers: headers,
     method: 'DELETE',
   })
+
+  // 删除数据库中的记录
   if (deleteFile.status === 200) {
-    setDelFileDatabase(assetId)
+    const delFileRecord = await setDelFileDatabase(assetId)
+    if (delFileRecord) {
+      deleteFileResult = delFileRecord
+    } else {
+      deleteFileResult = { error: "Failed to delete file." }
+    }
   }
-  return deleteFile
+  console.log(deleteFileResult)
+  return { deleteFile, deleteFileResult }
 }
 
 // 从数据库删除文件记录
@@ -150,6 +159,9 @@ async function setDelFileDatabase(assetId: number) {
     where: {
       assetId: assetId
     }
+  }).then().catch(e => {
+    console.log(e)
+    return e
   })
   return delFileDatabase
 }

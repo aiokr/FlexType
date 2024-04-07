@@ -24,10 +24,10 @@ export async function DELETE(request: Request, { params }: { params: { slug: str
 
     if (!response) {
       return Response.json({ message: "Delete failed No response" }, { status: 500 })
-    } else if (response.status == 200) {
+    } else if (response.deleteFile.status == 200) {
       return Response.json({ message: "Delete success" }, { status: 200 })
-    } else if (response.status) {
-      return Response.json({ message: response.statusText }, { status: response.status })
+    } else if (response.deleteFile.status) {
+      return Response.json({ message: response.deleteFile.statusText }, { status: response.deleteFile.status })
     }
   } else {
     return Response.json({ message: "Not authenticated" }, { status: 403 })
