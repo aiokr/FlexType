@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Nav, Avatar, Dropdown, Select, Button } from '@douyinfe/semi-ui';
 import { createContext, useContext, useState } from 'react';
 import CollapseButton from '@douyinfe/semi-ui/lib/es/navigation/CollapseButton';
+import { AssetsIcon, SettingsIcon } from '@/assets/icons';
 
 // 导航内容
 
@@ -14,9 +15,9 @@ const navItem = [
   { itemKey: 'categories', text: '分类管理' },
   { itemKey: 'photos', text: '图片管理' },
   { itemKey: 'albums', text: '影集管理' },
-  { itemKey: 'assets', text: '文件管理', link: '/dashboard/assets' },
+  { itemKey: 'assets', text: '文件管理', link: '/dashboard/assets', icon: <AssetsIcon /> },
   { itemKey: 'sites', text: '站点管理' },
-  { itemKey: 'settings', text: '设置' },
+  { itemKey: 'settings', text: '设置', icon: <SettingsIcon /> },
 ];
 
 const menu = navItem.map((item) => {
