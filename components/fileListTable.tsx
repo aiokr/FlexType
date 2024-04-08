@@ -81,7 +81,7 @@ export default function TableComponent(data: any) {
       <Column title="大小" dataIndex="size" key="size" sorter={(a, b) => (a.size - b.size > 0 ? 1 : -1)} />
       <Column title="类型" dataIndex="type" key="type" />
       <Column title="上传时间" dataIndex="uplishedAt" key="uplishedAt" sorter={(a, b) => (a.uplishedAt - b.uplishedAt > 0 ? 1 : -1)} />
-      <Column title="拍摄时间" detaIndex="dateTimeOriginal" key="dateTimeOriginal" />
+      <Column title="拍摄时间" dataIndex="dateTimeOriginal" key="dateTimeOriginal" sorter={(a, b) => (a.dateTimeOriginal - b.dateTimeOriginal > 0 ? 1 : -1)} />
       <Column title="光圈" dataIndex="fNumber" key="fNumber" />
       <Column title="快门" dataIndex="exposureTime" key="exposureTime" />
       <Column title="ISO" dataIndex="iso" key="iso" />

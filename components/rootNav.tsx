@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link'
 import Image from 'next/image'
-import { Nav, Avatar, Dropdown, Select, Button } from '@douyinfe/semi-ui';
+import { Nav, Avatar, Dropdown, Select, Button, List } from '@douyinfe/semi-ui';
 import { createContext, useContext, useState } from 'react';
 import CollapseButton from '@douyinfe/semi-ui/lib/es/navigation/CollapseButton';
 import { AssetsIcon, SettingsIcon } from '@/assets/icons';
@@ -29,7 +29,7 @@ const menu = navItem.map((item) => {
   }
 })
 
-export function navLogo(loginUserAvatar: string, position: string) {
+export function navLogo(loginUserAvatar: string, position: any) {
   return (
     <Dropdown
       position={position}

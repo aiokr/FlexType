@@ -11,7 +11,11 @@ export function getHmacsha1(secret: string, value: string) {
   return crypto.createHmac('sha1', secret).update(value, 'utf8').digest().toString('base64');
 }
 
-export function sign(key: string, secret: any, method: string, uri: string, date: string, policy = null, md5 = null) {
+export function sign(
+  key: string, secret: any, method: string, uri: string, date: string,
+  policy: string | null = null,
+  md5: string | null = null
+) {
   const elems: any = [];
   [method, uri, date, policy, md5].forEach(item => {
     if (item != null) {
