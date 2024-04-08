@@ -7,7 +7,16 @@ const operator = process.env.UPYUN_OPERATOR // 操作员
 const password = process.env.UPYUN_PASSWORD // 操作员对应的密码
 const serverName = process.env.UPYUN_FILE_SERVER_NAME // 服务名称
 const path = process.env.UPYUN_FILE_SERVER_FILE_DIRECTORY // 目录
-const serverDomain = process.env.UPYUN_FILE_SERVER_DOMAIN // 加速域名
+let serverDomain = process.env.UPYUN_FILE_SERVER_DOMAIN // 加速域名
+
+if (!serverDomain?.includes('https')) {
+  serverDomain = 'https://' + serverDomain
+}
+
+// 图片处理 自定义版本 https://help.upyun.com/knowledge-base/image/
+const upyunAvatarSuffix = process.env.UPYUN_THUMBFILE_AVATAR // 自定义版本：预览小图
+const upyunOptimizedSuffix = process.env.UPYUN_THUMBFILE_OPTIMIZED // 自定义版本：常规图片压缩
+const upyunInfoSuffix = process.env.UPYUN_THUMBFILE_INFO // 自定义版本：图片信息
 
 const key: any = operator?.toString();
 const secret: any = password?.toString();
@@ -88,7 +97,7 @@ async function setFileDatabase(formData: any, userID: string, ossProvider: strin
   const fileName = formData.name
   const fileType = formData.type
   const fileSize = formData.size
-  const fileUrl = 'https://' + serverDomain + path + '/' + fileName
+  const fileUrl = serverDomain + path + '/' + fileName
   const createFileRecord = await prisma.assets.create({
     data: {
       title: fileName,
@@ -123,6 +132,93 @@ async function getAssets(assetId: number) {
     }
   });
   return assets
+}
+
+// 获取图片 Exif 信息
+async function getAssetsExif(assetId: number) {
+
+  const assetTitle = await getAssets(assetId)
+  const assetName = assetTitle?.title
+  const response = await fetch(serverDomain + path + '/' + assetName + upyunInfoSuffix)
+  const exifInfo = await response.json()
+
+  if (exifInfo) {
+    const writeExifInfo = await setAssetsExif(assetId, exifInfo)
+    return writeExifInfo
+  }
+
+  return
+}
+
+// 写入 Exif 信息到数据库
+async function setAssetsExif(assetId: number, exifInfo: any) {
+  const width = exifInfo.width // 图片宽度
+  const height = exifInfo.height // 图片高度
+  const type = exifInfo.type // 图片格式
+  const Make = exifInfo.EXIF.Make  // 相机厂商
+  const Model = exifInfo.EXIF.Model // 相机型号
+  const ApertureValue = exifInfo.EXIF.ApertureValue // 光圈值（以分数计）
+  const ISOSpeedRatings = exifInfo.EXIF.ISOSpeedRatings // ISO 值
+  const LensMake = exifInfo.EXIF.LensMake // 镜头品牌
+  const LensModel = exifInfo.EXIF.LensModel // 镜头型号
+  const ExposureTime = exifInfo.EXIF.ExposureTime // 曝光时间
+  const FNumber = exifInfo.EXIF.FNumber // 光圈值（以 F 计）
+  const FocalLength = exifInfo.EXIF.FocalLength // 焦距
+  const FocalLengthIn35mmFilm = exifInfo.EXIF.FocalLengthIn35mmFilm // 35mm 焦距
+  const GPSLatitude = exifInfo.EXIF.GPSLatitude // 纬度
+  const GPSLatitudeRef = exifInfo.EXIF.GPSLatitudeRef // 纬度参考
+  const GPSLongitude = exifInfo.EXIF.GPSLongitude // 经度
+  const GPSLongitudeRef = exifInfo.EXIF.GPSLongitudeRef // 经度参考
+  const GPSAltitude = exifInfo.EXIF.GPSAltitude // 海拔
+  const GPSAltitudeRef = exifInfo.EXIF.GPSAltitudeRef // 海拔参考
+  const GPSSpeed = exifInfo.EXIF.GPSSpeed // 速度
+  const GPSSpeedRef = exifInfo.EXIF.GPSSpeedRef // 速度参考
+
+  const takenTime = exifInfo.EXIF.DateTimeOriginal // 拍摄时间
+  // 格式化拍摄时间
+  function formatToISO8601(takenTime: string) {
+    const regex = /^(\d{4}):(\d{2}):(\d{2}) (\d{2}):(\d{2}):(\d{2})$/;
+    const match = takenTime.match(regex);
+
+    if (match) {
+      // 构建一个 ISO 8601 格式的日期字符串
+      const timeFormatting: string = `${match[1]}-${match[2]}-${match[3]}T${match[4]}:${match[5]}:${match[6]}`;
+      const date = new Date(timeFormatting).toISOString();
+      return date
+    } else {
+      throw new Error('Input string is not in the expected format "YYYY:MM:DD HH:MM:SS"');
+    }
+  }
+  const DateTimeOriginal = formatToISO8601(takenTime)
+
+  const updateExif = await prisma.assets.update({
+    where: {
+      assetId: assetId
+    },
+    data: {
+      width: width,
+      height: height,
+      Make: Make,
+      Model: Model,
+      ApertureValue: ApertureValue,
+      ISOSpeedRatings: ISOSpeedRatings,
+      LensMake: LensMake,
+      LensModel: LensModel,
+      ExposureTime: ExposureTime,
+      FNumber: FNumber,
+      DateTimeOriginal: DateTimeOriginal,
+      FocalLength: FocalLength,
+      FocalLengthIn35mmFilm: FocalLengthIn35mmFilm,
+      GPSLatitude: GPSLatitude,
+      GPSLongitude: GPSLongitude,
+      GPSAltitude: GPSAltitude,
+    },
+  }).catch(e => {
+    console.log(e)
+    return e
+  })
+  console.log(updateExif)
+  return updateExif
 }
 
 // 删除文件
@@ -167,5 +263,5 @@ async function setDelFileDatabase(assetId: number) {
 }
 
 export {
-  getAllFileInUpyunDir, uploadFileToUpyun, getAllFileInDatabase, deleteFileFromUpyun, getAssetsID
+  getAllFileInUpyunDir, uploadFileToUpyun, getAllFileInDatabase, deleteFileFromUpyun, getAssetsID, getAssetsExif
 }

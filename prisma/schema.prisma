@@ -36,6 +36,28 @@ model Assets {
   type             String
   size             Int
   base             String
+  width                   Int?
+  height                  Int?
+  Make                    String?
+  Model                   String?
+  LensMake                String?
+  LensModel               String?
+  ExposureTime            String?
+  ApertureValue           String?
+  FNumber                 String?
+  ExposureProgram         String?
+  ISOSpeedRatings         String?
+  DateTimeOriginal        DateTime?
+  ExposureBiasValue       String?
+  MaxApertureValue        String?
+  MeteringMode            String?
+  Lightsource	            String?
+  Flash                   String?
+  FocalLength             String?
+  FocalLengthIn35mmFilm   String?
+  GPSLatitude             String?
+  GPSLongitude            String?
+  GPSAltitude             String?
 }
 
 model Account {
