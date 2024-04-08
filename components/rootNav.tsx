@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link'
+import Image from 'next/image'
 import { Nav, Avatar, Dropdown, Select, Button } from '@douyinfe/semi-ui';
 import { createContext, useContext, useState } from 'react';
 import CollapseButton from '@douyinfe/semi-ui/lib/es/navigation/CollapseButton';
@@ -28,58 +29,52 @@ const menu = navItem.map((item) => {
   }
 })
 
-const navLogo = (
-  <Dropdown
-    position='bottomLeft'
-    render={
-      <Dropdown.Menu>
-        <Dropdown.Item><Link href={'/auth/signin'}>登录</Link></Dropdown.Item>
-        <Dropdown.Item><Link href={'/auth/signout'}>退出</Link></Dropdown.Item>
-      </Dropdown.Menu>
-    }
-  >
-    <Avatar className='aspect-square font-semibold' size="small" color='light-blue' style={{ padding: 4 }}>FT/</Avatar>
-  </Dropdown>
-)
+export function navLogo(loginUserAvatar: string, position: string) {
+  return (
+    <Dropdown
+      position={position}
+      render={
+        <Dropdown.Menu>
+          {loginUserAvatar == '/icon.png' ?
+            (
+              <Dropdown.Item><Link href={'/auth/signin'}>登录</Link></Dropdown.Item>
+            ) : (
+              <Dropdown.Item><Link href={'/auth/signout'}>退出</Link></Dropdown.Item>
+            )
+          }
+        </Dropdown.Menu>
+      }
+    >
+      <Image src={loginUserAvatar} alt="avatar" width={32} height={32} className='rounded-full' unoptimized />
+    </Dropdown>
+  )
+}
 
 const navText = (
   <div className="text-xl font-semibold pr-2">FlexType /</div>
 )
 
 // 定义横向导航
-export function RenderHorizontal() {
+export function RenderHorizontal({ loginUserAvatar }: any) {
 
   const horizontalHeader = (
     { navText }
   )
-
   return (
     <Nav
       className='inline-flex md:!hidden absolute'
       mode={'horizontal'}
       header={navText}
       onSelect={key => console.log(key)}
-      footer={
-        <Dropdown
-          render={
-            <Dropdown.Menu>
-              <Dropdown.Item><Link href={'/auth/signin'}>登录</Link></Dropdown.Item>
-              <Dropdown.Item><Link href={'/auth/signout'}>退出</Link></Dropdown.Item>
-            </Dropdown.Menu>
-          }
-        >
-          <Avatar size="small" color='light-blue' style={{ margin: 4 }}></Avatar>
-        </Dropdown>
-      }
+      footer={navLogo(loginUserAvatar, 'bottom')}
     />
   );
 }
 
 // 定义纵向导航
-export function RenderVertical() {
+export function RenderVertical({ loginUserAvatar }: any) {
 
   const [verticalItems, setverticalItems] = useState(navItem);
-
   return (
     <Nav
       className='!hidden md:!inline-flex h-screen'
@@ -87,7 +82,7 @@ export function RenderVertical() {
       items={verticalItems}
       onSelect={key => console.log(key)}
       header={{
-        logo: navLogo,
+        logo: navLogo(loginUserAvatar, 'bottomLeft'),
         text: navText,
       }}
       logo={{
