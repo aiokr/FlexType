@@ -12,13 +12,27 @@ export default async function Assets() {
     url: file.url,
     delurl: file.delurl || '',
     type: file.type,
-    date: dateFns.format(new Date(file.uplishedAt), 'yyyy-MM-dd HH:mm:ss'),
+    uplishedAt: dateFns.format(new Date(file.uplishedAt), 'yyyy-MM-dd HH:mm:ss'),
     uploader: file.uploader,
-    assetId: file.assetId
+    dateTimeOriginal: dateFns.format(new Date(file.DateTimeOriginal), 'yyyy-MM-dd HH:mm:ss'),
+    assetId: file.assetId,
+    width: file.width,
+    height: file.height,
+    make: file.Make,
+    model: file.Model,
+    fNumber: file.FNumber,
+    exposureTime: file.ExposureTime,
+    iso: file.ISOSpeedRatings,
+    focalLength: file.FocalLength,
+    focalLengthIn35mmFilm: file.FocalLengthIn35mmFilm,
+    lensMake: file.LensMake,
+    lensModel: file.LensModel,
+    latitude: file.GPSLatitude,
+    longitude: file.GPSLongitude,
   }));
 
   return (
-    <main>
+    <main className='container max-w-[100vw] mx-auto p-6 overflow-hidden'>
       <div className='text-2xl font-bold pb-6'>文件管理</div>
       <UpLoadFile />
       <div className='text-2xl font-bold py-6'>Database File List</div>

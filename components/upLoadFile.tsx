@@ -6,6 +6,9 @@ const ImageUploader = () => {
   // 明确 selectedFile 的类型为 File | null
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+  // 上传按钮的状态
+  const [active, setActive] = useState(false);
+
   // 当文件输入变化时，更新状态
   const fileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // 检查文件是否存在于事件对象中
@@ -16,6 +19,7 @@ const ImageUploader = () => {
 
   // 处理文件上传的逻辑
   const uploadFile = async () => {
+    setActive(!active);
     if (selectedFile) {
       const formData = new FormData();
 
@@ -36,7 +40,7 @@ const ImageUploader = () => {
           method: 'PUT',
           body: formData
         });
-
+        setActive(active);
         if (response.ok) {
           const data = await response.json(); // 等待响应的JSON数据
           Toast.success(`${data.message}`);
@@ -46,8 +50,11 @@ const ImageUploader = () => {
         }
       } catch (error) {
         console.error(error); // 捕获在请求过程中发生的错误
+        setActive(active);
       }
     } else {
+      setActive(active);
+      Toast.error('No file selected');
       console.log('No file selected');
     }
   };
@@ -58,7 +65,7 @@ const ImageUploader = () => {
         <Collapse.Panel header="上传文件" itemKey="1">
           <div className='flex flex-col gap-2'>
             <input type='file' name='file' id='file' onChange={fileInputChange} className={`block bg-gray-100 p-2 text-center rounded`}></input>
-            <button onClick={uploadFile} className='block text-white bg-indigo-500 p-2 text-center rounded'>点击上传</button>
+            <button onClick={uploadFile} className={`${active? 'bg-indigo-500' : 'bg-gray-600'} block text-white p-2 text-center rounded transition-all`}>点击上传</button>
           </div>
         </Collapse.Panel>
       </Collapse>
