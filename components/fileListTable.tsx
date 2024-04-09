@@ -125,10 +125,10 @@ export default function TableComponent(this: any, data: any) {
         <Column title="ISO" dataIndex="iso" key="iso" />
         <Column title="焦距" dataIndex="focalLength" key="focalLength" />
         <Column title="35焦距" dataIndex="focalLengthIn35mmFilm" key="focalLengthIn35mmFilm" width={100} />
-        <Column title="相机厂商" dataIndex="make" key="make" />
-        <Column title="相机型号" dataIndex="model" key="model" />
-        <Column title="镜头厂商" dataIndex="lensMake" key="lensMake" />
-        <Column title="镜头型号" dataIndex="lensModel" key="lensModel" />
+        <Column title="相机厂商" dataIndex="make" key="make" width={100} />
+        <Column title="相机型号" dataIndex="model" key="model" width={100} />
+        <Column title="镜头厂商" dataIndex="lensMake" key="lensMake" width={100} />
+        <Column title="镜头型号" dataIndex="lensModel" key="lensModel" width={200} />
         <Column title="纬度" dataIndex="latitude" key="latitude" />
         <Column title="经度" dataIndex="longitude" key="longitude" />
         <Column title="操作" dataIndex="operate" key="operate" render={operateAsset} width={200} />

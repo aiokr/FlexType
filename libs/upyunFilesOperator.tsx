@@ -152,29 +152,33 @@ async function getAssetsExif(assetId: number) {
 
 // 写入 Exif 信息到数据库
 async function setAssetsExif(assetId: number, exifInfo: any) {
-  const width = exifInfo.width // 图片宽度
-  const height = exifInfo.height // 图片高度
-  const type = exifInfo.type // 图片格式
-  const Make = exifInfo.EXIF.Make  // 相机厂商
-  const Model = exifInfo.EXIF.Model // 相机型号
-  const ApertureValue = exifInfo.EXIF.ApertureValue // 光圈值（以分数计）
-  const ISOSpeedRatings = exifInfo.EXIF.ISOSpeedRatings // ISO 值
-  const LensMake = exifInfo.EXIF.LensMake // 镜头品牌
-  const LensModel = exifInfo.EXIF.LensModel // 镜头型号
-  const ExposureTime = exifInfo.EXIF.ExposureTime // 曝光时间
-  const FNumber = exifInfo.EXIF.FNumber // 光圈值（以 F 计）
-  const FocalLength = exifInfo.EXIF.FocalLength // 焦距
-  const FocalLengthIn35mmFilm = exifInfo.EXIF.FocalLengthIn35mmFilm // 35mm 焦距
-  const GPSLatitude = exifInfo.EXIF.GPSLatitude // 纬度
-  const GPSLatitudeRef = exifInfo.EXIF.GPSLatitudeRef // 纬度参考
-  const GPSLongitude = exifInfo.EXIF.GPSLongitude // 经度
-  const GPSLongitudeRef = exifInfo.EXIF.GPSLongitudeRef // 经度参考
-  const GPSAltitude = exifInfo.EXIF.GPSAltitude // 海拔
-  const GPSAltitudeRef = exifInfo.EXIF.GPSAltitudeRef // 海拔参考
-  const GPSSpeed = exifInfo.EXIF.GPSSpeed // 速度
-  const GPSSpeedRef = exifInfo.EXIF.GPSSpeedRef // 速度参考
+  let width = exifInfo.width // 图片宽度
+  let height = exifInfo.height // 图片高度
+  let type = exifInfo.type // 图片格式
+  let Make = exifInfo.EXIF.Make  // 相机厂商
+  let Model = exifInfo.EXIF.Model // 相机型号
+  let ApertureValue = exifInfo.EXIF.ApertureValue // 光圈值（以分数计）
+  let ISOSpeedRatings = exifInfo.EXIF.ISOSpeedRatings // ISO 值
+  let LensMake = exifInfo.EXIF.LensMake // 镜头品牌
+  let LensModel = exifInfo.EXIF.LensModel // 镜头型号
+  let ExposureTime = exifInfo.EXIF.ExposureTime // 曝光时间
+  let FNumber = exifInfo.EXIF.FNumber // 光圈值（以 F 计）
+  let FocalLength = exifInfo.EXIF.FocalLength // 焦距
+  let FocalLengthIn35mmFilm = exifInfo.EXIF.FocalLengthIn35mmFilm // 35mm 焦距
+  let GPSLatitude = exifInfo.EXIF.GPSLatitude // 纬度
+  let GPSLatitudeRef = exifInfo.EXIF.GPSLatitudeRef // 纬度参考
+  let GPSLongitude = exifInfo.EXIF.GPSLongitude // 经度
+  let GPSLongitudeRef = exifInfo.EXIF.GPSLongitudeRef // 经度参考
+  let GPSAltitude = exifInfo.EXIF.GPSAltitude // 海拔
+  let GPSAltitudeRef = exifInfo.EXIF.GPSAltitudeRef // 海拔参考
+  let GPSSpeed = exifInfo.EXIF.GPSSpeed // 速度
+  let GPSSpeedRef = exifInfo.EXIF.GPSSpeedRef // 速度参考
 
-  const takenTime = exifInfo.EXIF.DateTimeOriginal // 拍摄时间
+  if (exifInfo.EXIF['0xA434']) {
+    LensModel = exifInfo.EXIF['0xA434'];
+  }
+
+  let takenTime = exifInfo.EXIF.DateTimeOriginal // 拍摄时间
   // 格式化拍摄时间
   function formatToISO8601(takenTime: string) {
     const regex = /^(\d{4}):(\d{2}):(\d{2}) (\d{2}):(\d{2}):(\d{2})$/;
@@ -189,7 +193,7 @@ async function setAssetsExif(assetId: number, exifInfo: any) {
       throw new Error('Input string is not in the expected format "YYYY:MM:DD HH:MM:SS"');
     }
   }
-  const DateTimeOriginal = formatToISO8601(takenTime)
+  let DateTimeOriginal = formatToISO8601(takenTime)
 
   const updateExif = await prisma.assets.update({
     where: {
