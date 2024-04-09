@@ -8,7 +8,7 @@ export default async function Assets() {
   const fileData = await getAllFileInDatabase();
   const fileList = fileData.map((file: any) => ({
     title: file.title,
-    size: (file.size / 1024 / 1024).toFixed(2) + ' MB',
+    size: file.size,
     url: file.url,
     delurl: file.delurl || '',
     type: file.type,

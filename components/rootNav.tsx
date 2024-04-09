@@ -1,15 +1,12 @@
 "use client"
-
-import React from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import Link from 'next/link'
 import Image from 'next/image'
-import { Nav, Avatar, Dropdown, Select, Button, List } from '@douyinfe/semi-ui';
-import { createContext, useContext, useState } from 'react';
-import CollapseButton from '@douyinfe/semi-ui/lib/es/navigation/CollapseButton';
+import { Nav, Avatar, Dropdown, Collapsible, List } from '@douyinfe/semi-ui';
 import { AssetsIcon, SettingsIcon } from '@/assets/icons';
+import HorizontalNavMenu from './horizontalNavMenu';
 
 // 导航内容
-
 const navItem = [
   { itemKey: 'posts', text: '文章管理' },
   { itemKey: 'tags', text: '标签管理' },
@@ -20,14 +17,6 @@ const navItem = [
   { itemKey: 'sites', text: '站点管理' },
   { itemKey: 'settings', text: '设置', icon: <SettingsIcon /> },
 ];
-
-const menu = navItem.map((item) => {
-  return {
-    node: 'item',
-    name: item.text,
-    type: 'primary',
-  }
-})
 
 export function navLogo(loginUserAvatar: string, position: any) {
   return (
@@ -50,24 +39,35 @@ export function navLogo(loginUserAvatar: string, position: any) {
   )
 }
 
-const navText = (
-  <div className="text-xl font-semibold pr-2">FlexType /</div>
+const verticalNavText = (
+  <button className="text-xl font-semibold pr-2">FlexType /</button>
 )
 
 // 定义横向导航
 export function RenderHorizontal({ loginUserAvatar }: any) {
-
-  const horizontalHeader = (
-    { navText }
+  const [isOpen, setOpen] = useState(false);
+  const toggle = () => {
+    setOpen(!isOpen);
+  };
+  const horizontalNavText = (
+    <button className="text-xl font-semibold pr-2" onClick={toggle}>FlexType /</button>
   )
+  const collapsed = (
+    <div className='md:hidden pt-20'>
+      <HorizontalNavMenu data={navItem} />
+    </div>
+  );
   return (
-    <Nav
-      className='inline-flex md:!hidden absolute'
-      mode={'horizontal'}
-      header={navText}
-      onSelect={key => console.log(key)}
-      footer={navLogo(loginUserAvatar, 'bottom')}
-    />
+    <>
+      <Nav
+        className='inline-flex md:!hidden absolute'
+        mode={'horizontal'}
+        header={horizontalNavText}
+        onSelect={key => console.log(key)}
+        footer={navLogo(loginUserAvatar, 'bottom')}
+      />
+      <Collapsible isOpen={isOpen}>{collapsed}</Collapsible>
+    </>
   );
 }
 
@@ -83,7 +83,7 @@ export function RenderVertical({ loginUserAvatar }: any) {
       onSelect={key => console.log(key)}
       header={{
         logo: navLogo(loginUserAvatar, 'bottomLeft'),
-        text: navText,
+        text: verticalNavText,
       }}
       logo={{
         children: navLogo
