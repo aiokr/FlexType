@@ -1,17 +1,16 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { Table, Avatar, Toast, Popconfirm, Modal } from '@douyinfe/semi-ui';
+import { Table, Avatar, Toast, Popconfirm, Modal, Button } from '@douyinfe/semi-ui';
 const { Column } = Table;
 import Link from 'next/link'
 
-export default function TableComponent(data: any) {
+export default function TableComponent(this: any, data: any) {
 
   const [tableData, setTableData] = useState(data);
 
   // 每当传入的 data 更新时，更新表格数据
   useEffect(() => { setTableData(data); }, [data]); // 将 data 加入依赖数组，这样任何 data 的改变都会触发这个 effect
-  console.log(tableData)
 
   const [visible, setVisible] = useState(false);
 
@@ -87,11 +86,12 @@ export default function TableComponent(data: any) {
     setSelectedRecord(record);
   };
 
-  const handleOk = () => {
+  const handleOk = (record: any) => {
     setVisible(false);
+    getAssetsInfo(record.assetId, record.title, record.type)
     console.log('Ok button clicked');
   };
-  const handleCancel = () => {
+  const handleCancel = (record: any) => {
     setVisible(false);
     console.log('Cancel button clicked');
   };
@@ -136,11 +136,18 @@ export default function TableComponent(data: any) {
       <Modal
         title={(selectedRecord?.assetId) + ' - ' + (selectedRecord?.title)}
         visible={visible}
-        onOk={handleOk}
-        afterClose={handleAfterClose} //>=1.16.0
-        onCancel={handleCancel}
+        afterClose={handleAfterClose}
         closeOnEsc={true}
+        onOk={() => handleOk(selectedRecord)}
+        onCancel={() => handleCancel(selectedRecord)}
+        footer={
+          <Button type="primary" onClick={() => handleOk(selectedRecord)}>
+            获取图片信息
+          </Button>
+        }
         footerFill={true}
+        okText={'返回'}
+        cancelText={'获取图片信息'}
         centered
       >
         {selectedRecord && (
