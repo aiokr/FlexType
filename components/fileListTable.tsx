@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { Table, Avatar, Toast, Popconfirm } from '@douyinfe/semi-ui';
+import { Table, Avatar, Toast, Popconfirm, Modal } from '@douyinfe/semi-ui';
 const { Column } = Table;
 import Link from 'next/link'
 
@@ -9,11 +9,13 @@ export default function TableComponent(data: any) {
 
   const [tableData, setTableData] = useState(data);
 
-  useEffect(() => {
-    // 每当传入的 data 更新时，更新表格数据
-    setTableData(data);
-  }, [data]); // 将 data 加入依赖数组，这样任何 data 的改变都会触发这个 effect
+  // 每当传入的 data 更新时，更新表格数据
+  useEffect(() => { setTableData(data); }, [data]); // 将 data 加入依赖数组，这样任何 data 的改变都会触发这个 effect
+  console.log(tableData)
 
+  const [visible, setVisible] = useState(false);
+
+  const [selectedRecord, setSelectedRecord] = useState(null);
   const deleteItem = (id: string) => {
     // 删除操作的实现
     const url = `/api/delete/${id}`;
@@ -74,26 +76,93 @@ export default function TableComponent(data: any) {
     </span>
   );
 
+  const assetId = (text: any, record: any) => (
+    <button className='text-indigo-500' onClick={() => showDialog(record)}>
+      {record.assetId}
+    </button>
+  )
+
+  const showDialog = (record: any) => {
+    setVisible(true);
+    setSelectedRecord(record);
+  };
+
+  const handleOk = () => {
+    setVisible(false);
+    console.log('Ok button clicked');
+  };
+  const handleCancel = () => {
+    setVisible(false);
+    console.log('Cancel button clicked');
+  };
+  const handleAfterClose = () => {
+    console.log('After Close callback executed');
+  };
+
   return (
-    <Table dataSource={tableData.data} pagination={false} className='container !mr-12 overflow-x-auto table-fixed'>
-      <Column title="ID" dataIndex="assetId" key="assetId" />
-      <Column title="标题" dataIndex="name" key="name" render={renderTitle} />
-      <Column title="大小" dataIndex="size" key="size" sorter={(a, b) => (a.size - b.size > 0 ? 1 : -1)} />
-      <Column title="类型" dataIndex="type" key="type" />
-      <Column title="上传时间" dataIndex="uplishedAt" key="uplishedAt" sorter={(a, b) => (a.uplishedAt - b.uplishedAt > 0 ? 1 : -1)} />
-      <Column title="拍摄时间" dataIndex="dateTimeOriginal" key="dateTimeOriginal" sorter={(a, b) => (a.dateTimeOriginal - b.dateTimeOriginal > 0 ? 1 : -1)} />
-      <Column title="光圈" dataIndex="fNumber" key="fNumber" />
-      <Column title="快门" dataIndex="exposureTime" key="exposureTime" />
-      <Column title="ISO" dataIndex="iso" key="iso" />
-      <Column title="焦距" dataIndex="focalLength" key="focalLength" />
-      <Column title="等效焦距" dataIndex="focalLengthIn35mmFilm" key="focalLengthIn35mmFilm" />
-      <Column title="镜头" dataIndex="lensMake" key="lensMake" />
-      <Column title="镜头型号" dataIndex="lensModel" key="lensModel" />
-      <Column title="相机" dataIndex="make" key="make" />
-      <Column title="相机型号" dataIndex="model" key="model" />
-      <Column title="纬度" dataIndex="latitude" key="latitude" />
-      <Column title="经度" dataIndex="longitude" key="longitude" />
-      <Column title="操作" dataIndex="operate" key="operate" render={operateAsset} />
-    </Table>
+    <>
+      <Table dataSource={tableData.data} pagination={false} className='!mr-12 overflow-x-auto table-fixed'>
+        <Column title="ID" dataIndex="assetId" key="assetId" render={assetId} />
+        <Column title="标题" dataIndex="name" key="name" render={renderTitle} width={400} />
+        <Column title="大小" dataIndex="size" key="size" width={100}
+          render={size => (size / 1024 / 1024).toFixed(2) + 'MB'}
+          sorter={(a, b) => (a.size - b.size > 0 ? 1 : -1)} />
+        <Column title="类型" dataIndex="type" key="type"
+          filters={[
+            { text: 'image', value: 'image/jpeg', },
+            { text: 'text', value: 'text/plain', },
+          ]}
+          onFilter={(type, record) => record.type.includes(type)}
+        />
+        <Column title="上传时间" dataIndex="uplishedAt" key="uplishedAt" width={160}
+          sorter={(a, b) => ((new Date(a.uplishedAt).getTime()) - (new Date(b.uplishedAt).getTime()) > 0 ? 1 : -1)}
+        />
+        <Column title="拍摄时间" dataIndex="dateTimeOriginal" key="dateTimeOriginal" width={160}
+          sorter={(a, b) => ((new Date(a.dateTimeOriginal).getTime()) - (new Date(b.dateTimeOriginal).getTime()) > 0 ? 1 : -1)}
+        />
+        <Column title="光圈" dataIndex="fNumber" key="fNumber" />
+        <Column title="快门" dataIndex="exposureTime" key="exposureTime" />
+        <Column title="ISO" dataIndex="iso" key="iso" />
+        <Column title="焦距" dataIndex="focalLength" key="focalLength" />
+        <Column title="35焦距" dataIndex="focalLengthIn35mmFilm" key="focalLengthIn35mmFilm" width={100} />
+        <Column title="相机厂商" dataIndex="make" key="make" />
+        <Column title="相机型号" dataIndex="model" key="model" />
+        <Column title="镜头厂商" dataIndex="lensMake" key="lensMake" />
+        <Column title="镜头型号" dataIndex="lensModel" key="lensModel" />
+        <Column title="纬度" dataIndex="latitude" key="latitude" />
+        <Column title="经度" dataIndex="longitude" key="longitude" />
+        <Column title="操作" dataIndex="operate" key="operate" render={operateAsset} width={200} />
+      </Table>
+      <Modal
+        title={(selectedRecord?.assetId) + ' - ' + (selectedRecord?.title)}
+        visible={visible}
+        onOk={handleOk}
+        afterClose={handleAfterClose} //>=1.16.0
+        onCancel={handleCancel}
+        closeOnEsc={true}
+        footerFill={true}
+        centered
+      >
+        {selectedRecord && (
+          <div>
+            <ul>
+              <li>文件类型: {selectedRecord.type}</li>
+              <li>文件大小: {(selectedRecord.size / 1024 / 1024).toFixed(2)} MB</li>
+              <li>上传时间: {selectedRecord.uplishedAt}</li>
+              {selectedRecord.fNumber &&
+                (
+                  <>
+                    <li>拍摄时间: {selectedRecord.dateTimeOriginal}</li>
+                    <li>光圈: {selectedRecord.fNumber}</li>
+                    <li>快门: {selectedRecord.exposureTime}</li>
+                    <li>ISO: {selectedRecord.iso}</li>
+                  </>
+                )
+              }
+            </ul>
+          </div>
+        )}
+      </Modal>
+    </>
   )
 }
