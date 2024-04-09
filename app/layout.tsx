@@ -30,7 +30,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <RenderHorizontal loginUserAvatar={loginUserAvatar} />
         <div className="flex gap-4 h-[calc(100vh-60px)] md:h-screen ">
           <RenderVertical loginUserAvatar={loginUserAvatar} />
-          <div className="pt-14 md:pt-0 overflow-y-scroll">{children}</div>
+          <div className="pt-14 md:pt-0 overflow-y-auto">{children}</div>
         </div>
       </body>
     </html>
