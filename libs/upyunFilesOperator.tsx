@@ -52,15 +52,17 @@ async function getAllFileInDatabase() {
 // 上传文件
 async function uploadFileToUpyun(formData: any, userID: string) {
 
+  const fileName = encodeURI(formData.name)
+  console.log(fileName)
+
   // 计算密钥
-  const upuri = uri + '/' + formData.name
+  const upuri = uri + '/' + fileName
   const signsecret = sign(key, getMD5(secret), 'PUT', upuri, date)
 
   // 制作 Headers
   const headers = new Headers();
   headers.append('Authorization', signsecret);
   headers.append('Date', date);
-  const fileName = formData.name
 
   let uploadFileResult = null
 
