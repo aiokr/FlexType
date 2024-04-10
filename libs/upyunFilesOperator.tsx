@@ -230,7 +230,7 @@ async function setAssetsExif(assetId: number, exifInfo: any) {
 // 删除文件
 async function deleteFileFromUpyun(assetId: number) {
   const asset = await getAssets(assetId)
-  const fileName = asset?.title
+  const fileName = encodeURI(asset?.title)
   const deluri = uri + '/' + fileName
   const signsecret = sign(key, getMD5(secret), 'DELETE', deluri, date)
   const headers = new Headers();
