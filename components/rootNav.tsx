@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { Nav, Avatar, Dropdown, Collapsible, List } from '@douyinfe/semi-ui';
 import { AssetsIcon, SettingsIcon } from '@/assets/icons';
 import HorizontalNavMenu from './horizontalNavMenu';
+import { useRouter } from 'next/navigation';
 
 // 导航内容
 const navItem = [
@@ -15,7 +16,7 @@ const navItem = [
   { itemKey: 'albums', text: '影集管理' },
   { itemKey: 'assets', text: '文件管理', link: '/dashboard/assets', icon: <AssetsIcon /> },
   { itemKey: 'sites', text: '站点管理' },
-  { itemKey: 'settings', text: '设置', icon: <SettingsIcon /> },
+  { itemKey: 'settings', text: '设置', link: '/dashboard/settings', icon: <SettingsIcon /> },
 ];
 
 export function navLogo(loginUserAvatar: string, position: any) {
@@ -49,12 +50,19 @@ export function RenderHorizontal({ loginUserAvatar }: any) {
   const toggle = () => {
     setOpen(!isOpen);
   };
+
+  const router = useRouter()
+
+  const onClickNavItem = (link: string) => {
+    setOpen(false);
+    router.push(link)
+  };
   const horizontalNavText = (
     <button className="text-xl font-semibold pr-2" onClick={toggle}>FlexType /</button>
   )
   const collapsed = (
     <div className='md:hidden pt-20'>
-      <HorizontalNavMenu data={navItem} />
+      <HorizontalNavMenu data={navItem} clickItem={onClickNavItem} />
     </div>
   );
   return (
