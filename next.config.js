@@ -5,6 +5,10 @@ module.exports = {
         protocol: 'https',
         hostname: 'avatars.githubusercontent.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'imgur.lzmun.com',
+      },
     ],
   },
 }

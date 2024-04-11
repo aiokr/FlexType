@@ -5,7 +5,7 @@ import TableComponent from '@/components/fileListTable'
 import * as dateFns from 'date-fns';
 
 export default async function Assets() {
-  const fileData = await getAllFileInDatabase();
+  const fileData = (await getAllFileInDatabase()).sort((a, b) => new Date(b.uplishedAt).getTime() - new Date(a.uplishedAt).getTime());
   const fileList = fileData.map((file: any) => ({
     title: file.title,
     size: file.size,
@@ -35,7 +35,7 @@ export default async function Assets() {
     <main className='container max-w-[100vw] mx-auto p-6 overflow-hidden'>
       <div className='text-2xl font-bold pb-6'>文件管理</div>
       <UpLoadFile />
-      <div className='text-2xl font-bold py-6'>Database File List</div>
+      <div className='text-xl font-bold py-6'>文件列表</div>
       <TableComponent data={fileList} />
     </main>
   );

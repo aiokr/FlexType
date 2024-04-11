@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { Table, Avatar, Toast, Popconfirm, Modal, Button } from '@douyinfe/semi-ui';
 const { Column } = Table;
 import Link from 'next/link'
+import Image from 'next/image'
 
-export default function TableComponent(this: any, data: any) {
+export default function TableComponent(this: any, data: any, refresh: any) {
 
   const [tableData, setTableData] = useState(data);
 
@@ -101,36 +102,81 @@ export default function TableComponent(this: any, data: any) {
 
   return (
     <>
-      <Table dataSource={tableData.data} pagination={false} className='!mr-12 overflow-x-auto table-fixed'>
-        <Column title="ID" dataIndex="assetId" key="assetId" render={assetId} />
-        <Column title="标题" dataIndex="name" key="name" render={renderTitle} width={400} />
+      <Table dataSource={tableData.data} pagination={{ pageSize: 10 }} className='!mr-12 overflow-x-auto table-fixed'>
+        <Column title="ID" dataIndex="assetId" key="assetId" render={assetId} width={48} fixed />
+        <Column title="标题" dataIndex="name" key="name" render={renderTitle} width={360} ellipsis />
         <Column title="大小" dataIndex="size" key="size" width={100}
           render={size => (size / 1024 / 1024).toFixed(2) + 'MB'}
           sorter={(a, b) => (a.size - b.size > 0 ? 1 : -1)} />
-        <Column title="类型" dataIndex="type" key="type"
+        <Column title="类型" dataIndex="type" key="type" width={120} ellipsis
           filters={[
-            { text: 'image', value: 'image/jpeg', },
-            { text: 'text', value: 'text/plain', },
+            { text: 'image', value: 'image', },
+            { text: 'text', value: 'text', },
           ]}
-          onFilter={(type, record) => record.type.includes(type)}
+          onFilter={(type, record) => record.type.toString().includes(type)}
         />
         <Column title="上传时间" dataIndex="uplishedAt" key="uplishedAt" width={160}
           sorter={(a, b) => ((new Date(a.uplishedAt).getTime()) - (new Date(b.uplishedAt).getTime()) > 0 ? 1 : -1)}
         />
         <Column title="拍摄时间" dataIndex="dateTimeOriginal" key="dateTimeOriginal" width={160}
           sorter={(a, b) => ((new Date(a.dateTimeOriginal).getTime()) - (new Date(b.dateTimeOriginal).getTime()) > 0 ? 1 : -1)}
+          render={
+            dateTimeOriginal => {
+              if (dateTimeOriginal.toString() === '1970-01-01 08:00:00') {
+                return ''
+              } else {
+                return dateTimeOriginal
+              }
+            }}
         />
-        <Column title="光圈" dataIndex="fNumber" key="fNumber" />
-        <Column title="快门" dataIndex="exposureTime" key="exposureTime" />
-        <Column title="ISO" dataIndex="iso" key="iso" />
-        <Column title="焦距" dataIndex="focalLength" key="focalLength" />
+        <Column title="光圈" dataIndex="fNumber" key="fNumber" width={60}
+          render={
+            fNumber => {
+              if (fNumber) {
+                const parts = fNumber.split('/');
+                if (parts.length === 2) {
+                  const numerator = parseFloat(parts[0]);
+                  const denominator = parseFloat(parts[1]);
+                  return numerator / denominator;
+                } else {
+                  return fNumber
+                }
+              } else {
+                return ''
+              }
+            }
+          }
+        />
+        <Column title="快门" dataIndex="exposureTime" key="exposureTime" width={120}
+          render={
+            exposureTime => {
+              if (exposureTime) {
+                const parts = exposureTime.split('/');
+                const numerator = parseFloat(parts[0]);
+                const denominator = parseFloat(parts[1]);
+                const exposureTimeNum = numerator / denominator;
+                if (parts.length === 2 && exposureTimeNum < 1) {
+                  return (numerator + '/' + denominator);
+                } else if (parts.length === 2 && exposureTimeNum >= 1) {
+                  return exposureTimeNum;
+                } else {
+                  return exposureTime
+                }
+              } else {
+                return ''
+              }
+            }
+          }
+        />
+        <Column title="ISO" dataIndex="iso" key="iso" width={100} />
+        <Column title="焦距" dataIndex="focalLength" key="focalLength" width={100} />
         <Column title="35焦距" dataIndex="focalLengthIn35mmFilm" key="focalLengthIn35mmFilm" width={100} />
         <Column title="相机厂商" dataIndex="make" key="make" width={100} />
         <Column title="相机型号" dataIndex="model" key="model" width={100} />
         <Column title="镜头厂商" dataIndex="lensMake" key="lensMake" width={100} />
         <Column title="镜头型号" dataIndex="lensModel" key="lensModel" width={200} />
-        <Column title="纬度" dataIndex="latitude" key="latitude" />
-        <Column title="经度" dataIndex="longitude" key="longitude" />
+        <Column title="纬度" dataIndex="latitude" key="latitude" width={300} />
+        <Column title="经度" dataIndex="longitude" key="longitude" width={300} />
         <Column title="操作" dataIndex="operate" key="operate" render={operateAsset} width={200} />
       </Table>
       <Modal
@@ -140,6 +186,7 @@ export default function TableComponent(this: any, data: any) {
         closeOnEsc={true}
         onOk={() => handleOk(selectedRecord)}
         onCancel={() => handleCancel(selectedRecord)}
+        className='max-h-[80vh] overflow-y-auto'
         footer={
           <Button type="primary" onClick={() => handleOk(selectedRecord)}>
             获取图片信息
@@ -152,6 +199,9 @@ export default function TableComponent(this: any, data: any) {
       >
         {selectedRecord && (
           <div>
+            {selectedRecord.fNumber && selectedRecord.type.includes('image') && (
+              <Image src={selectedRecord.url} alt={selectedRecord.title} width={selectedRecord.width} height={selectedRecord.height} className='pb-4' unoptimized />
+            )}
             <ul>
               <li>文件类型: {selectedRecord.type}</li>
               <li>文件大小: {(selectedRecord.size / 1024 / 1024).toFixed(2)} MB</li>

@@ -52,15 +52,17 @@ async function getAllFileInDatabase() {
 // 上传文件
 async function uploadFileToUpyun(formData: any, userID: string) {
 
+  const fileName = encodeURI(formData.name)
+  console.log(fileName)
+
   // 计算密钥
-  const upuri = uri + '/' + formData.name
+  const upuri = uri + '/' + fileName
   const signsecret = sign(key, getMD5(secret), 'PUT', upuri, date)
 
   // 制作 Headers
   const headers = new Headers();
   headers.append('Authorization', signsecret);
   headers.append('Date', date);
-  const fileName = formData.name
 
   let uploadFileResult = null
 
@@ -228,7 +230,7 @@ async function setAssetsExif(assetId: number, exifInfo: any) {
 // 删除文件
 async function deleteFileFromUpyun(assetId: number) {
   const asset = await getAssets(assetId)
-  const fileName = asset?.title
+  const fileName = encodeURI(asset?.title)
   const deluri = uri + '/' + fileName
   const signsecret = sign(key, getMD5(secret), 'DELETE', deluri, date)
   const headers = new Headers();
