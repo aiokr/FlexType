@@ -68,7 +68,7 @@ export function RenderHorizontal({ loginUserAvatar }: any) {
   return (
     <>
       <Nav
-        className='inline-flex md:!hidden absolute'
+        className='inline-flex z-10 md:!hidden absolute'
         mode={'horizontal'}
         header={horizontalNavText}
         onSelect={key => console.log(key)}
