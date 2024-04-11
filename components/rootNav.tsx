@@ -12,7 +12,7 @@ const navItem = [
   { itemKey: 'posts', text: '文章管理' },
   { itemKey: 'tags', text: '标签管理' },
   { itemKey: 'categories', text: '分类管理' },
-  { itemKey: 'photos', text: '图片管理' },
+  { itemKey: 'photos', text: '图片管理', link: '/dashboard/photos', icon: <AssetsIcon /> },
   { itemKey: 'albums', text: '影集管理' },
   { itemKey: 'assets', text: '文件管理', link: '/dashboard/assets', icon: <AssetsIcon /> },
   { itemKey: 'sites', text: '站点管理' },
