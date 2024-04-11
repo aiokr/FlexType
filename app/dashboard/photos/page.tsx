@@ -1,9 +1,10 @@
 import prisma from "@/libs/prisma"
 import PhotoListComponent from "@/components/photoList"
+import { getAllFileInDatabase } from '@/libs/upyunFilesOperator'
 
 export default async function Photos() {
   let allPhotos = await prisma.photo.findMany()
-
+  const fileData = (await getAllFileInDatabase()).sort((a, b) => new Date(b.uplishedAt).getTime() - new Date(a.uplishedAt).getTime());
   let photoOriginalData = await prisma.assets.findMany({
     where: {
       assetId: {
@@ -20,9 +21,10 @@ export default async function Photos() {
       .map((asset: any) => asset.url)[0]
     let width = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetsId).map((asset: any) => asset.width)[0]
     let height = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetsId).map((asset: any) => asset.height)[0]
-    let takenAt = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetsId).map((asset: any) => asset.DateTimeOriginal)[0]
-    let make = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetsId).map((asset: any) => asset.Make)[0]
-    let model = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetsId).map((asset: any) => asset.Model)[0]
+    let DateTimeOriginal = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetsId).map((asset: any) => asset.DateTimeOriginal)[0]
+    let Make = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetsId).map((asset: any) => asset.Make)[0]
+    let Model = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetsId).map((asset: any) => asset.Model)[0]
+    let LensMake = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetsId).map((asset: any) => asset.LensMake)[0]
     let LensModel = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetsId).map((asset: any) => asset.LensModel)[0]
     return {
       id: photoId,
@@ -30,18 +32,17 @@ export default async function Photos() {
       url: photoUrl,
       width: width,
       height: height,
-      takenAt: takenAt,
-      make: make,
-      model: model,
+      DateTimeOriginal: DateTimeOriginal,
+      Make: Make,
+      Model: Model,
+      LensMake: LensMake,
       LensModel: LensModel
     }
   })
 
-  console.log(combinedData)
-
   return (
     <div className="container mx-auto">
-      <PhotoListComponent data={combinedData} />
+      <PhotoListComponent photosData={combinedData} assertsData={fileData} />
     </div>
   )
 }
