@@ -1,6 +1,6 @@
 import { type IconProps } from './index'
 
-export function SettingsIcon(props: IconProps = {}) {
+export function SettingIcon(props: IconProps = {}) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1242.35" {...props}>
       <title>Settings</title>

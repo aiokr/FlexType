@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState } from 'react';
 import Link from 'next/link'
 import Image from 'next/image'
 import { Nav, Avatar, Dropdown, Collapsible, List } from '@douyinfe/semi-ui';
-import { AssetsIcon, SettingsIcon } from '@/assets/icons';
+import { FileIcon, PhotoIcon, SettingIcon } from '@/assets/icons';
 import HorizontalNavMenu from './horizontalNavMenu';
 import { useRouter } from 'next/navigation';
 
@@ -12,11 +12,11 @@ const navItem = [
   { itemKey: 'posts', text: '文章管理' },
   { itemKey: 'tags', text: '标签管理' },
   { itemKey: 'categories', text: '分类管理' },
-  { itemKey: 'photos', text: '图片管理', link: '/dashboard/photos', icon: <AssetsIcon /> },
-  { itemKey: 'albums', text: '影集管理' },
-  { itemKey: 'assets', text: '文件管理', link: '/dashboard/assets', icon: <AssetsIcon /> },
+  { itemKey: 'photos', text: '照片流', link: '/dashboard/flow', icon: <PhotoIcon /> },
+  { itemKey: 'albums', text: '影集' },
+  { itemKey: 'assets', text: '文件管理', link: '/dashboard/assets', icon: <FileIcon /> },
   { itemKey: 'sites', text: '站点管理' },
-  { itemKey: 'settings', text: '设置', link: '/dashboard/settings', icon: <SettingsIcon /> },
+  { itemKey: 'settings', text: '设置', link: '/dashboard/settings', icon: <SettingIcon /> },
 ];
 
 export function navLogo(loginUserAvatar: string, position: any) {

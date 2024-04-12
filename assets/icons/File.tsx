@@ -1,6 +1,6 @@
 import { type IconProps } from './index'
 
-export function AssetsIcon(props: IconProps = {}) {
+export function FileIcon(props: IconProps = {}) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 888.78" {...props}>
       <title>Assets</title>
