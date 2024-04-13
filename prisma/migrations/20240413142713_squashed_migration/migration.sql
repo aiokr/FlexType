@@ -23,8 +23,40 @@ CREATE TABLE "Assets" (
     "type" TEXT NOT NULL,
     "size" INTEGER NOT NULL,
     "base" TEXT NOT NULL,
+    "width" INTEGER,
+    "height" INTEGER,
+    "Make" TEXT,
+    "Model" TEXT,
+    "LensMake" TEXT,
+    "LensModel" TEXT,
+    "ExposureTime" TEXT,
+    "ApertureValue" TEXT,
+    "FNumber" TEXT,
+    "ExposureProgram" TEXT,
+    "ISOSpeedRatings" TEXT,
+    "DateTimeOriginal" TIMESTAMP(3),
+    "ExposureBiasValue" TEXT,
+    "MaxApertureValue" TEXT,
+    "MeteringMode" TEXT,
+    "Lightsource" TEXT,
+    "Flash" TEXT,
+    "FocalLength" TEXT,
+    "FocalLengthIn35mmFilm" TEXT,
+    "GPSLatitude" TEXT,
+    "GPSLongitude" TEXT,
+    "GPSAltitude" TEXT,
 
     CONSTRAINT "Assets_pkey" PRIMARY KEY ("assetId")
+);
+
+-- CreateTable
+CREATE TABLE "Photo" (
+    "id" TEXT NOT NULL,
+    "title" TEXT,
+    "assetId" INTEGER NOT NULL,
+    "info" JSONB,
+
+    CONSTRAINT "Photo_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -88,6 +120,9 @@ CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationTok
 
 -- AddForeignKey
 ALTER TABLE "Assets" ADD CONSTRAINT "Assets_uploadUserId_fkey" FOREIGN KEY ("uploadUserId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Photo" ADD CONSTRAINT "Photo_assetId_fkey" FOREIGN KEY ("assetId") REFERENCES "Assets"("assetId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

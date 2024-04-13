@@ -64,8 +64,9 @@ model Assets {
 model Photo {
   id       String  @id @default(cuid())
   title    String?
-  assets   Assets? @relation(fields: [assetsId], references: [assetId])
-  assetsId Int
+  asset    Assets? @relation(fields: [assetId], references: [assetId])
+  assetId  Int
+  info     Json?
 }
 
 model Account {
