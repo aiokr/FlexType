@@ -176,6 +176,17 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, assertsData 
     setVisible(true);
   }
 
+  const itemDescription = (item: any) => {
+    return (
+      <div className='text-xs flex gap-1 pt-1'>
+        <p>{item.Make}</p>
+        <p>{item.Model}</p>
+        <p>{item.LensMake}</p>
+        <p>{item.LensModel}</p>
+      </div>
+    )
+  }
+
   return (
     <>
       <div className='grid grid-cols-2 lg:grid-cols-3 gap-2'>
@@ -185,6 +196,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, assertsData 
           <button key={item.id} onClick={() => openPhotoEditor(item)}>
             <Card cover={<Image src={item.url} alt={item.title} height={item.height} width={item.width} className='aspect-[4/3] object-cover' unoptimized />}>
               <Meta title={item.title || 'No Title'} />
+              <Meta description={itemDescription(item)} />
             </Card>
           </button>
         ))}
@@ -198,6 +210,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, assertsData 
                 dropdownStyle={{ width: '100%' }}
                 outerBottomSlot={outSlotNode}
                 renderSelectedItem={renderSelectedItem}
+                value={selected.assetId || undefined}
               >
                 {assertData.map((item: any) => (
                   <Select.Option key={item.assetId} value={item.assetId} className='flex gap-2'>
