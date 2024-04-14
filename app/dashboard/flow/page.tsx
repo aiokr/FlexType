@@ -20,31 +20,30 @@ export default async function Photos() {
     let photoUrl = photoOriginalData
       .filter((asset: any) => asset.assetId === photo.assetId)
       .map((asset: any) => asset.url)[0]
-    let width = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.width)[0]
-    let height = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.height)[0]
-    let DateTimeOriginal = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.DateTimeOriginal)[0]
-    let Make = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.Make)[0]
-    let Model = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.Model)[0]
-    let LensMake = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.LensMake)[0]
-    let LensModel = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.LensModel)[0]
+    let originExif = {
+      width: photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.width)[0],
+      height: photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.height)[0],
+      DateTimeOriginal: photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.DateTimeOriginal)[0],
+      Make: photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.Make)[0],
+      Model: photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.Model)[0],
+      LensMake: photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.LensMake)[0],
+      LensModel: photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.LensModel)[0],
+    }
+    let info = {
+      originExif: originExif
+    }
     return {
       id: photoId,
       assetId: assetId,
       title: photoTitle,
       url: photoUrl,
-      width: width,
-      height: height,
-      DateTimeOriginal: DateTimeOriginal,
-      Make: Make,
-      Model: Model,
-      LensMake: LensMake,
-      LensModel: LensModel
+      info: info,
     }
   })
 
   return (
     <div className="container mx-auto">
-      <PhotoListComponent photosData={combinedData} assertsData={fileData} />
+      <PhotoListComponent photosData={allPhotoFlowItems} combinedData={combinedData} assertsData={fileData} />
     </div>
   )
 }

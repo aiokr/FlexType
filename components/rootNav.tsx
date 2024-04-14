@@ -9,15 +9,18 @@ import { useRouter } from 'next/navigation';
 
 // 导航内容
 const navItem = [
-  { itemKey: 'posts', text: '文章管理' },
-  { itemKey: 'tags', text: '标签管理' },
-  { itemKey: 'categories', text: '分类管理' },
   { itemKey: 'photos', text: '照片流', link: '/dashboard/flow', icon: <PhotoIcon /> },
-  { itemKey: 'albums', text: '影集' },
   { itemKey: 'assets', text: '文件管理', link: '/dashboard/assets', icon: <FileIcon /> },
-  { itemKey: 'sites', text: '站点管理' },
   { itemKey: 'settings', text: '设置', link: '/dashboard/settings', icon: <SettingIcon /> },
 ];
+
+/*
+  { itemKey: 'posts', text: '文章管理' },
+  { itemKey: 'albums', text: '影集' },
+  { itemKey: 'sites', text: '站点管理' },
+  { itemKey: 'tags', text: '标签管理' },
+  { itemKey: 'categories', text: '分类管理' },
+*/
 
 export function navLogo(loginUserAvatar: string, position: any) {
   return (

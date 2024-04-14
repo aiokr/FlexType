@@ -15,7 +15,6 @@ export async function DELETE(request: Request, { params }: { params: { slug: str
 
   if (session && existingUser.length !== 0) {
     const delItemId = params.slug.toString()
-    console.log(delItemId)
 
     const delFlowItem = await prisma.photo.delete({
       where: {
@@ -23,7 +22,6 @@ export async function DELETE(request: Request, { params }: { params: { slug: str
       }
     })
 
-    console.log(delFlowItem)
     return Response.json({ message: "Success Deleted Item" }, { status: 200 })
 
   } else {
