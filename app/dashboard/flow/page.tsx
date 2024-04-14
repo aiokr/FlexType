@@ -20,6 +20,7 @@ export default async function Photos() {
     let photoUrl = photoOriginalData
       .filter((asset: any) => asset.assetId === photo.assetId)
       .map((asset: any) => asset.url)[0]
+    let info = photo.info
     let width = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.width)[0]
     let height = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.height)[0]
     let DateTimeOriginal = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.DateTimeOriginal)[0]
@@ -31,6 +32,7 @@ export default async function Photos() {
       id: photoId,
       assetId: assetId,
       title: photoTitle,
+      info: info,
       url: photoUrl,
       width: width,
       height: height,

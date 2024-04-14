@@ -16,12 +16,12 @@ export async function PUT(req: any, res: any) {
   if (session && existingUser.length !== 0) {
     const flowItemData: any = await req.json()
     console.log(flowItemData)
-    const info = Object.entries(flowItemData).reduce((accumulator: any, [key, value]) => {
-      if (value !== null) { // 只有当值不为null时，才将键值对添加到accumulator对象中
-        accumulator[key] = value;
+    let info = typeof flowItemData.info === 'object' ? { ...flowItemData.info } : {};
+    for (const [key, value] of Object.entries(flowItemData)) {
+      if (!['title', 'assetId', 'id', 'DateTimeOriginal', 'info'].includes(key) && value !== null) {
+        info[key] = value;
       }
-      return accumulator;
-    }, {});
+    }
 
     let assertAlreadyExisting: boolean = null
 
@@ -35,7 +35,6 @@ export async function PUT(req: any, res: any) {
       assertAlreadyExisting = true
     }
 
-    console.log(flowItemData.id !== null, assertAlreadyExisting)
     if (flowItemData.id !== null) { // 项目已存在，修改项目
       const updateFlowItem = await prisma.photo.update({
         where: {
