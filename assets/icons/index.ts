@@ -9,5 +9,6 @@ export const IconPropsDefault: IconProps = {
   focusable: 'false',
 }
 
-export { AssetsIcon } from './Assets'
-export { SettingsIcon } from './Settings'
+export { FileIcon } from './File'
+export { SettingIcon } from './Setting'
+export { PhotoIcon } from './Photo'
