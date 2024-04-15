@@ -19,7 +19,7 @@ export async function GET(request: Request, { params }: { params: { slug: string
     const response = await getAssetsExif(assetId)
 
     if (response) {
-      return Response.json(response)
+      return Response.json(JSON.stringify(response))
     }
   } else {
     return Response.json({ message: "Not authenticated" }, { status: 403 })
