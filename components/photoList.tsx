@@ -226,7 +226,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
                       <Image className='max-h-[120px] max-w-[160px] object-cover ' src={item.url} alt={item.title} width={160} height={160} unoptimized />
                       <div>
                         <div className='font-bold'>{item.assetId + ' - ' + item.title}</div>
-                        <div>{item.DateTimeOriginal.toUTCString()}</div>
+                        <div>{new Date(item.DateTimeOriginal).toLocaleString('zh-CN')}</div>
                         <div>{item.Make + ' - ' + item.Model}</div>
                         <div>{item.LensModel}</div>
                       </div>
