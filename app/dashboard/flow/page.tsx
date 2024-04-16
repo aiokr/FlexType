@@ -20,6 +20,7 @@ export default async function Photos() {
     let photoUrl = photoOriginalData
       .filter((asset: any) => asset.assetId === photo.assetId)
       .map((asset: any) => asset.url)[0]
+    let createdAt = photo.createdAt
     let originExif = {
       width: photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.width)[0],
       height: photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.height)[0],
@@ -37,13 +38,14 @@ export default async function Photos() {
       assetId: assetId,
       title: photoTitle,
       url: photoUrl,
+      createdAt: createdAt,
       info: info,
     }
   })
 
   return (
-    <div className="container mx-auto">
-      <PhotoListComponent photosData={allPhotoFlowItems} combinedData={combinedData} assertsData={fileData} />
+    <div>
+      <PhotoListComponent photosData={allPhotoFlowItems} combinedData={combinedData.sort((a, b) => new Date(b.info.originExif.DateTimeOriginal).getTime() - new Date(a.info.originExif.DateTimeOriginal).getTime() > 0 ? 1 : -1)} assertsData={fileData} />
     </div>
   )
 }

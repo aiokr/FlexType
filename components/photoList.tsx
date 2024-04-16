@@ -37,7 +37,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
   const [flowData, setFlowData] = useState(photosData);  // PhotoFlow 数据
   useEffect(() => { setData(photosData); }, [photosData]);
 
-  const [data, setData] = useState(combinedData);  // 当前 PhotoFlow 的合并数据
+  const [data, setData] = useState(combinedData.sort((a: any, b: any) => b.createAt - a.createAt));  // 当前 PhotoFlow 的合并数据
   useEffect(() => { setData(combinedData); }, [combinedData]);
 
   const [assertData, setAssertData] = useState(assertsData);  // 所有文件列表的数据
@@ -186,24 +186,29 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
   // PhotoList Item Description
   const itemDescription = (item: any) => {
     return (
-      <div className='text-xs flex gap-1 pt-1'>
-        <p>{item.Make}</p>
-        <p>{item.Model}</p>
-        <p>{item.LensMake}</p>
-        <p>{item.LensModel}</p>
+      <div className='text-xs flex flex-col items-start gap-1 pt-1'>
+        <div className='text-xs text-left truncate'>
+          <span>{item.info.originExif.Make} </span>
+          <span>{item.info.originExif.Model} </span>
+          <span>{item.info.originExif.LensMake} </span>
+          <span>{item.info.originExif.LensModel} </span>
+        </div>
+        <p className='text-xs text-left'>{new Date(item.createAt || item.info.originExif.DateTimeOriginal).toLocaleString("default", {
+          month: "short", day: "2-digit", year: "numeric", minute: "2-digit", hour: "2-digit",
+        })}</p>
       </div>
     )
   }
 
   return (
     <>
-      <div className='grid grid-cols-2 lg:grid-cols-3 gap-2'>
+      <div className='container grid grid-cols-2 lg:grid-cols-3 gap-2 px-1 md:px-0'>
         <button className='border rounded-[6px] w-full h-full' onClick={() => openPhotoEditor(null)}>新建项目
         </button>
         {data.map((item: any) => (
           <button key={item.id} onClick={() => openPhotoEditor(item)}>
             <Card cover={<Image src={item.url} alt={item.title} height={item.info.originExif.height} width={item.info.originExif.width} className='aspect-[4/3] object-cover' unoptimized />}>
-              <Meta title={item.title || 'No Title'} />
+              <Meta title={item.title || 'No Title'} className='text-left truncate' />
               <Meta description={itemDescription(item)} />
             </Card>
           </button>

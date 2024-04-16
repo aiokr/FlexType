@@ -1,8 +1,8 @@
 import prisma from '@/libs/prisma'
 import { getAllFileInDatabase } from '@/libs/upyunFilesOperator'
+import { NextRequest } from "next/server";
 
-
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const flowData = await prisma.photo.findMany()
   const fileData = await getAllFileInDatabase()
   const combinedData = flowData.map((photo: any) => {
@@ -10,6 +10,7 @@ export async function GET(request: Request) {
     let assetId = photo.assetId
     let photoTitle = photo.title
     let photoUrl = fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.url)[0]
+    let createdAt = photo.createdAt || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.DateTimeOriginal)[0]
     let exif = {
       width: photo.info.overExif?.width || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.width)[0],
       height: photo.info.overExif?.height || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.height)[0],
@@ -24,16 +25,23 @@ export async function GET(request: Request) {
       assetId: assetId,
       title: photoTitle,
       url: photoUrl,
+      createdAt: createdAt,
       exif: exif
     }
   })
 
+  const pageNum: number = parseInt(request.nextUrl.searchParams.get("page") || "1");
+  const perPage: number = parseInt(request.nextUrl.searchParams.get("per_page") || "100");
+  const maxPage: number = Math.ceil(combinedData.length / perPage)
 
-  if (!flowData) {
+  if (!flowData || flowData.length === 0) {
     return Response.json({ message: "No data" }, { status: 500 })
-  } else if (flowData.length === 0) {
-    return Response.json({ message: "No data" }, { status: 200 })
+  }
+  else if (pageNum > maxPage) {
+    return Response.json({ message: "Out of range (> maxPage)" }, { status: 500 })
+  } else if (pageNum < 1) {
+    return Response.json({ message: "Out of range (< 1)" }, { status: 500 })
   } else {
-    return Response.json(combinedData, { status: 200 })
+    return Response.json(combinedData.slice((pageNum - 1) * perPage, pageNum * perPage), { status: 200 })
   }
 }
