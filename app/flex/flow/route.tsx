@@ -42,6 +42,6 @@ export async function GET(request: NextRequest) {
   } else if (pageNum < 1) {
     return Response.json({ message: "Out of range (< 1)" }, { status: 500 })
   } else {
-    return Response.json(combinedData.slice((pageNum - 1) * perPage, pageNum * perPage), { status: 200 })
+    return Response.json(combinedData.sort((a: any, b: any) => new Date(b.exif.DateTimeOriginal).getTime() - new Date(a.exif.DateTimeOriginal).getTime() > 0 ? 1 : -1).slice((pageNum - 1) * perPage, pageNum * perPage), { status: 200 })
   }
 }
