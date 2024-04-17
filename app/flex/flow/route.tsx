@@ -19,6 +19,11 @@ export async function GET(request: NextRequest) {
       Model: photo.info.overExif?.Model || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.Model)[0],
       LensMake: photo.info.overExif?.LensMake || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.LensMake)[0],
       LensModel: photo.info.overExif?.LensModel || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.LensModel)[0],
+      ExposureTime: photo.info.overExif?.exposeTime || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.exposeTime)[0],
+      FNumber: photo.info.overExif?.FNumber || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.FNumber)[0],
+      ISO: photo.info.overExif?.ISOSpeedRatings || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.ISOSpeedRatings)[0],
+      GPSLatitude: photo.info.overExif?.GPSLatitude || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.GPSLatitude)[0],
+      GPSLongitude: photo.info.overExif?.GPSLongitude || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.GPSLongitude)[0],
     }
     return {
       id: photoId,
