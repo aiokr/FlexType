@@ -17,10 +17,12 @@
     "@supabase/ssr": "^0.1.0",
     "@supabase/supabase-js": "^2.41.1",
     "@vercel/postgres": "^0.7.2",
+    "mapbox-gl": "^3.3.0",
     "next": "14.1.4",
     "next-auth": "^5.0.0-beta.16",
     "react": "^18",
     "react-dom": "^18",
+    "react-map-gl": "^7.1.7",
     "reset-css": "^5.0.2",
     "swr": "^2.2.5"
   },

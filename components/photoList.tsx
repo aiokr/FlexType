@@ -1,9 +1,11 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Table, Input, Toast, Select, Modal, Button, Card } from '@douyinfe/semi-ui';
 import Image from 'next/image'
 import { auth } from '@/auth';
 import Link from 'next/link';
+import Map, { Marker } from 'react-map-gl';
+import type { MarkerDragEvent, LngLat } from 'react-map-gl';
 
 const { Meta } = Card
 
@@ -54,6 +56,8 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
   useEffect(() => { setSelected(selected); }, [selected]);
 
   const [visible, setVisible] = useState(false);  // Editor 弹窗的状态
+
+  const [events, logEvents] = useState<Record<string, LngLat>>({});
 
   // handleOk 点击弹窗的「确定」，清理数据，然后进行上传操作
   const handleOk = () => {
@@ -141,7 +145,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
         method: 'DELETE'
       })
       if (response.ok) {
-        Toast.success(`File ID ${id} deleted successfully.`)
+        Toast.success(`ID ${id} deleted successfully.`)
         setVisible(false);
       } else {
         Toast.error('Error deleting file.')
@@ -240,14 +244,28 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
                 ))}
               </Select>
             </div>
-            <div className='grid grid-cols-1 md:grid-cols-4 gap-4 mt-8'>
-              <Input size='large' prefix="PhotoFlowID*" className='col-span-2' value={selected.id || ''} disabled></Input>
-              <Input size='large' prefix="AssertsID*" className='col-span-2' value={selected.assetId || ''} onChange={(event: any) => handleTitleChange(event, 'assetId')} ></Input>
+            <div className='grid grid-cols-4 gap-4 mt-8'>
+              <Input size='large' prefix="PhotoFlowID*" className='col-span-4 md:col-span-2' value={selected.id || ''} disabled></Input>
+              <Input size='large' prefix="AssertsID*" className='col-span-4 md:col-span-2' value={selected.assetId || ''} onChange={(event: any) => handleTitleChange(event, 'assetId')} ></Input>
               <Input size='large' prefix="Title*" defaultValue={selected.title || ''} className='col-span-4' onChange={(event: any) => handleTitleChange(event, 'title')} ></Input>
-              <Input size='large' placeholder={selected.info?.originExif?.Make || ''} className='col-span-1' prefix="Make*" onChange={(event: any) => handleExifChange(event, 'Make')}  ></Input>
-              <Input size='large' placeholder={selected.info?.originExif?.Model} className='col-span-3' prefix="Model*" onChange={(event: any) => handleExifChange(event, 'Model')} ></Input>
-              <Input size='large' placeholder={selected.info?.originExif?.LensMake || ''} className='col-span-3' prefix="LensMake*" onChange={(event: any) => handleExifChange(event, 'LensMake')}></Input>
-              <Input size='large' placeholder={selected.info?.originExif?.LensModel} className='col-span-3' prefix="LensModel*" onChange={(event: any) => handleExifChange(event, 'LensModel')}></Input>
+              <Input size='large' placeholder={selected.info?.originExif?.Make || ''} className='col-span-4 md:col-span-1' prefix="Make*" onChange={(event: any) => handleExifChange(event, 'Make')}  ></Input>
+              <Input size='large' placeholder={selected.info?.originExif?.Model} className='col-span-4 md:col-span-3' prefix="Model*" onChange={(event: any) => handleExifChange(event, 'Model')} ></Input>
+              <Input size='large' placeholder={selected.info?.originExif?.LensMake || ''} className='col-span-4' prefix="LensMake*" onChange={(event: any) => handleExifChange(event, 'LensMake')}></Input>
+              <Input size='large' placeholder={selected.info?.originExif?.LensModel} className='col-span-4' prefix="LensModel*" onChange={(event: any) => handleExifChange(event, 'LensModel')}></Input>
+            </div>
+            <div className='rounded my-8'>
+              <Map
+                mapLib={import('mapbox-gl')}
+                mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+                initialViewState={{
+                  longitude: selected.info?.originExif?.GPSLongitude || 0,
+                  latitude: selected.info?.originExif?.GPSLatitude || 0,
+                  zoom: 10
+                }}
+                style={{ width: '100%', height: 300 }}
+                mapStyle="mapbox://styles/aiokr/cldekkgf8003u01oxrd0cyu34"
+              >
+              </Map>
             </div>
             <button className='bg-red-500 text-white py-2 px-4 my-6 rounded' onClick={() => deleteItem(selected.id)}>删除</button>
           </div>

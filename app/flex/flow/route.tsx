@@ -1,6 +1,7 @@
 import prisma from '@/libs/prisma'
 import { getAllFileInDatabase } from '@/libs/upyunFilesOperator'
 import { NextRequest } from "next/server";
+import convertDMSToDecimal from '@/libs/convertDMSToDecimal'
 
 export async function GET(request: NextRequest) {
   const flowData = await prisma.photo.findMany()
@@ -11,6 +12,12 @@ export async function GET(request: NextRequest) {
     let photoTitle = photo.title
     let photoUrl = fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.url)[0]
     let createdAt = photo.createdAt || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.DateTimeOriginal)[0]
+
+    let GPSLatitudeOrigin = fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.GPSLatitude)[0] || "0/1,0/1,0/1";
+    let GPSLatitude = convertDMSToDecimal(GPSLatitudeOrigin);
+    let GPSLongitudeOrigin = fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.GPSLongitude)[0] || "0/1,0/1,0/1";
+    let GPSLongitude = convertDMSToDecimal(GPSLongitudeOrigin);
+
     let exif = {
       width: photo.info.overExif?.width || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.width)[0],
       height: photo.info.overExif?.height || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.height)[0],
@@ -22,8 +29,8 @@ export async function GET(request: NextRequest) {
       ExposureTime: photo.info.overExif?.exposeTime || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.exposeTime)[0],
       FNumber: photo.info.overExif?.FNumber || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.FNumber)[0],
       ISO: photo.info.overExif?.ISOSpeedRatings || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.ISOSpeedRatings)[0],
-      GPSLatitude: photo.info.overExif?.GPSLatitude || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.GPSLatitude)[0],
-      GPSLongitude: photo.info.overExif?.GPSLongitude || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.GPSLongitude)[0],
+      GPSLatitude: photo.info.overExif?.GPSLatitude || GPSLatitude,
+      GPSLongitude: photo.info.overExif?.GPSLongitude || GPSLongitude,
     }
     return {
       id: photoId,
