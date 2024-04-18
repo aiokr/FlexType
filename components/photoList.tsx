@@ -41,6 +41,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
 
   const [data, setData] = useState(combinedData.sort((a: any, b: any) => b.createAt - a.createAt));  // 当前 PhotoFlow 的合并数据
   useEffect(() => { setData(combinedData); }, [combinedData]);
+  console.log(data)
 
   const [assertData, setAssertData] = useState(assertsData);  // 所有文件列表的数据
   useEffect(() => { setAssertData(assertsData); }, [assertsData]);
@@ -110,13 +111,16 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
   };
 
   const handleExifChange = (event: React.ChangeEvent<HTMLInputElement>, field: keyof ExifData) => {
-    const value = event;
+    const value = event; // 获取输入框的值
     setSelected(prevSelected => ({
       ...prevSelected,
-      overExif: {
-        ...prevSelected.info.overExif,
-        [field]: value
-      }
+      info: {
+        ...prevSelected.info,
+        overExif: {
+          ...prevSelected.info.overExif,
+          [field]: value,
+        },
+      },
     }));
   };
 
@@ -248,22 +252,35 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
               <Input size='large' prefix="PhotoFlowID*" className='col-span-4 md:col-span-2' value={selected.id || ''} disabled></Input>
               <Input size='large' prefix="AssertsID*" className='col-span-4 md:col-span-2' value={selected.assetId || ''} onChange={(event: any) => handleTitleChange(event, 'assetId')} ></Input>
               <Input size='large' prefix="Title*" defaultValue={selected.title || ''} className='col-span-4' onChange={(event: any) => handleTitleChange(event, 'title')} ></Input>
-              <Input size='large' placeholder={selected.info?.originExif?.Make || ''} className='col-span-4 md:col-span-1' prefix="Make*" onChange={(event: any) => handleExifChange(event, 'Make')}  ></Input>
-              <Input size='large' placeholder={selected.info?.originExif?.Model} className='col-span-4 md:col-span-3' prefix="Model*" onChange={(event: any) => handleExifChange(event, 'Model')} ></Input>
-              <Input size='large' placeholder={selected.info?.originExif?.LensMake || ''} className='col-span-4' prefix="LensMake*" onChange={(event: any) => handleExifChange(event, 'LensMake')}></Input>
-              <Input size='large' placeholder={selected.info?.originExif?.LensModel} className='col-span-4' prefix="LensModel*" onChange={(event: any) => handleExifChange(event, 'LensModel')}></Input>
+              <Input size='large' placeholder={selected.info?.overExif.Make || selected.info?.originExif?.Make || ''} className='col-span-4 md:col-span-1' prefix="Make*" onChange={(event: any) => handleExifChange(event, 'Make')}  ></Input>
+              <Input size='large' placeholder={selected.info?.overExif.Model || selected.info?.originExif?.Model} className='col-span-4 md:col-span-3' prefix="Model*" onChange={(event: any) => handleExifChange(event, 'Model')} ></Input>
+              <Input size='large' placeholder={selected.info?.overExif.LensMake || selected.info?.originExif?.LensMake || ''} className='col-span-4' prefix="LensMake*" onChange={(event: any) => handleExifChange(event, 'LensMake')}></Input>
+              <Input size='large' placeholder={selected.info?.overExif.LensModel || selected.info?.originExif?.LensModel} className='col-span-4' prefix="LensModel*" onChange={(event: any) => handleExifChange(event, 'LensModel')}></Input>
             </div>
             <div className='rounded my-8'>
+              {selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude} - {selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude}
               <Map
                 mapLib={import('mapbox-gl')}
                 mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
                 initialViewState={{
-                  longitude: selected.info?.originExif?.GPSLongitude || 0,
-                  latitude: selected.info?.originExif?.GPSLatitude || 0,
+                  longitude: selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude,
+                  latitude: selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude,
                   zoom: 10
                 }}
                 style={{ width: '100%', height: 300 }}
                 mapStyle="mapbox://styles/aiokr/cldekkgf8003u01oxrd0cyu34"
+                onClick={(e: any) => {
+                  const { lng, lat } = e.lngLat
+                  setSelected(prevSelected => ({
+                    ...prevSelected,
+                    info: {
+                      overExif: {
+                        GPSLongitude: lng.toFixed(6).toString(),
+                        GPSLatitude: lat.toFixed(6).toString(),
+                      }
+                    }
+                  }))
+                }}
               >
               </Map>
             </div>

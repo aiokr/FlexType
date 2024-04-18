@@ -37,8 +37,23 @@ export default async function Photos() {
       GPSLatitude: GPSLatitude,
       GPSLongitude: GPSLongitude,
     }
+    let overExif = {
+      Make: photo.info.overExif?.Make,
+      Model: photo.info.overExif?.Model,
+      LensMake: photo.info.overExif?.LensMake,
+      LensModel: photo.info.overExif?.LensModel,
+      GPSLatitude: photo.info.overExif?.GPSLatitude,
+      GPSLongitude: photo.info.overExif?.GPSLongitude,
+      // width: photo.info.overExif?.width,
+      // height: photo.info.overExif?.height,
+      DateTimeOriginal: photo.info.overExif?.DateTimeOriginal,
+      exposeTime: photo.info.overExif?.exposeTime,
+      FNumber: photo.info.overExif?.FNumber,
+      ExposureTime: photo.info.overExif?.exposeTime,
+    }
     let info = {
-      originExif: originExif
+      originExif: originExif,
+      overExif: overExif
     }
     return {
       id: photoId,
