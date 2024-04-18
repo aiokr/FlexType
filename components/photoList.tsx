@@ -6,6 +6,7 @@ import { auth } from '@/auth';
 import Link from 'next/link';
 import Map, { Marker } from 'react-map-gl';
 import type { MarkerDragEvent, LngLat } from 'react-map-gl';
+import convertDMSToDecimal from '@/libs/convertDMSToDecimal'
 
 const { Meta } = Card
 
@@ -24,6 +25,8 @@ interface ExifData {
   height?: number;
   DateTimeOriginal?: string;
   type?: string;
+  GPSLongitude?: string;
+  GPSLatitude?: string;
 }
 
 interface SelectedPhoto {
@@ -41,7 +44,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
 
   const [data, setData] = useState(combinedData.sort((a: any, b: any) => b.createAt - a.createAt));  // 当前 PhotoFlow 的合并数据
   useEffect(() => { setData(combinedData); }, [combinedData]);
-  console.log(data)
+  // console.log('combineddata: ' + data)
 
   const [assertData, setAssertData] = useState(assertsData);  // 所有文件列表的数据
   useEffect(() => { setAssertData(assertsData); }, [assertsData]);
@@ -94,7 +97,9 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
             Make: selectedAsset.Make,
             Model: selectedAsset.Model,
             LensMake: selectedAsset.LensMake,
-            LensModel: selectedAsset.LensModel
+            LensModel: selectedAsset.LensModel,
+            GPSLatitude: convertDMSToDecimal(selectedAsset.GPSLatitude),
+            GPSLongitude: convertDMSToDecimal(selectedAsset.GPSLongitude),
           }
         }
       }));
@@ -120,6 +125,20 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
           ...prevSelected.info.overExif,
           [field]: value,
         },
+      },
+    }));
+  };
+
+  const handleLocationClean = (selected: SelectedPhoto) => {
+    setSelected(prevSelected => ({
+      ...prevSelected,
+      info: {
+        ...prevSelected.info,
+        overExif: {
+          ...prevSelected.info.overExif,
+          GPSLongitude: selected.info.originExif.GPSLongitude ?? null,
+          GPSLatitude: selected.info.originExif.GPSLatitude ?? null,
+        }
       },
     }));
   };
@@ -252,13 +271,14 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
               <Input size='large' prefix="PhotoFlowID*" className='col-span-4 md:col-span-2' value={selected.id || ''} disabled></Input>
               <Input size='large' prefix="AssertsID*" className='col-span-4 md:col-span-2' value={selected.assetId || ''} onChange={(event: any) => handleTitleChange(event, 'assetId')} ></Input>
               <Input size='large' prefix="Title*" defaultValue={selected.title || ''} className='col-span-4' onChange={(event: any) => handleTitleChange(event, 'title')} ></Input>
-              <Input size='large' placeholder={selected.info?.overExif.Make || selected.info?.originExif?.Make || ''} className='col-span-4 md:col-span-1' prefix="Make*" onChange={(event: any) => handleExifChange(event, 'Make')}  ></Input>
-              <Input size='large' placeholder={selected.info?.overExif.Model || selected.info?.originExif?.Model} className='col-span-4 md:col-span-3' prefix="Model*" onChange={(event: any) => handleExifChange(event, 'Model')} ></Input>
-              <Input size='large' placeholder={selected.info?.overExif.LensMake || selected.info?.originExif?.LensMake || ''} className='col-span-4' prefix="LensMake*" onChange={(event: any) => handleExifChange(event, 'LensMake')}></Input>
-              <Input size='large' placeholder={selected.info?.overExif.LensModel || selected.info?.originExif?.LensModel} className='col-span-4' prefix="LensModel*" onChange={(event: any) => handleExifChange(event, 'LensModel')}></Input>
+              <Input size='large' value={selected.info?.overExif?.Make || selected.info?.originExif?.Make || ''} className='col-span-4 md:col-span-1' prefix="Make*" onChange={(event: any) => handleExifChange(event, 'Make')}  ></Input>
+              <Input size='large' value={selected.info?.overExif?.Model || selected.info?.originExif?.Model} className='col-span-4 md:col-span-3' prefix="Model*" onChange={(event: any) => handleExifChange(event, 'Model')} ></Input>
+              <Input size='large' value={selected.info?.overExif?.LensMake || selected.info?.originExif?.LensMake || ''} className='col-span-4' prefix="LensMake*" onChange={(event: any) => handleExifChange(event, 'LensMake')}></Input>
+              <Input size='large' value={selected.info?.overExif?.LensModel || selected.info?.originExif?.LensModel} className='col-span-4' prefix="LensModel*" onChange={(event: any) => handleExifChange(event, 'LensModel')}></Input>
             </div>
             <div className='rounded my-8'>
               {selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude} - {selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude}
+              <button onClick={() => handleLocationClean(selected)}> Reset Location</button>
               <Map
                 mapLib={import('mapbox-gl')}
                 mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
@@ -274,7 +294,9 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
                   setSelected(prevSelected => ({
                     ...prevSelected,
                     info: {
+                      ...prevSelected.info,
                       overExif: {
+                        ...prevSelected.info.overExif,
                         GPSLongitude: lng.toFixed(6).toString(),
                         GPSLatitude: lat.toFixed(6).toString(),
                       }
