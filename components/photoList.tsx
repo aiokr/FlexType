@@ -1,11 +1,15 @@
 "use client"
-import React, { useState, useEffect, useCallback } from 'react';
+import * as React from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Rating, Input, Toast, Select, Modal, Button, Card } from '@douyinfe/semi-ui';
 import Image from 'next/image'
 import { auth } from '@/auth';
 import Link from 'next/link';
-import Map, { Marker } from 'react-map-gl';
-import type { MarkerDragEvent, LngLat } from 'react-map-gl';
+import Map, { Marker, NavigationControl, GeolocateControl } from 'react-map-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import '@/components/mapbox-gl-geocoder.css';
+import GeocoderControl from '@/components/geocoder-control';
+import type { LngLat } from 'react-map-gl';
 import convertDMSToDecimal from '@/libs/convertDMSToDecimal'
 
 const { Meta } = Card
@@ -257,7 +261,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
           </button>
         ))}
         <Modal title="编辑图片" visible={visible} fullScreen
-          onOk={handleOk} onCancel={() => setVisible(false)} closeOnEsc={true} closable={false}>
+          onOk={handleOk} onCancel={() => setVisible(false)} closeOnEsc={true} closable={false} bodyStyle={{ overflow: 'auto' }}>
           <div className='container mx-auto max-w-[800px]'>
             <div>
               <Select
@@ -293,37 +297,77 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
               <Input size='large' value={selected.info?.overExif?.LensModel || selected.info?.originExif?.LensModel} className='col-span-4' prefix="LensModel*" onChange={(event: any) => handleExifChange(event, 'LensModel')}></Input>
             </div>
             <div className='w-full my-4'>
-            <Rating className='my-0 mx-auto' defaultValue={selected.info?.rating} value={selected.info?.rating} onChange={(event: any) => handleInfoChange(event, 'rating')} />
+              <Rating className='my-0 mx-auto' defaultValue={selected.info?.rating} value={selected.info?.rating} onChange={(event: any) => handleInfoChange(event, 'rating')} />
             </div>
-            <div className='rounded my-4'>
-              {selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude} - {selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude}
-              <button onClick={() => handleLocationClean(selected)}> Reset Location</button>
-              <Map
-                mapLib={import('mapbox-gl')}
-                mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-                initialViewState={{
-                  longitude: selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude,
-                  latitude: selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude,
-                  zoom: 10
-                }}
-                style={{ width: '100%', height: 300 }}
-                mapStyle="mapbox://styles/aiokr/cldekkgf8003u01oxrd0cyu34"
-                onClick={(e: any) => {
-                  const { lng, lat } = e.lngLat
-                  setSelected(prevSelected => ({
-                    ...prevSelected,
-                    info: {
-                      ...prevSelected.info,
-                      overExif: {
-                        ...prevSelected.info.overExif,
-                        GPSLongitude: lng.toFixed(6).toString(),
-                        GPSLatitude: lat.toFixed(6).toString(),
+            <div className='my-4'>
+              <div>
+                <Map
+                  mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+                  initialViewState={{
+                    longitude: selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude,
+                    latitude: selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude,
+                    zoom: (parseFloat(selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude) === 0) ? 5 : 12 // 如果经纬度为 0 则缩放为 5，否则缩放为 12
+                  }}
+                  style={{ position: 'relative', width: '100%', height: '400px', display: 'block' }}
+                  mapStyle="mapbox://styles/aiokr/clv6uhepi00lg01og9zb2fh18"
+                  attributionControl={false}
+                  onClick={(e: any) => {
+                    const { lng, lat } = e.lngLat
+                    setSelected(prevSelected => ({
+                      ...prevSelected,
+                      info: {
+                        ...prevSelected.info,
+                        overExif: {
+                          ...prevSelected.info.overExif,
+                          GPSLongitude: lng.toFixed(6).toString(),
+                          GPSLatitude: lat.toFixed(6).toString(),
+                        }
                       }
-                    }
-                  }))
-                }}
-              >
-              </Map>
+                    }))
+                  }}
+                >
+                  <GeolocateControl position="top-left" />
+                  <NavigationControl position="top-left" visualizePitch={false} />
+                  <Marker
+                    longitude={selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude}
+                    latitude={selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude}
+                    anchor="bottom"
+                  />
+                  <GeocoderControl position="top-right" mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN} />
+                </Map>
+                <div className='w-full my-2 flex justify-between items-center text-sm'>
+                  <div className='flex gap-2'>
+                    <Input value={selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude} prefix={'Latitude'}
+                      onChange={(e: any) => {
+                        setSelected(prevSelected => ({
+                          ...prevSelected,
+                          info: {
+                            ...prevSelected.info,
+                            overExif: {
+                              ...prevSelected.info.overExif,
+                              GPSLatitude: e,
+                            }
+                          }
+                        }))
+                      }}></Input>
+                    <Input value={selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude} prefix={'Longitude'}
+                      onChange={(e: any) => {
+                        setSelected(prevSelected => ({
+                          ...prevSelected,
+                          info: {
+                            ...prevSelected.info,
+                            overExif: {
+                              ...prevSelected.info.overExif,
+                              GPSLongitude: e,
+                            }
+                          }
+                        }))
+                      }}>
+                    </Input>
+                  </div>
+                  <button className='bg-gray-300 text-white py-1 px-4 rounded' onClick={() => handleLocationClean(selected)}>Reset Location</button>
+                </div>
+              </div>
             </div>
             <button className='bg-red-500 text-white py-2 px-4 my-6 rounded' onClick={() => deleteItem(selected.id)}>删除</button>
           </div>

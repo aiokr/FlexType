@@ -4,6 +4,7 @@ import { getAllFileInDatabase } from '@/libs/upyunFilesOperator'
 import convertDMSToDecimal from '@/libs/convertDMSToDecimal'
 
 export default async function Photos() {
+
   let allPhotoFlowItems = await prisma.photo.findMany() // 从数据库获取所有照片流项目
   const fileData = (await getAllFileInDatabase()).sort((a, b) => new Date(b.uplishedAt).getTime() - new Date(a.uplishedAt).getTime()); // 从附件数据库获取照片流的附件信息
   let photoOriginalData = await prisma.assets.findMany({

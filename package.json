@@ -12,10 +12,12 @@
   "dependencies": {
     "@auth/prisma-adapter": "^1.5.2",
     "@douyinfe/semi-ui": "^2.55.5",
+    "@mapbox/mapbox-gl-geocoder": "^5.0.2",
     "@prisma/client": "^5.12.0",
     "@prisma/extension-accelerate": "^1.0.0",
     "@supabase/ssr": "^0.1.0",
     "@supabase/supabase-js": "^2.41.1",
+    "@types/mapbox__mapbox-gl-geocoder": "^5.0.0",
     "@vercel/postgres": "^0.7.2",
     "mapbox-gl": "^3.3.0",
     "next": "14.1.4",
