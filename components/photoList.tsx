@@ -11,6 +11,7 @@ import '@/components/mapbox-gl-geocoder.css';
 import GeocoderControl from '@/components/geocoder-control';
 import type { LngLat } from 'react-map-gl';
 import convertDMSToDecimal from '@/libs/convertDMSToDecimal'
+import action from '@/app/actions';
 
 const { Meta } = Card
 
@@ -47,12 +48,13 @@ interface Info {
 }
 
 const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData, assertsData }) => {
+
   const [flowData, setFlowData] = useState(photosData);  // PhotoFlow 数据
   useEffect(() => { setData(photosData); }, [photosData]);
 
   const [data, setData] = useState(combinedData.sort((a: any, b: any) => b.createAt - a.createAt));  // 当前 PhotoFlow 的合并数据
   useEffect(() => { setData(combinedData); }, [combinedData]);
-  console.log(data)
+  // console.log(data)
 
   const [assertData, setAssertData] = useState(assertsData);  // 所有文件列表的数据
   useEffect(() => { setAssertData(assertsData); }, [assertsData]);
@@ -90,7 +92,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
   // When change the selected item, update the selected data
   const selectOnChange = (value: any) => {
     const selectedAsset = assertData.find((item: any) => item.assetId === value);
-    console.log(selectedAsset)
+    console.log('selectedAsset' + selectedAsset)
     if (selectedAsset) {
       setSelected(prevSelected => ({
         ...prevSelected,
@@ -171,6 +173,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
         body: json
       })
       if (response.ok) {
+        action();
         Toast.success('New flow item created successfully.')
       } else {
         Toast.error('Error creating new flow item.')
@@ -187,6 +190,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
         method: 'DELETE'
       })
       if (response.ok) {
+        action();
         Toast.success(`ID ${id} deleted successfully.`)
         setVisible(false);
       } else {
@@ -230,6 +234,12 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
     setVisible(true);
   }
 
+  // After close PhotoFlow Item Editor
+  const handleAfterClose = () => {
+    action();
+    console.log('After Close callback executed');
+  };
+
   // PhotoList Item Description
   const itemDescription = (item: any) => {
     return (
@@ -260,7 +270,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
             </Card>
           </button>
         ))}
-        <Modal title="编辑图片" visible={visible} fullScreen
+        <Modal title="编辑图片" visible={visible} fullScreen afterClose={handleAfterClose}
           onOk={handleOk} onCancel={() => setVisible(false)} closeOnEsc={true} closable={false} bodyStyle={{ overflow: 'auto' }}>
           <div className='container mx-auto max-w-[800px]'>
             <div>
@@ -297,15 +307,15 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
               <Input size='large' value={selected.info?.overExif?.LensModel || selected.info?.originExif?.LensModel} className='col-span-4' prefix="LensModel*" onChange={(event: any) => handleExifChange(event, 'LensModel')}></Input>
             </div>
             <div className='w-full my-4'>
-              <Rating className='my-0 mx-auto' defaultValue={selected.info?.rating} value={selected.info?.rating} onChange={(event: any) => handleInfoChange(event, 'rating')} />
+              <Rating className='my-0 mx-auto' defaultValue={selected.info?.rating || 0} value={selected.info?.rating} onChange={(event: any) => handleInfoChange(event, 'rating')} />
             </div>
             <div className='my-4'>
               <div>
                 <Map
                   mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
                   initialViewState={{
-                    longitude: selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude,
-                    latitude: selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude,
+                    longitude: selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude || 0,
+                    latitude: selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude || 0,
                     zoom: (parseFloat(selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude) === 0) ? 5 : 12 // 如果经纬度为 0 则缩放为 5，否则缩放为 12
                   }}
                   style={{ position: 'relative', width: '100%', height: '400px', display: 'block' }}
@@ -329,15 +339,15 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
                   <GeolocateControl position="top-left" />
                   <NavigationControl position="top-left" visualizePitch={false} />
                   <Marker
-                    longitude={selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude}
-                    latitude={selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude}
+                    longitude={selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude || 0}
+                    latitude={selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude || 0}
                     anchor="bottom"
                   />
                   <GeocoderControl position="top-right" mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN} />
                 </Map>
                 <div className='w-full my-2 flex justify-between items-center text-sm'>
                   <div className='flex gap-2'>
-                    <Input value={selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude} prefix={'Latitude'}
+                    <Input value={selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude || 0} prefix={'Latitude'}
                       onChange={(e: any) => {
                         setSelected(prevSelected => ({
                           ...prevSelected,
@@ -350,7 +360,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
                           }
                         }))
                       }}></Input>
-                    <Input value={selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude} prefix={'Longitude'}
+                    <Input value={selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude || 0} prefix={'Longitude'}
                       onChange={(e: any) => {
                         setSelected(prevSelected => ({
                           ...prevSelected,

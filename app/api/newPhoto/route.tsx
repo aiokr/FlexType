@@ -15,7 +15,7 @@ export async function PUT(req: any, res: any) {
 
   if (session && existingUser.length !== 0) {
     const flowItemData: any = await req.json()
-    console.log(flowItemData)
+    // console.log(flowItemData)
     let info = typeof flowItemData.info === 'object' ? { ...flowItemData.info } : {};
     for (const [key, value] of Object.entries(flowItemData)) {
       if (!['title', 'assetId', 'id', 'DateTimeOriginal', 'info'].includes(key) && value !== null) {
