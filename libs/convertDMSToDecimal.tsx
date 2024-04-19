@@ -1,5 +1,13 @@
 export default function convertDMSToDecimal(dmsStr: string) {
 
+  console.log('dmsStr: ' + dmsStr)
+
+  if (dmsStr === '0/1,0/1,0/1') {
+    return 0
+  } else if (!dmsStr) {
+    return 0
+  }
+
   // Split the DMS string into parts
   const parts = dmsStr.split(',');
 
