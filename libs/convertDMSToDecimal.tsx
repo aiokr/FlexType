@@ -1,6 +1,6 @@
 export default function convertDMSToDecimal(dmsStr: string) {
 
-  console.log('dmsStr: ' + dmsStr)
+  // console.log('dmsStr: ' + dmsStr)
 
   if (dmsStr === '0/1,0/1,0/1') {
     return 0

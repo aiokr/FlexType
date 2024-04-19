@@ -76,7 +76,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
   // handleOk 点击弹窗的「确定」，清理数据，然后进行上传操作
   const handleOk = () => {
     const json = JSON.stringify(selected);
-    console.log(json)
+    // console.log(json)
     newFlowItem(json);  // 调用新建操作
     setVisible(false);
   };
@@ -92,7 +92,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
   // When change the selected item, update the selected data
   const selectOnChange = (value: any) => {
     const selectedAsset = assertData.find((item: any) => item.assetId === value);
-    console.log('selectedAsset' + selectedAsset)
+    // console.log('selectedAsset' + selectedAsset)
     if (selectedAsset) {
       setSelected(prevSelected => ({
         ...prevSelected,
