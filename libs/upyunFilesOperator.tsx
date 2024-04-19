@@ -220,10 +220,10 @@ async function setAssetsExif(assetId: number, exifInfo: any) {
       GPSAltitude: GPSAltitude,
     },
   }).catch(e => {
-    console.log(e)
+    console.log('Write exif info to database error' + e)
     return e
   })
-  console.log(updateExif)
+  console.log('Write exif info to database success' + updateExif)
   return updateExif
 }
 

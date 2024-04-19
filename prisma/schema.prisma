@@ -62,11 +62,12 @@ model Assets {
 }
 
 model Photo {
-  id       String  @id @default(cuid())
-  title    String?
-  asset    Assets? @relation(fields: [assetId], references: [assetId])
-  assetId  Int
-  info     Json?
+  id         String  @id @default(cuid())
+  title      String?
+  asset      Assets? @relation(fields: [assetId], references: [assetId])
+  assetId    Int
+  createdAt  DateTime?  @default(now())
+  info       Json?
 }
 
 model Account {
