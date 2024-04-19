@@ -26,6 +26,7 @@ export default async function Photos() {
     let GPSLongitudeOrigin = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.GPSLongitude)[0] || "0/1,0/1,0/1";
     let GPSLongitude = convertDMSToDecimal(GPSLongitudeOrigin)
     let createdAt = photo.createdAt
+    let rating = photo.info.rating || null
     let originExif = {
       width: photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.width)[0],
       height: photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.height)[0],
@@ -53,7 +54,8 @@ export default async function Photos() {
     }
     let info = {
       originExif: originExif,
-      overExif: overExif
+      overExif: overExif,
+      rating: rating
     }
     return {
       id: photoId,

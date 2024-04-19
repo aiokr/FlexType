@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
     let photoTitle = photo.title
     let photoUrl = fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.url)[0]
     let createdAt = photo.createdAt || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.DateTimeOriginal)[0]
+    let rating = photo.info.rating
 
     let GPSLatitudeOrigin = fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.GPSLatitude)[0] || "0/1,0/1,0/1";
     let GPSLatitude = convertDMSToDecimal(GPSLatitudeOrigin);
@@ -32,12 +33,18 @@ export async function GET(request: NextRequest) {
       GPSLatitude: photo.info.overExif?.GPSLatitude || GPSLatitude,
       GPSLongitude: photo.info.overExif?.GPSLongitude || GPSLongitude,
     }
+
+    let info = {
+      rating: rating,
+    }
+
     return {
       id: photoId,
       assetId: assetId,
       title: photoTitle,
       url: photoUrl,
       createdAt: createdAt,
+      info: info,
       exif: exif
     }
   })

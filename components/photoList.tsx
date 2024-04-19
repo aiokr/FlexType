@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect, useCallback } from 'react';
-import { Table, Input, Toast, Select, Modal, Button, Card } from '@douyinfe/semi-ui';
+import { Rating, Input, Toast, Select, Modal, Button, Card } from '@douyinfe/semi-ui';
 import Image from 'next/image'
 import { auth } from '@/auth';
 import Link from 'next/link';
@@ -38,13 +38,17 @@ interface SelectedPhoto {
   info: any | null;
 }
 
+interface Info {
+  rating: number | null;
+}
+
 const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData, assertsData }) => {
   const [flowData, setFlowData] = useState(photosData);  // PhotoFlow 数据
   useEffect(() => { setData(photosData); }, [photosData]);
 
   const [data, setData] = useState(combinedData.sort((a: any, b: any) => b.createAt - a.createAt));  // 当前 PhotoFlow 的合并数据
   useEffect(() => { setData(combinedData); }, [combinedData]);
-  // console.log('combineddata: ' + data)
+  console.log(data)
 
   const [assertData, setAssertData] = useState(assertsData);  // 所有文件列表的数据
   useEffect(() => { setAssertData(assertsData); }, [assertsData]);
@@ -112,6 +116,17 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
     setSelected(prevSelected => ({
       ...prevSelected,
       [field]: value
+    }));
+  };
+
+  const handleInfoChange = (event: React.ChangeEvent<HTMLInputElement>, field: keyof Info) => {
+    const value = event;
+    setSelected(prevSelected => ({
+      ...prevSelected,
+      info: {
+        ...prevSelected.info,
+        [field]: value
+      }
     }));
   };
 
@@ -186,6 +201,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
       let info = {
         originExif: data.info.originExif ?? null,
         overExif: data.info.overExif ?? data.originExif ?? null, // 如果 data.overExif 存在则使用，否则使用 data.originExif
+        rating: data.info.rating ?? null,
         exif: data.exif ?? null
       }
       setSelected({
@@ -267,7 +283,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
                 ))}
               </Select>
             </div>
-            <div className='grid grid-cols-4 gap-4 mt-8'>
+            <div className='grid grid-cols-4 gap-4 my-4'>
               <Input size='large' prefix="PhotoFlowID*" className='col-span-4 md:col-span-2' value={selected.id || ''} disabled></Input>
               <Input size='large' prefix="AssertsID*" className='col-span-4 md:col-span-2' value={selected.assetId || ''} onChange={(event: any) => handleTitleChange(event, 'assetId')} ></Input>
               <Input size='large' prefix="Title*" defaultValue={selected.title || ''} className='col-span-4' onChange={(event: any) => handleTitleChange(event, 'title')} ></Input>
@@ -276,7 +292,10 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
               <Input size='large' value={selected.info?.overExif?.LensMake || selected.info?.originExif?.LensMake || ''} className='col-span-4' prefix="LensMake*" onChange={(event: any) => handleExifChange(event, 'LensMake')}></Input>
               <Input size='large' value={selected.info?.overExif?.LensModel || selected.info?.originExif?.LensModel} className='col-span-4' prefix="LensModel*" onChange={(event: any) => handleExifChange(event, 'LensModel')}></Input>
             </div>
-            <div className='rounded my-8'>
+            <div className='w-full my-4'>
+            <Rating className='my-0 mx-auto' defaultValue={selected.info?.rating} value={selected.info?.rating} onChange={(event: any) => handleInfoChange(event, 'rating')} />
+            </div>
+            <div className='rounded my-4'>
               {selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude} - {selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude}
               <button onClick={() => handleLocationClean(selected)}> Reset Location</button>
               <Map
