@@ -1,6 +1,10 @@
 import AuthSession from '@/components/getAuthSession'
 import prisma from '@/libs/prisma'
 
+export async function GET(req: any, res: any) {
+  return Response.json({ message: "Method not allowed" }, { status: 405 })
+}
+
 export async function PUT(req: any, res: any) {
   const session = await AuthSession()
   const userName = session.user.name
@@ -54,8 +58,8 @@ export async function PUT(req: any, res: any) {
           info: info
         }
       })
+      res.json(writeFlowItem)
       return Response.json({ message: "Success Create Item" }, { status: 200 })
-      return
     } else {
       return Response.json({ message: "Other error" }, { status: 400 })
     }
