@@ -1,5 +1,6 @@
 import { sign, getMD5 } from '@/libs/calcUpyunSecret'
 import prisma from '@/libs/prisma'
+import { json } from 'stream/consumers';
 
 const date = new Date().toUTCString();
 // 获取 UpYun 仓库信息
@@ -146,7 +147,7 @@ async function getAssetsExif(assetId: number) {
 
   if (exifInfo) {
     const writeExifInfo = await setAssetsExif(assetId, exifInfo)
-    return writeExifInfo
+    return JSON.stringify(writeExifInfo) // writeExifInfo
   }
 
   return
