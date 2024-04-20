@@ -143,6 +143,7 @@ async function getAssetsExif(assetId: number) {
   const assetTitle = await getAssets(assetId)
   const assetName = assetTitle?.title
   const response = await fetch(serverDomain + path + '/' + assetName + upyunInfoSuffix)
+  // console.log(`get Exif info from ${serverDomain + path + '/' + assetName + upyunInfoSuffix}`)
   const exifInfo = await response.json()
 
   if (exifInfo) {
