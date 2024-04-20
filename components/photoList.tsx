@@ -265,7 +265,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
   return (
     <>
       {/* PhotoFlow List */}
-      <div className='container mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 px-1 md:px-0'>
+      <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 px-1 md:px-0'>
         <button className='border rounded-[6px] w-full h-full' onClick={() => openPhotoEditor(null)}>新建项目
         </button>
         {data.map((item: any) => (
