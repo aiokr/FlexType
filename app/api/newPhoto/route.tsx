@@ -1,6 +1,5 @@
 import AuthSession from '@/components/getAuthSession'
 import prisma from '@/libs/prisma'
-import { errorToJSON } from 'next/dist/server/render';
 
 export async function PUT(req: any, res: any) {
   const session = await AuthSession()
@@ -55,7 +54,8 @@ export async function PUT(req: any, res: any) {
           info: info
         }
       })
-      return Response.json({ message: "Success Create New Item" }, { status: 200 })
+      return Response.json({ message: "Success Create Item" }, { status: 200 })
+      return
     } else {
       return Response.json({ message: "Other error" }, { status: 400 })
     }
