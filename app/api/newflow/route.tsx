@@ -49,7 +49,7 @@ export async function PUT(req: any, res: any) {
           info: info
         }
       })
-      return Response.json({ message: "Success Update Item" }, { status: 200 })
+      return Response.json({ message: `Success Update Item, Flow ID is ${flowItemData.id}` }, { status: 200 })
     } else if (flowItemData.id == null && !assertAlreadyExisting) { // 项目不存在，创建项目
       const writeFlowItem = await prisma.photo.create({
         data: {
@@ -59,7 +59,7 @@ export async function PUT(req: any, res: any) {
         }
       })
       res.json(writeFlowItem)
-      return Response.json({ message: "Success Create Item" }, { status: 200 })
+      return Response.json({ message: `Success Create Item, Flow ID is ${writeFlowItem.id}` }, { status: 200 })
     } else {
       return Response.json({ message: "Other error" }, { status: 400 })
     }

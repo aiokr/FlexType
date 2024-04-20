@@ -167,14 +167,13 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
   // Handling new PhotoFlow items
   const newFlowItem = async (json: string) => {
     try {
-      const response = await fetch('/api/newphoto', {
+      const response = await fetch('/api/newflow', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: json
       })
       if (response.ok) {
         action();
-        Toast.success('New flow item created successfully.')
+        Toast.success(`Flow item edited successfully. ID ${response}`)
       } else {
         Toast.error('Error creating new flow item.')
       }
