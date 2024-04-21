@@ -32,10 +32,15 @@ export default async function Assets() {
   }));
 
   return (
-    <main className='container max-w-[100vw] mx-auto p-6 overflow-hidden'>
-      <div className='text-2xl font-bold pb-6'>文件管理</div>
+    <main className='container max-w-[100vw] mx-auto overflow-hidden'>
+      <div className='text-xs text-gray-300 pt-1 md:pt-2 lg:pt-3 px-2 md:px-0'>
+        <Link href={'/'}>首页</Link><> / </>
+        <Link href={'/dashboard'}>仪表盘</Link><> / </>
+        <Link href={'/dashboard/assets'}>文件管理</Link>
+      </div>
+      <div className='text-2xl font-bold pt-2 py-4 md:py-4 px-2 md:px-0'>文件管理</div>
       <UpLoadFile />
-      <div className='text-xl font-bold py-6'>文件列表</div>
+      <div className='text-xl font-bold pt-2 py-4 md:py-4 px-2 md:px-0'>文件列表</div>
       <TableComponent data={fileList} />
     </main>
   );

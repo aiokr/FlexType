@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 import { Collapse, Toast } from '@douyinfe/semi-ui';
+import action from '@/app/actions';
 
 const ImageUploader = () => {
   // 明确 selectedFile 的类型为 File | null
@@ -43,6 +44,7 @@ const ImageUploader = () => {
         setActive(active);
         if (response.ok) {
           const data = await response.json(); // 等待响应的JSON数据
+          action();
           Toast.success(`${data.message}`);
           console.log(data); // 打印成功的信息
         } else {
@@ -65,7 +67,7 @@ const ImageUploader = () => {
         <Collapse.Panel header="上传文件" itemKey="1">
           <div className='flex flex-col gap-2'>
             <input type='file' name='file' id='file' onChange={fileInputChange} className={`block bg-gray-100 p-2 text-center rounded`}></input>
-            <button onClick={uploadFile} className={`${active? 'bg-indigo-500' : 'bg-gray-600'} block text-white p-2 text-center rounded transition-all`}>点击上传</button>
+            <button onClick={uploadFile} className={`${active ? 'bg-indigo-500' : 'bg-gray-600'} block text-white p-2 text-center rounded transition-all`}>点击上传</button>
           </div>
         </Collapse.Panel>
       </Collapse>
