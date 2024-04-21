@@ -167,16 +167,18 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
   // Handling new PhotoFlow items
   const newFlowItem = async (json: string) => {
     try {
-      const response = await fetch('/api/newphoto', {
+      const response = await fetch('/api/newflow', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        // headers: { 'Content-Type': 'application/json',},
         body: json
       })
       if (response.ok) {
         action();
-        Toast.success('New flow item created successfully.')
+        console.log(response)
+        Toast.success(`Flow item edited successfully.`)
       } else {
-        Toast.error('Error creating new flow item.')
+        console.log(response)
+        Toast.error(`Error creating new flow item.}`)
       }
     } catch (error) {
       console.error(error)
@@ -250,16 +252,20 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
           <span>{item.info.originExif.LensMake} </span>
           <span>{item.info.originExif.LensModel} </span>
         </div>
-        <p className='text-xs text-left'>{new Date(item.createAt || item.info.originExif.DateTimeOriginal).toLocaleString("default", {
-          month: "short", day: "2-digit", year: "numeric", minute: "2-digit", hour: "2-digit",
-        })}</p>
+        <p className='text-xs text-left'>
+          {new Date(item.createAt || item.info.originExif.DateTimeOriginal).toLocaleString("default", {
+            month: "short", day: "2-digit", year: "numeric", minute: "2-digit", hour: "2-digit",
+          })}
+          <span className='ml-2'> Rating: {item.info.rating}</span>
+        </p>
       </div>
     )
   }
 
   return (
     <>
-      <div className='container grid grid-cols-2 lg:grid-cols-3 gap-2 px-1 md:px-0'>
+      {/* PhotoFlow List */}
+      <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 px-1 md:px-0'>
         <button className='border rounded-[6px] w-full h-full' onClick={() => openPhotoEditor(null)}>新建项目
         </button>
         {data.map((item: any) => (
@@ -270,119 +276,120 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
             </Card>
           </button>
         ))}
-        <Modal title="编辑图片" visible={visible} fullScreen afterClose={handleAfterClose}
-          onOk={handleOk} onCancel={() => setVisible(false)} closeOnEsc={true} closable={false} bodyStyle={{ overflow: 'auto' }}>
-          <div className='container mx-auto max-w-[800px]'>
-            <div>
-              <Select
-                onChange={selectOnChange}
-                style={{ width: '100%', height: '140px' }}
-                dropdownStyle={{ width: '100%' }}
-                outerBottomSlot={outSlotNode}
-                renderSelectedItem={renderSelectedItem}
-                value={selected.assetId || undefined}
-              >
-                {assertData.map((item: any) => (
-                  <Select.Option key={item.assetId} value={item.assetId} className='flex gap-2'>
-                    <div className='flex gap-2'>
-                      <Image className='max-h-[120px] max-w-[160px] object-cover ' src={item.url} alt={item.title} width={160} height={160} unoptimized />
-                      <div>
-                        <div className='font-bold'>{item.assetId + ' - ' + item.title}</div>
-                        <div>{new Date(item.DateTimeOriginal).toLocaleString('zh-CN')}</div>
-                        <div>{item.Make + ' - ' + item.Model}</div>
-                        <div>{item.LensModel}</div>
-                      </div>
-                    </div>
-                  </Select.Option>
-                ))}
-              </Select>
-            </div>
-            <div className='grid grid-cols-4 gap-4 my-4'>
-              <Input size='large' prefix="PhotoFlowID*" className='col-span-4 md:col-span-2' value={selected.id || ''} disabled></Input>
-              <Input size='large' prefix="AssertsID*" className='col-span-4 md:col-span-2' value={selected.assetId || ''} onChange={(event: any) => handleTitleChange(event, 'assetId')} ></Input>
-              <Input size='large' prefix="Title*" defaultValue={selected.title || ''} className='col-span-4' onChange={(event: any) => handleTitleChange(event, 'title')} ></Input>
-              <Input size='large' value={selected.info?.overExif?.Make || selected.info?.originExif?.Make || ''} className='col-span-4 md:col-span-1' prefix="Make*" onChange={(event: any) => handleExifChange(event, 'Make')}  ></Input>
-              <Input size='large' value={selected.info?.overExif?.Model || selected.info?.originExif?.Model} className='col-span-4 md:col-span-3' prefix="Model*" onChange={(event: any) => handleExifChange(event, 'Model')} ></Input>
-              <Input size='large' value={selected.info?.overExif?.LensMake || selected.info?.originExif?.LensMake || ''} className='col-span-4' prefix="LensMake*" onChange={(event: any) => handleExifChange(event, 'LensMake')}></Input>
-              <Input size='large' value={selected.info?.overExif?.LensModel || selected.info?.originExif?.LensModel} className='col-span-4' prefix="LensModel*" onChange={(event: any) => handleExifChange(event, 'LensModel')}></Input>
-            </div>
-            <div className='w-full my-4'>
-              <Rating className='my-0 mx-auto' defaultValue={selected.info?.rating || 0} value={selected.info?.rating} onChange={(event: any) => handleInfoChange(event, 'rating')} />
-            </div>
-            <div className='my-4'>
-              <div>
-                <Map
-                  mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-                  initialViewState={{
-                    longitude: selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude || 0,
-                    latitude: selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude || 0,
-                    zoom: (parseFloat(selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude) === 0) ? 5 : 12 // 如果经纬度为 0 则缩放为 5，否则缩放为 12
-                  }}
-                  style={{ position: 'relative', width: '100%', height: '400px', display: 'block' }}
-                  mapStyle="mapbox://styles/aiokr/clv6uhepi00lg01og9zb2fh18"
-                  attributionControl={false}
-                  onClick={(e: any) => {
-                    const { lng, lat } = e.lngLat
-                    setSelected(prevSelected => ({
-                      ...prevSelected,
-                      info: {
-                        ...prevSelected.info,
-                        overExif: {
-                          ...prevSelected.info.overExif,
-                          GPSLongitude: lng.toFixed(6).toString(),
-                          GPSLatitude: lat.toFixed(6).toString(),
-                        }
-                      }
-                    }))
-                  }}
-                >
-                  <GeolocateControl position="top-left" />
-                  <NavigationControl position="top-left" visualizePitch={false} />
-                  <Marker
-                    longitude={selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude || 0}
-                    latitude={selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude || 0}
-                    anchor="bottom"
-                  />
-                  <GeocoderControl position="top-right" mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN} />
-                </Map>
-                <div className='w-full my-2 flex justify-between items-center text-sm'>
+      </div>
+      {/* PhotoFlow Item Editor */}
+      <Modal title="编辑图片" visible={visible} fullScreen afterClose={handleAfterClose}
+        onOk={handleOk} onCancel={() => setVisible(false)} closeOnEsc={true} closable={false} bodyStyle={{ overflow: 'auto' }}>
+        <div className='container mx-auto max-w-[800px]'>
+          <div>
+            <Select
+              onChange={selectOnChange}
+              style={{ width: '100%', height: '140px' }}
+              dropdownStyle={{ width: '100%' }}
+              outerBottomSlot={outSlotNode}
+              renderSelectedItem={renderSelectedItem}
+              value={selected.assetId || undefined}
+            >
+              {assertData.map((item: any) => (
+                <Select.Option key={item.assetId} value={item.assetId} className='flex gap-2'>
                   <div className='flex gap-2'>
-                    <Input value={selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude || 0} prefix={'Latitude'}
-                      onChange={(e: any) => {
-                        setSelected(prevSelected => ({
-                          ...prevSelected,
-                          info: {
-                            ...prevSelected.info,
-                            overExif: {
-                              ...prevSelected.info.overExif,
-                              GPSLatitude: e,
-                            }
-                          }
-                        }))
-                      }}></Input>
-                    <Input value={selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude || 0} prefix={'Longitude'}
-                      onChange={(e: any) => {
-                        setSelected(prevSelected => ({
-                          ...prevSelected,
-                          info: {
-                            ...prevSelected.info,
-                            overExif: {
-                              ...prevSelected.info.overExif,
-                              GPSLongitude: e,
-                            }
-                          }
-                        }))
-                      }}>
-                    </Input>
+                    <Image className='max-h-[120px] max-w-[160px] object-cover ' src={item.url} alt={item.title} width={160} height={160} unoptimized />
+                    <div>
+                      <div className='font-bold'>{item.assetId + ' - ' + item.title}</div>
+                      <div>{new Date(item.DateTimeOriginal).toLocaleString('zh-CN')}</div>
+                      <div>{item.Make + ' - ' + item.Model}</div>
+                      <div>{item.LensModel}</div>
+                    </div>
                   </div>
-                  <button className='bg-gray-300 text-white py-1 px-4 rounded' onClick={() => handleLocationClean(selected)}>Reset Location</button>
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+          <div className='grid grid-cols-4 gap-4 my-4'>
+            <Input size='large' prefix="PhotoFlowID*" className='col-span-4 md:col-span-2' value={selected.id || ''} disabled></Input>
+            <Input size='large' prefix="AssertsID*" className='col-span-4 md:col-span-2' value={selected.assetId || ''} onChange={(event: any) => handleTitleChange(event, 'assetId')} ></Input>
+            <Input size='large' prefix="Title*" defaultValue={selected.title || ''} className='col-span-4' onChange={(event: any) => handleTitleChange(event, 'title')} ></Input>
+            <Input size='large' value={selected.info?.overExif?.Make || selected.info?.originExif?.Make || ''} className='col-span-4 md:col-span-1' prefix="Make*" onChange={(event: any) => handleExifChange(event, 'Make')}  ></Input>
+            <Input size='large' value={selected.info?.overExif?.Model || selected.info?.originExif?.Model} className='col-span-4 md:col-span-3' prefix="Model*" onChange={(event: any) => handleExifChange(event, 'Model')} ></Input>
+            <Input size='large' value={selected.info?.overExif?.LensMake || selected.info?.originExif?.LensMake || ''} className='col-span-4' prefix="LensMake*" onChange={(event: any) => handleExifChange(event, 'LensMake')}></Input>
+            <Input size='large' value={selected.info?.overExif?.LensModel || selected.info?.originExif?.LensModel} className='col-span-4' prefix="LensModel*" onChange={(event: any) => handleExifChange(event, 'LensModel')}></Input>
+          </div>
+          <div className='w-full my-4'>
+            <Rating className='my-0 mx-auto' defaultValue={selected.info?.rating || 0} value={selected.info?.rating} onChange={(event: any) => handleInfoChange(event, 'rating')} />
+          </div>
+          <div className='my-4'>
+            <div>
+              <Map
+                mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+                initialViewState={{
+                  longitude: selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude || 0,
+                  latitude: selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude || 0,
+                  zoom: (parseFloat(selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude) === 0) ? 5 : 12 // 如果经纬度为 0 则缩放为 5，否则缩放为 12
+                }}
+                style={{ position: 'relative', width: '100%', height: '400px', display: 'block' }}
+                mapStyle="mapbox://styles/aiokr/clv6uhepi00lg01og9zb2fh18"
+                attributionControl={false}
+                onClick={(e: any) => {
+                  const { lng, lat } = e.lngLat
+                  setSelected(prevSelected => ({
+                    ...prevSelected,
+                    info: {
+                      ...prevSelected.info,
+                      overExif: {
+                        ...prevSelected.info.overExif,
+                        GPSLongitude: lng.toFixed(6).toString(),
+                        GPSLatitude: lat.toFixed(6).toString(),
+                      }
+                    }
+                  }))
+                }}
+              >
+                <GeolocateControl position="top-left" />
+                <NavigationControl position="top-left" visualizePitch={false} />
+                <Marker
+                  longitude={selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude || 0}
+                  latitude={selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude || 0}
+                  anchor="bottom"
+                />
+                <GeocoderControl position="top-right" mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN} />
+              </Map>
+              <div className='w-full my-2 flex justify-between items-center text-sm'>
+                <div className='flex gap-2'>
+                  <Input value={selected.info?.overExif?.GPSLatitude || selected.info?.originExif?.GPSLatitude || 0} prefix={'Latitude'}
+                    onChange={(e: any) => {
+                      setSelected(prevSelected => ({
+                        ...prevSelected,
+                        info: {
+                          ...prevSelected.info,
+                          overExif: {
+                            ...prevSelected.info.overExif,
+                            GPSLatitude: e,
+                          }
+                        }
+                      }))
+                    }}></Input>
+                  <Input value={selected.info?.overExif?.GPSLongitude || selected.info?.originExif?.GPSLongitude || 0} prefix={'Longitude'}
+                    onChange={(e: any) => {
+                      setSelected(prevSelected => ({
+                        ...prevSelected,
+                        info: {
+                          ...prevSelected.info,
+                          overExif: {
+                            ...prevSelected.info.overExif,
+                            GPSLongitude: e,
+                          }
+                        }
+                      }))
+                    }}>
+                  </Input>
                 </div>
+                <button className='bg-gray-300 text-white py-1 px-4 rounded' onClick={() => handleLocationClean(selected)}>Reset Location</button>
               </div>
             </div>
-            <button className='bg-red-500 text-white py-2 px-4 my-6 rounded' onClick={() => deleteItem(selected.id)}>删除</button>
           </div>
-        </Modal>
-      </div >
+          <button className='bg-red-500 text-white py-2 px-4 my-6 rounded' onClick={() => deleteItem(selected.id)}>删除</button>
+        </div>
+      </Modal>
     </>
   )
 

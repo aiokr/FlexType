@@ -2,6 +2,7 @@ import prisma from "@/libs/prisma"
 import PhotoListComponent from "@/components/photoList"
 import { getAllFileInDatabase } from '@/libs/upyunFilesOperator'
 import convertDMSToDecimal from '@/libs/convertDMSToDecimal'
+import Link from 'next/link'
 
 export default async function Photos() {
 
@@ -69,8 +70,14 @@ export default async function Photos() {
   })
 
   return (
-    <div>
+    <main className='container max-w-[100vw] mx-auto '>
+      <div className='text-xs text-gray-300 pt-1 md:pt-2 lg:pt-3 px-2 md:px-0'>
+        <Link href={'/'}>首页</Link><> / </>
+        <Link href={'/dashboard'}>仪表盘</Link><> / </>
+        <Link href={'/dashboard/flow'}>照片流</Link>
+      </div>
+      <div className='text-2xl font-bold pt-2 py-4 md:py-4 px-2 md:px-0'>照片流</div>
       <PhotoListComponent photosData={allPhotoFlowItems} combinedData={combinedData.sort((a, b) => new Date(b.info.originExif.DateTimeOriginal).getTime() - new Date(a.info.originExif.DateTimeOriginal).getTime() > 0 ? 1 : -1)} assertsData={fileData} />
-    </div>
+    </main>
   )
 }
