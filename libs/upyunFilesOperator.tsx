@@ -1,6 +1,5 @@
 import { sign, getMD5 } from '@/libs/calcUpyunSecret'
 import prisma from '@/libs/prisma'
-import { json } from 'stream/consumers';
 
 const date = new Date().toUTCString();
 // 获取 UpYun 仓库信息
@@ -58,6 +57,7 @@ async function uploadFileToUpyun(formData: any, userID: string) {
 
   // 计算密钥
   const upuri = uri + '/' + fileName
+  console.log(date)
   const signsecret = sign(key, getMD5(secret), 'PUT', upuri, date)
 
   // 制作 Headers
@@ -93,6 +93,15 @@ async function uploadFileToUpyun(formData: any, userID: string) {
 
   // 返回上传结果
   return { uploadFile, setFileDatabase, uploadFileResult }
+}
+
+// 获取上传密钥
+async function getUploadSecret(fileName: string) {
+  const fileNameEncode = encodeURI(fileName)
+  const upuri = uri + '/' + fileNameEncode
+  const url = upyunUrl + serverName + path + '/' + fileName
+  const signsecret = sign(key, getMD5(secret), 'GET', upuri, date)
+  return { signsecret, upuri, date, url }
 }
 
 // 将文件列表存入数据库
@@ -183,6 +192,16 @@ async function setAssetsExif(assetId: number, exifInfo: any) {
   }
 
   let takenTime = exifInfo.EXIF.DateTimeOriginal // 拍摄时间
+
+  // 获取时区 Get time zone
+  /* 0911 is Offset data of DateTimeOriginal
+     0912 is Offset data of DateTimeDigitized
+     0910 is Offset data of DateTime
+     On "CIPA DC-008-Translation-2016" Chapter 4.6.5 Exif IFD Attribute Information, on Page 42 (PDF Page 47)
+     https://www.cipa.jp/std/documents/download_e.html?DC-008-Translation-2016-E
+  */
+  let timeZone = exifInfo.EXIF['0x9011'] || exifInfo.EXIF['0x9012'] || exifInfo.EXIF['0x9010']
+
   // 格式化拍摄时间
   function formatToISO8601(takenTime: string) {
     const regex = /^(\d{4}):(\d{2}):(\d{2}) (\d{2}):(\d{2}):(\d{2})$/;
@@ -190,7 +209,8 @@ async function setAssetsExif(assetId: number, exifInfo: any) {
 
     if (match) {
       // 构建一个 ISO 8601 格式的日期字符串
-      const timeFormatting: string = `${match[1]}-${match[2]}-${match[3]}T${match[4]}:${match[5]}:${match[6]}`;
+      const timeFormatting: string = `${match[1]}-${match[2]}-${match[3]}T${match[4]}:${match[5]}:${match[6]}${timeZone}`;
+      console.log(timeFormatting)
       const date = new Date(timeFormatting).toISOString();
       return date
     } else {
@@ -271,5 +291,5 @@ async function setDelFileDatabase(assetId: number) {
 }
 
 export {
-  getAllFileInUpyunDir, uploadFileToUpyun, getAllFileInDatabase, deleteFileFromUpyun, getAssetsID, getAssetsExif
+  getAllFileInUpyunDir, uploadFileToUpyun, getAllFileInDatabase, deleteFileFromUpyun, getAssetsID, getAssetsExif, getUploadSecret
 }
