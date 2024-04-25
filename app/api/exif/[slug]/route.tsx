@@ -10,7 +10,9 @@ export async function GET(request: Request, { params }: { params: { slug: string
   const existingUser = await prisma.user.findMany({
     where: {
       name: userName,
-      role: 'ADMIN' || 'EDITOR',
+      role: {
+        in: ['ADMIN', 'EDITOR'],
+      },
     }
   });
 
@@ -24,6 +26,8 @@ export async function GET(request: Request, { params }: { params: { slug: string
       return Response.json(resContent)
     }
   } else {
+    console.log('USERNAME - ' + userName)
+    console.log('existingUser - ' + existingUser.toString() + existingUser[0].role)
     return Response.json({ message: "Not authenticated" }, { status: 403 })
   }
 }
