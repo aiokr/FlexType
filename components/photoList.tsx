@@ -1,7 +1,7 @@
 "use client"
 import * as React from 'react';
 import { useState, useEffect, useCallback } from 'react';
-import { Rating, Input, Toast, Select, Modal, Button, Card } from '@douyinfe/semi-ui';
+import { Rating, Input, Toast, Select, Modal, DatePicker, Card } from '@douyinfe/semi-ui';
 import Image from 'next/image'
 import { auth } from '@/auth';
 import Link from 'next/link';
@@ -313,6 +313,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({ photosData, combinedData
             <Input size='large' value={selected.info?.overExif?.Model || selected.info?.originExif?.Model} className='col-span-4 md:col-span-3' prefix="Model*" onChange={(event: any) => handleExifChange(event, 'Model')} ></Input>
             <Input size='large' value={selected.info?.overExif?.LensMake || selected.info?.originExif?.LensMake || ''} className='col-span-4' prefix="LensMake*" onChange={(event: any) => handleExifChange(event, 'LensMake')}></Input>
             <Input size='large' value={selected.info?.overExif?.LensModel || selected.info?.originExif?.LensModel} className='col-span-4' prefix="LensModel*" onChange={(event: any) => handleExifChange(event, 'LensModel')}></Input>
+            <DatePicker size='large' type="dateTime" value={selected.info?.overExif?.DateTimeOriginal || selected.info?.originExif?.DateTimeOriginal} className='col-span-4' onChange={(event: any) => handleExifChange(event, 'DateTimeOriginal')} />
           </div>
           <div className='w-full my-4'>
             <Rating className='my-0 mx-auto' defaultValue={selected.info?.rating || 0} value={selected.info?.rating} onChange={(event: any) => handleInfoChange(event, 'rating')} />
