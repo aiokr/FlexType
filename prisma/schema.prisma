@@ -59,6 +59,7 @@ model Assets {
   GPSLongitude          String?
   GPSAltitude           String?
   Photo                 Photo[]
+  info                  Json?
 }
 
 model Photo {
