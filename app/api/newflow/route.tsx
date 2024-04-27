@@ -7,10 +7,12 @@ export async function PUT(req: any, res: any) {
   const existingUser = await prisma.user.findMany({
     where: {
       name: userName,
-      role: 'ADMIN' || 'EDITOR',
+      role: {
+        in: ['ADMIN', 'EDITOR'],
+      },
     }
   });
-  const userID = existingUser[0].id
+  // const userID = existingUser[0].id
 
   if (session && existingUser.length !== 0) {
     const flowItemData: any = await req.json()
