@@ -1,5 +1,4 @@
 import prisma from '@/libs/prisma'
-import { getAllFileInDatabase } from '@/libs/upyunFilesOperator'
 import { NextRequest } from "next/server";
 import convertDMSToDecimal from '@/libs/convertDMSToDecimal'
 
@@ -35,6 +34,12 @@ export async function GET(request: NextRequest) {
     const flowItemInfo = flowData?.info as Info;
     const assetData = fileData as any
 
+    let GPSLatitudeOrigin = assetData?.GPSLatitude || "0/1,0/1,0/1,"
+    let GPSLongitudeOrigin = assetData?.GPSLongitude || "0/1,0/1,0/1,"
+
+    let GPSLatitude = convertDMSToDecimal(GPSLatitudeOrigin);
+    let GPSLongitude = convertDMSToDecimal(GPSLongitudeOrigin);
+
     let exif = {
       width: overExif?.width || fileData?.width,
       height: overExif?.height || fileData?.height,
@@ -46,8 +51,8 @@ export async function GET(request: NextRequest) {
       ExposureTime: overExif?.ExposureTime || fileData?.ExposureTime,
       FNumber: overExif?.FNumber || fileData?.FNumber,
       ISO: overExif?.ISOSpeedRatings || fileData?.ISOSpeedRatings,
-      GPSLatitude: overExif?.GPSLatitude || fileData?.GPSLatitude,
-      GPSLongitude: overExif?.GPSLongitude || fileData?.GPSLongitude,
+      GPSLatitude: overExif?.GPSLatitude || GPSLatitude,
+      GPSLongitude: overExif?.GPSLongitude || GPSLongitude,
     }
 
     let info = {
