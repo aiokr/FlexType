@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 
 // 导航内容
 const navItem = [
+  { itemKey: 'dashboard', text: '仪表盘', link: '/dashboard', icon: <SettingIcon /> },
   { itemKey: 'photos', text: '照片流', link: '/dashboard/flow', icon: <PhotoIcon /> },
   { itemKey: 'assets', text: '文件管理', link: '/dashboard/assets', icon: <FileIcon /> },
   { itemKey: 'settings', text: '设置', link: '/dashboard/settings', icon: <SettingIcon /> },
