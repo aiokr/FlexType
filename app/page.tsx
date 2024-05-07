@@ -1,11 +1,14 @@
 import Image from "next/image";
-import { auth } from "auth"
+
+import { createClient } from '@/utils/supabase/server'
 
 export default async function Home() {
-  const session = await auth()
+  const supabase = createClient()
+  const { data, error } = await supabase.auth.getUser()
   return (
-    <main>
-      homepage
+    <main className="container">
+      <p>HomePage</p>
+      {JSON.stringify(data, null, 2)}
     </main>
   );
 }

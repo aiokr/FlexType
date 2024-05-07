@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { createClient } from '@/utils/supabase/server'
@@ -12,7 +11,7 @@ export default async function Settings() {
   }
 
   return (
-    <div className='container'>
+    <div className='container max-w-[100vw] mx-auto '>
       {JSON.stringify(data, null, 2)}
     </div>
   )

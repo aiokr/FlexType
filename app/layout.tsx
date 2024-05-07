@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
-import { auth } from "auth"
+import { createClient } from '@/utils/supabase/server'
 import { RenderHorizontal, RenderVertical } from "../components/rootNav";
 
 export const metadata: Metadata = {
@@ -17,19 +17,19 @@ export const viewport: Viewport = {
 }
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const session: any = await auth()
+  const loginUserData = (await createClient().auth.getUser()).data
   let loginUserAvatar: string = '/icon.png'
-  if (session) {
-    loginUserAvatar = await session.user.image
+  if (loginUserData) {
+    loginUserAvatar = '/icon.png';
   } else {
     loginUserAvatar = '/icon.png';
   }
   return (
     <html lang="en">
       <body className="max-w-full">
-        <RenderHorizontal loginUserAvatar={loginUserAvatar} />
+        <RenderHorizontal loginUserAvatar={loginUserAvatar} loginUser={loginUserData} />
         <div className="flex gap-4 h-screen ">
-          <RenderVertical loginUserAvatar={loginUserAvatar} />
+          <RenderVertical loginUserAvatar={loginUserAvatar} loginUser={loginUserData} />
           <div className="pt-14 md:pt-0 overflow-y-auto">{children}</div>
         </div>
       </body>
