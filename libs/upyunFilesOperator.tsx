@@ -159,8 +159,45 @@ async function getAssetsExif(assetId: number) {
     const writeExifInfo = await setAssetsExif(assetId, exifInfo)
     return JSON.stringify(writeExifInfo) // writeExifInfo
   }
-
   return
+}
+
+// 获取图片其他信息（主色）
+async function getAssetsOtherInfo(assetId: number) {
+
+  const assetTitle = await getAssets(assetId)
+  const assetName = assetTitle?.title
+  const response = await fetch(serverDomain + path + '/' + assetName + '_/excolor/3/exformat/hex') // 获取 3 个主色
+  const mainColor = await response.json()
+  const mainColorHex = mainColor.map((colorObj: { color: string; }) => "#" + colorObj.color.substring(2)); // 创建只包含颜色代码的数组
+  const info = {
+    mainColor: mainColorHex
+  }
+
+  if (info) {
+    const writeOtherInfo = await setAssetsOtherInfo(assetId, info)
+    return JSON.stringify(writeOtherInfo) // writeOtherInfo
+  }
+  return
+
+}
+
+// 写入其他信息到数据库
+
+async function setAssetsOtherInfo(assetId: number, info: any) {
+
+  const writeOtherInfo = await prisma.assets.update({
+    where: {
+      assetId: assetId
+    },
+    data: {
+      info: info
+    }
+  }).then().catch(e => {
+    console.log(e)
+    return e
+  })
+  return writeOtherInfo
 }
 
 // 写入 Exif 信息到数据库
@@ -200,7 +237,7 @@ async function setAssetsExif(assetId: number, exifInfo: any) {
      On "CIPA DC-008-Translation-2016" Chapter 4.6.5 Exif IFD Attribute Information, on Page 42 (PDF Page 47)
      https://www.cipa.jp/std/documents/download_e.html?DC-008-Translation-2016-E
   */
-  let timeZone = exifInfo.EXIF['0x9011'] || exifInfo.EXIF['0x9012'] || exifInfo.EXIF['0x9010']
+  let timeZone = exifInfo.EXIF['0x9011'] || exifInfo.EXIF['0x9012'] || exifInfo.EXIF['0x9010'] || '+08:00'
 
   // 格式化拍摄时间
   function formatToISO8601(takenTime: string) {
@@ -249,6 +286,17 @@ async function setAssetsExif(assetId: number, exifInfo: any) {
   return updateExif
 }
 
+// 刷新所有文件信息
+async function refreshFileList() {
+  const assets = await prisma.assets.findMany()
+  for (let i = 0; i < assets.length; i++) {
+    const assetId: number = assets[i].assetId
+    const getOtherInfo = await getAssetsOtherInfo(assetId)
+    const getExifInfo = await getAssetsExif(assetId)
+  }
+  return assets
+}
+
 // 删除文件
 async function deleteFileFromUpyun(assetId: number) {
   const asset = await getAssets(assetId)
@@ -291,5 +339,5 @@ async function setDelFileDatabase(assetId: number) {
 }
 
 export {
-  getAllFileInUpyunDir, uploadFileToUpyun, getAllFileInDatabase, deleteFileFromUpyun, getAssetsID, getAssetsExif, getUploadSecret
+  getAllFileInUpyunDir, uploadFileToUpyun, getAllFileInDatabase, deleteFileFromUpyun, getAssetsID, getAssetsOtherInfo, getAssetsExif, getUploadSecret, refreshFileList
 }

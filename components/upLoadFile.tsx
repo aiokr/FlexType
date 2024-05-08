@@ -1,7 +1,9 @@
 "use client"
 import React, { useState } from 'react';
 import { Collapse, Toast } from '@douyinfe/semi-ui';
+import { getUploadSecret } from '@/libs/upyunFilesOperator'
 import action from '@/app/actions';
+import { headers } from 'next/headers';
 
 const ImageUploader = () => {
   // 明确 selectedFile 的类型为 File | null
@@ -61,13 +63,75 @@ const ImageUploader = () => {
     }
   };
 
+  const uploadFileClient = async () => {
+    setActive(!active);
+    if (selectedFile) {
+      const timestamp = Date.now();
+      const originalFileName = selectedFile.name;
+      const newFileName = `${timestamp}-${originalFileName}`;
+
+      // 组合 
+      const formData = new FormData();
+      formData.append("file", selectedFile, newFileName);
+
+      let file = selectedFile;
+
+      try {
+        const uploadSecret = await fetch('/api/uploadclient', {
+          method: 'PUT',
+          body: formData
+        })
+
+        if (uploadSecret.ok) {
+          const data = await uploadSecret.json(); // 等待响应的JSON数据
+          const { signsecret, date, url } = data
+
+          const contentLength = file.size.toString();
+
+          const headers = new Headers();
+          headers.append('Authorization', signsecret);
+          headers.append('Date', date);
+          headers.append('Content-Length', contentLength);
+          console.log(signsecret, date);
+
+          const uploadFile = await fetch(url, {
+            method: 'PUT',
+            headers: headers,
+            body: formData
+          })
+          if (uploadFile.ok) {
+            const data = await uploadFile.json(); // 等待响应的JSON数据
+            action();
+            Toast.success(`${data.message}`);
+            console.log(data); // 打印成功的信息
+          } else {
+            console.error('Server responded with status:', uploadFile.status, uploadFile.statusText);
+          }
+        }
+      } catch (error) {
+        console.error(error); // 捕获在请求过程中发生的错误
+        setActive(active);
+      }
+    } else {
+      setActive(active);
+      Toast.error('No file selected');
+      console.log('No file selected');
+    }
+  }
+
   return (
     <div className=' max-w-lg'>
       <Collapse>
-        <Collapse.Panel header="上传文件" itemKey="1">
+        <Collapse.Panel header="上传文件（服务端）" itemKey="1">
           <div className='flex flex-col gap-2'>
             <input type='file' name='file' id='file' onChange={fileInputChange} className={`block bg-gray-100 p-2 text-center rounded`}></input>
             <button onClick={uploadFile} className={`${active ? 'bg-indigo-500' : 'bg-gray-600'} block text-white p-2 text-center rounded transition-all`}>点击上传</button>
+          </div>
+        </Collapse.Panel>
+        <Collapse.Panel header="上传文件（客户端，实验性）" itemKey="2">
+          <div className='flex flex-col gap-2'>
+            <input type='file' name='file' id='file' onChange={fileInputChange} className={`block bg-gray-100 p-2 text-center rounded`}></input>
+            <button onClick={uploadFileClient} className={`${active ? 'bg-indigo-500' : 'bg-gray-600'} block text-white p-2 text-center rounded transition-all`}>点击上传</button>
           </div>
         </Collapse.Panel>
       </Collapse>

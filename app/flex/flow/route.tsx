@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
     let photoUrl = fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.url)[0]
     let createdAt = photo.createdAt || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.DateTimeOriginal)[0]
     let rating = photo.info.rating
+    let mainColor = photo.info.mainColor || fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.info.mainColor)[0]
 
     let GPSLatitudeOrigin = fileData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.GPSLatitude)[0] || "0/1,0/1,0/1";
     let GPSLatitude = convertDMSToDecimal(GPSLatitudeOrigin);
@@ -36,6 +37,7 @@ export async function GET(request: NextRequest) {
 
     let info = {
       rating: rating,
+      mainColor: mainColor
     }
 
     return {

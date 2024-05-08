@@ -1,17 +1,18 @@
-import prisma from '@/libs/prisma'
 import { redirect } from 'next/navigation'
+
 import { createClient } from '@/utils/supabase/server'
 
-export default async function DashboardLayout({ children, }: { children: React.ReactNode }) {
+export default async function PrivatePage() {
   const supabase = createClient()
   const { data, error } = await supabase.auth.getUser()
+  console.log(data)
+
   if (error || !data?.user) {
     redirect('/login')
+  } else if (!data.user.user_metadata.role.includes('admin')) {
+    redirect('/login/newadmin')
+  } else {
+    return (<p>Hello {data.user.email}</p>)
   }
 
-  return (
-    <div className="dashboard-container mt-4">
-      {children}
-    </div>
-  )
 }

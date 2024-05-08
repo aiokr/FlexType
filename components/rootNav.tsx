@@ -9,9 +9,11 @@ import { useRouter } from 'next/navigation';
 
 // 导航内容
 const navItem = [
+  { itemKey: 'dashboard', text: '仪表盘', link: '/dashboard', icon: <SettingIcon /> },
   { itemKey: 'photos', text: '照片流', link: '/dashboard/flow', icon: <PhotoIcon /> },
   { itemKey: 'assets', text: '文件管理', link: '/dashboard/assets', icon: <FileIcon /> },
   { itemKey: 'settings', text: '设置', link: '/dashboard/settings', icon: <SettingIcon /> },
+  { itemKey: 'users', text: '用户管理', link: '/dashboard/user', icon: <SettingIcon /> },
 ];
 
 /*
@@ -22,15 +24,15 @@ const navItem = [
   { itemKey: 'categories', text: '分类管理' },
 */
 
-export function navLogo(loginUserAvatar: string, position: any) {
+export function navLogo(loginUserAvatar: string, loginUser: any, position: any) {
   return (
     <Dropdown
       position={position}
       render={
         <Dropdown.Menu>
-          {loginUserAvatar == '/icon.png' ?
+          {loginUser.user === null ?
             (
-              <Dropdown.Item><Link href={'/auth/signin'}>登录</Link></Dropdown.Item>
+              <Dropdown.Item><Link href={'/login'}>登录</Link></Dropdown.Item>
             ) : (
               <Dropdown.Item><Link href={'/auth/signout'}>退出</Link></Dropdown.Item>
             )
@@ -48,7 +50,8 @@ const verticalNavText = (
 )
 
 // 定义横向导航
-export function RenderHorizontal({ loginUserAvatar }: any) {
+export function RenderHorizontal(props: any) {
+  const { loginUserAvatar, loginUser } = props;
   const [isOpen, setOpen] = useState(false);
   const toggle = () => {
     setOpen(!isOpen);
@@ -75,7 +78,7 @@ export function RenderHorizontal({ loginUserAvatar }: any) {
         mode={'horizontal'}
         header={horizontalNavText}
         onSelect={key => console.log(key)}
-        footer={navLogo(loginUserAvatar, 'bottom')}
+        footer={navLogo(loginUserAvatar, loginUser, 'bottom')}
       />
       <Collapsible isOpen={isOpen}>{collapsed}</Collapsible>
     </>
@@ -83,8 +86,8 @@ export function RenderHorizontal({ loginUserAvatar }: any) {
 }
 
 // 定义纵向导航
-export function RenderVertical({ loginUserAvatar }: any) {
-
+export function RenderVertical(props: any) {
+  const { loginUserAvatar, loginUser } = props;
   const [verticalItems, setverticalItems] = useState(navItem);
   return (
     <Nav
@@ -93,11 +96,8 @@ export function RenderVertical({ loginUserAvatar }: any) {
       items={verticalItems}
       onSelect={key => console.log(key)}
       header={{
-        logo: navLogo(loginUserAvatar, 'bottomLeft'),
+        logo: navLogo(loginUserAvatar, loginUser, 'bottomLeft'),
         text: verticalNavText,
-      }}
-      logo={{
-        children: navLogo
       }}
       footer={{
         collapseButton: true,
