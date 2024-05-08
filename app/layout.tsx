@@ -19,8 +19,8 @@ export const viewport: Viewport = {
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const loginUserData = (await createClient().auth.getUser()).data
   let loginUserAvatar: string = '/icon.png'
-  if (loginUserData) {
-    loginUserAvatar = '/icon.png';
+  if (loginUserData.user !== null) {
+    loginUserAvatar = loginUserData.user.user_metadata.avatar_url;
   } else {
     loginUserAvatar = '/icon.png';
   }
