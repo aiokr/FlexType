@@ -1,18 +1,18 @@
-import AuthSession from '@/components/getAuthSession'
+import { createClient } from '@/utils/supabase/server'
 import prisma from '@/libs/prisma'
 
 export async function PUT(req: any, res: any) {
-  const session = await AuthSession()
-  const userName = session.user.name
+  const supabase = createClient()
+  const { data, error } = await supabase.auth.getUser()
+  const userId = data.user.id
   const existingUser = await prisma.user.findMany({
     where: {
-      name: userName,
+      uid: userId,
       role: 'ADMIN' || 'EDITOR',
     }
   });
-  const userID = existingUser[0].id
 
-  if (session && existingUser.length !== 0) {
+  if (data && existingUser.length !== 0) {
     const flowItemData: any = await req.json()
     // console.log(flowItemData)
     let info = typeof flowItemData.info === 'object' ? { ...flowItemData.info } : {};

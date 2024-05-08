@@ -10,6 +10,7 @@ datasource db {
 
 model User {
   id        String    @id @default(cuid())
+  uid       String?   @unique
   name      String
   email     String    @unique
   image     String?
@@ -59,6 +60,7 @@ model Assets {
   GPSLongitude          String?
   GPSAltitude           String?
   Photo                 Photo[]
+  info                  Json?
 }
 
 model Photo {
