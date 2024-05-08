@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
+import prisma from "@/libs/prisma";
 import { createClient } from '@/utils/supabase/server'
 import { RenderHorizontal, RenderVertical } from "../components/rootNav";
 
