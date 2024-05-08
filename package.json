@@ -7,7 +7,9 @@
     "dev": "prisma generate && next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "vitest",
+    "cypress:open": "cypress open"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.5.2",
@@ -33,16 +35,21 @@
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
+    "@testing-library/react": "^15.0.7",
     "@types/luxon": "^3.4.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.0.1",
+    "cypress": "^13.9.0",
     "eslint": "^8",
     "eslint-config-next": "14.1.4",
+    "jsdom": "^24.0.0",
     "postcss": "^8",
     "prisma": "^5.12.0",
     "tailwindcss": "^3.3.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^1.6.0"
   }
 }
