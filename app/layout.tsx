@@ -20,7 +20,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const loginUserData = (await createClient().auth.getUser()).data
   let loginUserAvatar: string = '/icon.png'
   if (loginUserData.user !== null) {
-    loginUserAvatar = loginUserData.user.user_metadata.avatar_url;
+    const userId = loginUserData.user?.id
+    const userData = await prisma.user.findUnique({ where: { uid: userId } })
+    loginUserAvatar = userData.image;
   } else {
     loginUserAvatar = '/icon.png';
   }
