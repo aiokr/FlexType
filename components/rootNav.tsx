@@ -6,6 +6,7 @@ import { Nav, Avatar, Dropdown, Collapsible, List } from '@douyinfe/semi-ui';
 import { FileIcon, PhotoIcon, SettingIcon } from '@/assets/icons';
 import HorizontalNavMenu from './horizontalNavMenu';
 import { useRouter } from 'next/navigation';
+import { signOut } from '@/app/login/actions';
 
 // 导航内容
 const navItem = [
@@ -34,7 +35,7 @@ export function navLogo(loginUserAvatar: string, loginUser: any, position: any) 
             (
               <Dropdown.Item><Link href={'/login'}>登录</Link></Dropdown.Item>
             ) : (
-              <Dropdown.Item><Link href={'/auth/signout'}>退出</Link></Dropdown.Item>
+              <Dropdown.Item><button onClick={() => signOut()}>退出</button></Dropdown.Item>
             )
           }
         </Dropdown.Menu>
