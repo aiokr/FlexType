@@ -50,6 +50,34 @@ export async function signInWithGithub() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'github',
   })
+  return { data, error }
+}
+
+// link github account
+export async function linkWithGithub() {
+  const supabase = createClient()
+  const { data, error } = await supabase.auth.linkIdentity({
+    provider: 'github',
+  })
+  console.log(data)
+  redirect(data.url)
+  return { data, error }
+}
+
+export async function unLinkWithGithub() {
+  const supabase = createClient()
+  const {
+    data: { identities },
+  } = await supabase.auth.getUserIdentities()
+
+  // find the github identity linked to the user
+  const githubIdentity = identities.find((identity) => identity.provider === 'github')
+
+  // unlink the github identity from the user
+  const { data, error } = await supabase.auth.unlinkIdentity(githubIdentity)
+
+  console.log(data)
+  return { data, error }
 }
 
 export async function signOut() {
