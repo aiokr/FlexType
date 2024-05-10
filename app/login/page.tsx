@@ -8,12 +8,12 @@ const coverUrl: string = 'https://images.unsplash.com/photo-1715354378861-1a0f0e
 export default function LoginPage() {
   return (
     <div className='w-screen h-screen flex items-center'>
-      <div className='grid grid-cols-1 md:grid-cols-2 md:shadow-2xl md:w-[800px] lg:w-[1000px] mx-auto'>
+      <div className='md:grid md:grid-cols-2 md:shadow-2xl w-full md:w-[800px] lg:w-[1000px] mx-auto'>
         <div className='hidden md:block'>
           <Image src={coverUrl} alt="logo"
-            width={600} height={600} className='object-cover h-[600px]' />
+            width={600} height={600} className='object-cover h-[600px]'/>
         </div>
-        <form className='flex flex-col items-start justify-center p-12 gap-3 '>
+        <form className='flex flex-col items-start justify-center p-6 md:p-12 lg:p-16 gap-3'>
           <div className='flex items-center gap-2 w-full pb-8'>
             <Image src="/icon.png" alt="logo" width={50} height={50} /><span className='text-xl font-bold'>FlexType</span>
           </div>
