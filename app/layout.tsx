@@ -18,23 +18,10 @@ export const viewport: Viewport = {
 }
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const loginUserData = (await createClient().auth.getUser()).data
-  let loginUserAvatar: string = '/icon.png'
-  if (loginUserData.user !== null) {
-    const userId = loginUserData.user?.id
-    const userData = await prisma.user.findUnique({ where: { uid: userId } })
-    loginUserAvatar = userData.image;
-  } else {
-    loginUserAvatar = '/icon.png';
-  }
   return (
     <html lang="en">
-      <body className="max-w-full">
-        <RenderHorizontal loginUserAvatar={loginUserAvatar} loginUser={loginUserData} />
-        <div className="flex gap-4 h-screen ">
-          <RenderVertical loginUserAvatar={loginUserAvatar} loginUser={loginUserData} />
-          <div className="pt-14 md:pt-0 overflow-y-auto">{children}</div>
-        </div>
+      <body>
+        {children}
       </body>
     </html>
   );
