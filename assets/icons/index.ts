@@ -6,9 +6,10 @@ export const IconPropsDefault: IconProps = {
   height: '1em',
   fill: 'currentColor',
   'aria-hidden': true,
-  focusable: 'false',
+  focusable: 'false'
 }
 
-export { FileIcon } from './File'
-export { SettingIcon } from './Setting'
-export { PhotoIcon } from './Photo'
+export {FileIcon} from './File'
+export {SettingIcon} from './Setting'
+export {PhotoIcon} from './Photo'
+export {IconGithub} from './IconGithub'

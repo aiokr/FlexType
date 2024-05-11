@@ -1,12 +1,12 @@
-import { redirect } from 'next/navigation'
-import { createClient } from '@/utils/supabase/server'
+import {redirect} from 'next/navigation'
+import {createClient} from '@/utils/supabase/server'
 import prisma from '@/libs/prisma'
 
 export default async function PrivatePage() {
   const supabase = createClient()
-  const { data, error } = await supabase.auth.getUser()
+  const {data, error} = await supabase.auth.getUser()
   const userId = data.user.id // 当前用户ID
-  const userRole = (await prisma.user.findUnique({ where: { uid: userId } }))?.role // 当前用户角色
+  const userRole = (await prisma.user.findUnique({where: {uid: userId}}))?.role // 当前用户角色
 
   // 查找是否存在管理员
   const adminUsers = await prisma.user.findMany({
@@ -41,8 +41,9 @@ export default async function PrivatePage() {
   // 如果已经存在管理员
   else {
     return (
-      <p>Hello {data.user.email} {userRole}</p>
+      <p>
+        Hello {data.user.email} {userRole}
+      </p>
     )
   }
-
 }

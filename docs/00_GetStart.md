@@ -10,7 +10,7 @@ DATABASE_URL=
 # Direct connection to the database. Used for migrations.
 DIRECT_URL=
 
-# Connect Supbase 
+# Connect Supbase
 # 链接 Subpase 使用
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
