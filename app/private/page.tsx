@@ -1,10 +1,10 @@
-import { redirect } from 'next/navigation'
+import {redirect} from 'next/navigation'
 
-import { createClient } from '@/utils/supabase/server'
+import {createClient} from '@/utils/supabase/server'
 
 export default async function PrivatePage() {
   const supabase = createClient()
-  const { data, error } = await supabase.auth.getUser()
+  const {data, error} = await supabase.auth.getUser()
   console.log(data)
 
   if (error || !data?.user) {
@@ -12,7 +12,6 @@ export default async function PrivatePage() {
   } else if (!data.user.user_metadata.role.includes('admin')) {
     redirect('/login/newadmin')
   } else {
-    return (<p>Hello {data.user.email}</p>)
+    return <p>Hello {data.user.email}</p>
   }
-
 }

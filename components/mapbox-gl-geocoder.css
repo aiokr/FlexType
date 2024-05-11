@@ -9,14 +9,23 @@
 .mapboxgl-ctrl-geocoder {
   font-size: 18px;
   line-height: 24px;
-  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-family:
+    'Open Sans',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Helvetica Neue',
+    Arial,
+    Helvetica,
+    sans-serif;
   position: relative;
   background-color: #fff;
   width: 100%;
   min-width: 240px;
   z-index: 1;
   border-radius: 4px;
-  transition: width .25s, min-width .25s;
+  transition:
+    width 0.25s,
+    min-width 0.25s;
 }
 
 .mapboxgl-ctrl-geocoder--input {
@@ -56,14 +65,16 @@
 
 .mapboxgl-ctrl-geocoder,
 .mapboxgl-ctrl-geocoder .suggestions {
-  box-shadow: 0 0 10px 2px rgba(0,0,0,.1);
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* Collapsed */
 .mapboxgl-ctrl-geocoder.mapboxgl-ctrl-geocoder--collapsed {
   width: 50px;
   min-width: 50px;
-  transition: width .25s, min-width .25s;
+  transition:
+    width 0.25s,
+    min-width 0.25s;
 }
 
 /* Suggestions */
@@ -182,7 +193,7 @@
 }
 
 .mapboxgl-ctrl-geocoder--powered-by a:not(:hover) {
-  text-decoration: none;  
+  text-decoration: none;
 }
 
 /* Animation */
@@ -210,7 +221,6 @@
 
 /* Media queries*/
 @media screen and (min-width: 640px) {
-
   .mapboxgl-ctrl-geocoder.mapboxgl-ctrl-geocoder--collapsed {
     width: 36px;
     min-width: 36px;
@@ -262,8 +272,8 @@
     margin-right: -5px;
   }
 
-  .mapbox-gl-geocoder--error{
-    color:#909090;
+  .mapbox-gl-geocoder--error {
+    color: #909090;
     padding: 6px 12px;
     font-size: 16px;
     text-align: center;

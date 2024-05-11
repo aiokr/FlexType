@@ -1,13 +1,12 @@
-import prisma from "@/libs/prisma"
-import PhotoListComponent from "@/components/photoList"
-import { getAllFileInDatabase } from '@/libs/upyunFilesOperator'
+import prisma from '@/libs/prisma'
+import PhotoListComponent from '@/components/photoList'
+import {getAllFileInDatabase} from '@/libs/upyunFilesOperator'
 import convertDMSToDecimal from '@/libs/convertDMSToDecimal'
 import Link from 'next/link'
 
 export default async function Photos() {
-
   let allPhotoFlowItems = await prisma.photo.findMany() // 从数据库获取所有照片流项目
-  const fileData = (await getAllFileInDatabase()).sort((a, b) => new Date(b.uplishedAt).getTime() - new Date(a.uplishedAt).getTime()); // 从附件数据库获取照片流的附件信息
+  const fileData = (await getAllFileInDatabase()).sort((a, b) => new Date(b.uplishedAt).getTime() - new Date(a.uplishedAt).getTime()) // 从附件数据库获取照片流的附件信息
   let photoOriginalData = await prisma.assets.findMany({
     where: {
       assetId: {
@@ -20,12 +19,11 @@ export default async function Photos() {
     let photoId = photo.id
     let assetId = photo.assetId
     let photoTitle = photo.title
-    let photoUrl = photoOriginalData
-      .filter((asset: any) => asset.assetId === photo.assetId)
-      .map((asset: any) => asset.url)[0]
-    let GPSLatitudeOrigin = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.GPSLatitude)[0] || "0/1,0/1,0/1";
+    let photoUrl = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.url)[0]
+    let GPSLatitudeOrigin = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.GPSLatitude)[0] || '0/1,0/1,0/1'
     let GPSLatitude = convertDMSToDecimal(GPSLatitudeOrigin)
-    let GPSLongitudeOrigin = photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.GPSLongitude)[0] || "0/1,0/1,0/1";
+    let GPSLongitudeOrigin =
+      photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.GPSLongitude)[0] || '0/1,0/1,0/1'
     let GPSLongitude = convertDMSToDecimal(GPSLongitudeOrigin)
     let createdAt = photo.createdAt
     let rating = photo.info.rating || null
@@ -38,7 +36,7 @@ export default async function Photos() {
       LensMake: photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.LensMake)[0],
       LensModel: photoOriginalData.filter((asset: any) => asset.assetId === photo.assetId).map((asset: any) => asset.LensModel)[0],
       GPSLatitude: GPSLatitude,
-      GPSLongitude: GPSLongitude,
+      GPSLongitude: GPSLongitude
     }
     let overExif = {
       Make: photo.info.overExif?.Make,
@@ -52,7 +50,7 @@ export default async function Photos() {
       DateTimeOriginal: photo.info.overExif?.DateTimeOriginal,
       exposeTime: photo.info.overExif?.exposeTime,
       FNumber: photo.info.overExif?.FNumber,
-      ExposureTime: photo.info.overExif?.exposeTime,
+      ExposureTime: photo.info.overExif?.exposeTime
     }
     let info = {
       originExif: originExif,
@@ -65,19 +63,27 @@ export default async function Photos() {
       title: photoTitle,
       url: photoUrl,
       createdAt: createdAt,
-      info: info,
+      info: info
     }
   })
 
   return (
-    <main className='container max-w-[100vw] mx-auto '>
-      <div className='text-xs text-gray-300 pt-1 md:pt-2 lg:pt-3 px-2 md:px-0'>
-        <Link href={'/'}>首页</Link><> / </>
-        <Link href={'/dashboard'}>仪表盘</Link><> / </>
+    <main className="container max-w-[100vw] mx-auto ">
+      <div className="text-xs text-gray-300 pt-1 md:pt-2 lg:pt-3 px-2 md:px-0">
+        <Link href={'/'}>首页</Link>
+        <> / </>
+        <Link href={'/dashboard'}>仪表盘</Link>
+        <> / </>
         <Link href={'/dashboard/flow'}>照片流</Link>
       </div>
-      <div className='text-2xl font-bold pt-2 py-4 md:py-4 px-2 md:px-0'>照片流</div>
-      <PhotoListComponent photosData={allPhotoFlowItems} combinedData={combinedData.sort((a, b) => new Date(b.info.originExif.DateTimeOriginal).getTime() - new Date(a.info.originExif.DateTimeOriginal).getTime() > 0 ? 1 : -1)} assertsData={fileData} />
+      <div className="text-2xl font-bold pt-2 py-4 md:py-4 px-2 md:px-0">照片流</div>
+      <PhotoListComponent
+        photosData={allPhotoFlowItems}
+        combinedData={combinedData.sort((a, b) =>
+          new Date(b.info.originExif.DateTimeOriginal).getTime() - new Date(a.info.originExif.DateTimeOriginal).getTime() > 0 ? 1 : -1
+        )}
+        assertsData={fileData}
+      />
     </main>
   )
 }

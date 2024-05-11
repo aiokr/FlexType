@@ -1,5 +1,5 @@
 import prisma from '@/libs/prisma'
-import { NextRequest } from "next/server";
+import {NextRequest} from 'next/server'
 import convertDMSToDecimal from '@/libs/convertDMSToDecimal'
 
 interface Info {
@@ -12,33 +12,28 @@ interface Info {
 export async function GET(request: NextRequest) {
   const flowItemId = request.nextUrl.searchParams.get('id')
   console.log(flowItemId)
-  const flowData = await prisma.photo.findUnique(
-    {
-      where: {
-        id: flowItemId
-      }
+  const flowData = await prisma.photo.findUnique({
+    where: {
+      id: flowItemId
     }
-  )
+  })
   const assetId = flowData?.assetId
-  const fileData = await prisma.assets.findUnique(
-    {
-      where: {
-        assetId: assetId
-      }
+  const fileData = await prisma.assets.findUnique({
+    where: {
+      assetId: assetId
     }
-  )
+  })
 
   const combinedData = () => {
-
-    const overExif = (flowData?.info as any).overExif;
-    const flowItemInfo = flowData?.info as Info;
+    const overExif = (flowData?.info as any).overExif
+    const flowItemInfo = flowData?.info as Info
     const assetData = fileData as any
 
-    let GPSLatitudeOrigin = assetData?.GPSLatitude || "0/1,0/1,0/1,"
-    let GPSLongitudeOrigin = assetData?.GPSLongitude || "0/1,0/1,0/1,"
+    let GPSLatitudeOrigin = assetData?.GPSLatitude || '0/1,0/1,0/1,'
+    let GPSLongitudeOrigin = assetData?.GPSLongitude || '0/1,0/1,0/1,'
 
-    let GPSLatitude = convertDMSToDecimal(GPSLatitudeOrigin);
-    let GPSLongitude = convertDMSToDecimal(GPSLongitudeOrigin);
+    let GPSLatitude = convertDMSToDecimal(GPSLatitudeOrigin)
+    let GPSLongitude = convertDMSToDecimal(GPSLongitudeOrigin)
 
     let exif = {
       width: overExif?.width || fileData?.width,
@@ -52,7 +47,7 @@ export async function GET(request: NextRequest) {
       FNumber: overExif?.FNumber || fileData?.FNumber,
       ISO: overExif?.ISOSpeedRatings || fileData?.ISOSpeedRatings,
       GPSLatitude: overExif?.GPSLatitude || GPSLatitude,
-      GPSLongitude: overExif?.GPSLongitude || GPSLongitude,
+      GPSLongitude: overExif?.GPSLongitude || GPSLongitude
     }
 
     let info = {
@@ -72,5 +67,4 @@ export async function GET(request: NextRequest) {
   }
 
   return new Response(JSON.stringify(combinedData()))
-
 }
