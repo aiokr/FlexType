@@ -12,3 +12,4 @@ export const IconPropsDefault: IconProps = {
 export { FileIcon } from './File'
 export { SettingIcon } from './Setting'
 export { PhotoIcon } from './Photo'
+export { IconGithub } from './IconGithub'
