@@ -1,6 +1,6 @@
 import {getAllFileInUpyunDir, getAllFileInDatabase} from '@/libs/upyunFilesOperator'
 import Link from 'next/link'
-import UpLoadFile from '@/components/upLoadFile'
+import UpLoadFile from './upLoadFile'
 import TableComponent from '@/components/fileListTable'
 import * as dateFns from 'date-fns'
 

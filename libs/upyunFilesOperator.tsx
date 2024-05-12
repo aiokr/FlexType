@@ -1,3 +1,5 @@
+'use server'
+
 import {sign, getMD5} from '@/libs/calcUpyunSecret'
 import prisma from '@/libs/prisma'
 
@@ -72,6 +74,7 @@ async function uploadFileToUpyun(formData: any, userID: string) {
     headers: headers,
     body: formData
   })
+  console.log(upyunUrl + serverName + path + '/' + fileName)
   console.log(fileName, uploadFile)
 
   // 写入数据库
