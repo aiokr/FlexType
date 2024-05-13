@@ -1,8 +1,8 @@
 import Image from 'next/image'
 import {createClient} from '@/utils/supabase/server'
-import {IconMore} from '@/assets/icons/'
 import prisma from '@/libs/prisma'
 import {LinkToGithub, UnlinkToGithub} from '@/app/dashboard/user/linkToGithub'
+import {AccountClient, AccountButton} from './AccountClient'
 
 export default async function AccountSettings() {
   const supabase = createClient()
@@ -27,9 +27,7 @@ export default async function AccountSettings() {
             <div>{userEmail}</div>
           </div>
         </div>
-        <button className="text-zinc-400 p-1">
-          <IconMore />
-        </button>
+        <AccountButton />
       </div>
       <div className="container p-4 flex flex-col gap-2 border border-zinc-200 rounded">
         {data.user.app_metadata.providers.includes('github') ? (
@@ -44,6 +42,7 @@ export default async function AccountSettings() {
           </div>
         )}
       </div>
+      <AccountClient data={data} userData={userData} />
     </>
   )
 }
