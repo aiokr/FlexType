@@ -9,7 +9,8 @@ export const IconPropsDefault: IconProps = {
   focusable: 'false'
 }
 
-export {FileIcon} from './File'
-export {SettingIcon} from './Setting'
-export {PhotoIcon} from './Photo'
-export {IconGithub} from './IconGithub'
+export { FileIcon } from './File'
+export { SettingIcon } from './Setting'
+export { PhotoIcon } from './Photo'
+export { IconGithub } from './IconGithub'
+export { IconMore } from './IconMore'

@@ -12,7 +12,6 @@
     "cypress:open": "cypress open"
   },
   "dependencies": {
-    "@auth/prisma-adapter": "^1.5.2",
     "@douyinfe/semi-ui": "^2.55.5",
     "@mapbox/mapbox-gl-geocoder": "^5.0.2",
     "@prisma/client": "^5.12.0",
@@ -22,16 +21,12 @@
     "@supabase/ssr": "^0.1.0",
     "@supabase/supabase-js": "^2.43.1",
     "@types/mapbox__mapbox-gl-geocoder": "^5.0.0",
-    "@vercel/postgres": "^0.7.2",
-    "luxon": "^3.4.4",
     "mapbox-gl": "^3.3.0",
     "next": "14.1.4",
-    "next-auth": "^5.0.0-beta.16",
     "react": "^18",
     "react-dom": "^18",
     "react-map-gl": "^7.1.7",
-    "reset-css": "^5.0.2",
-    "swr": "^2.2.5"
+    "reset-css": "^5.0.2"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
