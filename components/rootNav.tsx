@@ -13,8 +13,7 @@ const navItem = [
   {itemKey: 'dashboard', text: '仪表盘', link: '/dashboard', icon: <SettingIcon />},
   {itemKey: 'photos', text: '照片流', link: '/dashboard/flow', icon: <PhotoIcon />},
   {itemKey: 'assets', text: '文件管理', link: '/dashboard/assets', icon: <FileIcon />},
-  {itemKey: 'settings', text: '设置', link: '/dashboard/settings', icon: <SettingIcon />},
-  {itemKey: 'users', text: '用户管理', link: '/dashboard/user', icon: <SettingIcon />}
+  {itemKey: 'settings', text: '设置', link: '/dashboard/settings', icon: <SettingIcon />}
 ]
 
 /*

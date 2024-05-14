@@ -10,5 +10,5 @@ export default async function Settings() {
     redirect('/login')
   }
 
-  return <div className="container max-w-[100vw] mx-auto ">{JSON.stringify(data, null, 2)}</div>
+  return <div className="container max-w-[100vw] mx-auto "></div>
 }
