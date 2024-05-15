@@ -9,16 +9,18 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  uid       String?   @unique
-  name      String
-  email     String    @unique
-  image     String?
-  role      Role      @default(USER)
-  createdAt DateTime  @default(now())
-  Assets    Assets[]
-  accounts  Account[]
-  sessions  Session[]
+  id         String       @id @default(cuid())
+  uid        String?      @unique
+  name       String
+  email      String       @unique
+  image      String?
+  role       Role         @default(USER)
+  createdAt  DateTime     @default(now())
+  Assets     Assets[]
+  post       Post[]
+  draftPaper DraftPaper[]
+  accounts   Account[]
+  sessions   Session[]
 }
 
 enum Role {
@@ -64,12 +66,12 @@ model Assets {
 }
 
 model Photo {
-  id         String  @id @default(cuid())
-  title      String?
-  asset      Assets? @relation(fields: [assetId], references: [assetId])
-  assetId    Int
-  createdAt  DateTime?  @default(now())
-  info       Json?
+  id        String    @id @default(cuid())
+  title     String?
+  asset     Assets?   @relation(fields: [assetId], references: [assetId])
+  assetId   Int
+  createdAt DateTime? @default(now())
+  info      Json?
 }
 
 model Account {
@@ -111,4 +113,27 @@ model Site {
   id   String @id @default(cuid())
   name String
   url  String
+}
+
+model Post {
+  id             Int         @id @default(autoincrement())
+  user           User        @relation(fields: [userId], references: [id])
+  userId         String
+  currentDraft   DraftPaper? @relation(fields: [currentDraftId], references: [id])
+  currentDraftId Int
+  Title          String
+  History        Json
+  createdAt      DateTime    @default(now())
+  uplishedAt     DateTime?
+  published      Boolean     @default(false)
+}
+
+model DraftPaper {
+  id         Int       @id @default(autoincrement())
+  user       User?     @relation(fields: [userId], references: [id])
+  userId     String
+  post       Post[]
+  createdAt  DateTime  @default(now())
+  uplishedAt DateTime?
+  mainText   Json
 }
