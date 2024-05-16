@@ -16,6 +16,11 @@ export default async function DraftPaperPage() {
       </div>
       <div className="text-2xl font-bold pt-2 py-4 md:py-4">稿纸</div>
       <CreateNewDraftPaper />
+      {draftpaperItem.map((draftpaper) => (
+        <div key={draftpaper.id} className="py-4">
+          <Link href={`/dashboard/editor/${draftpaper.id}`}>{draftpaper.id}</Link>
+        </div>
+      ))}
     </div>
   )
 }

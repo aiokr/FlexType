@@ -3,7 +3,6 @@ import prisma from '@/libs/prisma'
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 
-
 async function getUserData() {
   const supabase = createClient()
   const { data, error } = await supabase.auth.getUser()
@@ -18,10 +17,26 @@ export async function addNewDraft() {
   const newDraft = await prisma.draftPaper.create({
     data: {
       userId: userId,
-      mainText: {}
+      mainText: []
     }
   })
   console.log(newDraft)
   const newDraftId: number = newDraft.id
   redirect('./editor/' + newDraftId)
+}
+
+export async function updateDraft(draftId: any, text: any) {
+  const { userId } = await getUserData()
+  await prisma.draftPaper.update({
+    where: {
+      id: parseInt(draftId)
+    },
+    data: {
+      mainText: text
+    }
+  }).then(() => {
+    console.log('draft paper updated')
+  })
+
+  return
 }
