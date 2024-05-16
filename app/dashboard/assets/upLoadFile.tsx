@@ -2,7 +2,7 @@
 import React, {useState} from 'react'
 import {Button, Toast, Modal, Dropdown} from '@douyinfe/semi-ui'
 import {getUploadSecret} from '@/libs/upyunFilesOperator'
-import action from '@/app/actions'
+import {autoRevalidate} from '@/app/actions'
 import {headers} from 'next/headers'
 
 const ImageUploader = () => {
@@ -60,7 +60,7 @@ const ImageUploader = () => {
         setActive(active)
         if (response.ok) {
           const data = await response.json() // 等待响应的JSON数据
-          action()
+          autoRevalidate()
           Toast.success(`${data.message}`)
           console.log(data) // 打印成功的信息
         } else {
