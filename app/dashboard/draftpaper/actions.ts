@@ -17,7 +17,7 @@ export async function addNewDraft() {
   const newDraft = await prisma.draftPaper.create({
     data: {
       userId: userId,
-      mainText: []
+      mainText: [{}]
     }
   })
   console.log(newDraft)
@@ -27,8 +27,9 @@ export async function addNewDraft() {
 
 export async function updateDraft(draftId: any, text: any) {
   const { userId } = await getUserData()
-  if (text === null) {
-    console.log('error')
+  console.log(text)
+  if (Array.isArray(text) && text.length === 0) {
+    console.log('array is empty')
     return
   } else {
     await prisma.draftPaper.update({
@@ -40,9 +41,8 @@ export async function updateDraft(draftId: any, text: any) {
         mainText: text
       }
     }).then(() => {
-      console.log('draft paper updated')
+      // console.log('draft paper updated')
     })
-
     return
   }
 }

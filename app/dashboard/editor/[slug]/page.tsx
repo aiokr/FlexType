@@ -23,6 +23,9 @@ export default async function EditorPage(props: any) {
       <section className="flex flex-col w-full md:w-[90%] lg:w-[80%] mx-auto">
         <h1 className="text-2xl font-bold md:px-[54px]">{postData?.Title}</h1>
         <Editor id={draftPaperId} data={draftPaperMainText} />
+        <div>
+          <button className="text-sm text-center leading-5 w-full py-2 text-white bg-main font-bold rounded hover:shadow-lg transition-all">Save</button>
+        </div>
       </section>
     </div>
   )
