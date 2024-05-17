@@ -12,6 +12,7 @@ import {updateDraft} from '@/app/dashboard/draftpaper/actions'
 // Our <Editor> component we can reuse later
 export default function Editor({id, data}: {id: number; data: any}) {
   const [blocks, setBlocks] = useState<Block[]>([])
+  const [isSaving, setIsSaving] = useState(false)
   const lastSyncTimeRef = useRef<Date | null>(null)
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -22,9 +23,11 @@ export default function Editor({id, data}: {id: number; data: any}) {
 
   // This function will be called to update the draft
   const saveDraft = useCallback(() => {
-    updateDraft(id, blocks)
+    setIsSaving(true)
+    updateDraft(id, blocks).then(() => {
+      setIsSaving(false)
+    })
     lastSyncTimeRef.current = new Date() // Update the last sync time
-    console.log('draft saved')
   }, [id, blocks])
 
   const scheduleSaveDraft = useCallback(() => {
@@ -64,5 +67,10 @@ export default function Editor({id, data}: {id: number; data: any}) {
   }
 
   // Renders the editor instance using a React component.
-  return <BlockNoteView editor={editor} slashMenu tableHandles formattingToolbar onChange={changeHandler} />
+  return (
+    <>
+      <BlockNoteView editor={editor} slashMenu tableHandles formattingToolbar onChange={changeHandler} />
+      {isSaving ? <div>Saving...</div> : null}
+    </>
+  )
 }

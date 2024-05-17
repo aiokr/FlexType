@@ -27,16 +27,22 @@ export async function addNewDraft() {
 
 export async function updateDraft(draftId: any, text: any) {
   const { userId } = await getUserData()
-  await prisma.draftPaper.update({
-    where: {
-      id: parseInt(draftId)
-    },
-    data: {
-      mainText: text
-    }
-  }).then(() => {
-    console.log('draft paper updated')
-  })
+  if (text === null) {
+    console.log('error')
+    return
+  } else {
+    await prisma.draftPaper.update({
+      where: {
+        id: parseInt(draftId)
+      },
+      data: {
+        uplishedAt: new Date(),
+        mainText: text
+      }
+    }).then(() => {
+      console.log('draft paper updated')
+    })
 
-  return
+    return
+  }
 }

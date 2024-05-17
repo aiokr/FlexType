@@ -18,7 +18,9 @@ export default async function DraftPaperPage() {
       <CreateNewDraftPaper />
       {draftpaperItem.map((draftpaper) => (
         <div key={draftpaper.id} className="py-4">
-          <Link href={`/dashboard/editor/${draftpaper.id}`}>{draftpaper.id}</Link>
+          <Link href={`/dashboard/editor/${draftpaper.id}`} target="_blank">
+            {draftpaper.id}
+          </Link>
         </div>
       ))}
     </div>
