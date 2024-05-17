@@ -27,7 +27,6 @@ export async function addNewDraft() {
 
 export async function updateDraft(draftId: any, text: any) {
   const { userId } = await getUserData()
-  console.log(text)
   if (Array.isArray(text) && text.length === 0) {
     console.log('array is empty')
     return

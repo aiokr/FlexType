@@ -8,9 +8,10 @@ import {BlockNoteView} from '@blocknote/mantine'
 import '@blocknote/mantine/style.css'
 
 import {updateDraft} from '@/app/dashboard/draftpaper/actions'
+import {saveAsVersion} from '@/app/dashboard/post/actions'
 
 // Our <Editor> component we can reuse later
-export default function Editor({id, data}: {id: number; data: any}) {
+export default function Editor({postId, id, data}: {postId: number; id: number; data: any}) {
   const [blocks, setBlocks] = useState<Block[]>([])
   const [isSaving, setIsSaving] = useState(false)
   const lastSyncTimeRef = useRef<Date | null>(null)
@@ -68,9 +69,13 @@ export default function Editor({id, data}: {id: number; data: any}) {
 
   // Renders the editor instance using a React component.
   return (
-    <>
+    <div className="relative h-full">
       <BlockNoteView editor={editor} slashMenu tableHandles formattingToolbar onChange={changeHandler} />
-      {isSaving ? <div>Saving...</div> : null}
-    </>
+      <div className="absolute border left-0 right-0 bottom-[48px] w-[90%] md:w-[80%] mx-auto rounded-full shadow-lg px-4 py-2 flex flex-between gap-3">
+        <button onClick={() => saveAsVersion(postId)}>Save As Version</button>
+        <span className="block mr-auto"></span>
+        {isSaving ? <div>Saving...</div> : <div>Saved</div>}
+      </div>
+    </div>
   )
 }
