@@ -19,9 +19,9 @@ export default async function EditorPage(props: any) {
   const draftPaperMainText = draftPaperData?.mainText
 
   return (
-    <div className="container mx-auto w-[80svw]">
-      <section className="flex flex-col w-[80%] mx-auto">
-        <h1 className="text-2xl font-bold">{postData?.Title}</h1>
+    <div className="container mx-auto w-svw md:w-[90svw] lg:w-[80svw]">
+      <section className="flex flex-col w-full md:w-[90%] lg:w-[80%] mx-auto">
+        <h1 className="text-2xl font-bold md:px-[54px]">{postData?.Title}</h1>
         <Editor id={draftPaperId} data={draftPaperMainText} />
       </section>
     </div>
