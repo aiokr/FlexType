@@ -122,7 +122,7 @@ model Post {
   currentDraft   DraftPaper? @relation(fields: [currentDraftId], references: [id])
   currentDraftId Int
   Title          String
-  History        Json
+  History        Json?
   createdAt      DateTime    @default(now())
   uplishedAt     DateTime?
   published      Boolean     @default(false)
