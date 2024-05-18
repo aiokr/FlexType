@@ -70,7 +70,7 @@ export async function saveAsVersion(postId: any) {
 
   const newDraftPaperId: number = newDraftPaper.id
   const newVersion = currentVersion + 1   // 新版本的版本号
-  const newHistoryData = [...currentHistoryData, { draftId: newDraftPaperId, version: newVersion }];
+  const newHistoryData = [...currentHistoryData, { draftId: newDraftPaperId, version: newVersion, createAt: new Date() }];
 
   // 更新当前文章的当前版本
   const newPost = await prisma.post.update({
@@ -84,7 +84,7 @@ export async function saveAsVersion(postId: any) {
 
   const handleNewVersion = () => {
     newPost
-    redirect('./editor/' + newPost.id)
+    redirect('./' + newPost.id)
   }
 
   return (handleNewVersion())

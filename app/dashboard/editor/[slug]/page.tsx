@@ -20,9 +20,9 @@ export default async function EditorPage(props: any) {
 
   return (
     <div className="container mx-auto h-full">
-      <section className="flex flex-col mx-auto h-full overflow-x-hidden">
-        <h1 className="text-2xl font-bold md:px-[54px]">{postData?.Title}</h1>
-        <Editor postId={postId} id={draftPaperId} data={draftPaperMainText} />
+      <section className="flex flex-col mx-auto h-full overflow-x-hidden max-w-[1000px]">
+        <h1 className="text-2xl font-bold md:px-3 pb-3">{postData?.Title}</h1>
+        <Editor postId={postId} postData={postData} id={draftPaperId} data={draftPaperMainText} />
       </section>
     </div>
   )

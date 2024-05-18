@@ -45,3 +45,13 @@ export async function updateDraft(draftId: any, text: any) {
     return
   }
 }
+
+export async function getDraftPaperData(draftId: any) {
+  const { userId } = await getUserData()
+  const draftPaperData = await prisma.draftPaper.findUnique({
+    where: {
+      id: parseInt(draftId)
+    }
+  })
+  return draftPaperData
+}
