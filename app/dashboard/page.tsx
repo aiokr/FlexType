@@ -11,10 +11,12 @@ export default async function Dashboard() {
   }
 
   return (
-    <div className="container w-[80svw] mx-auto ">
-      <section className="w-full grid grid-cols-2 md:grid-cols-4">
-        <div className="border border-zinc-200 rounded-xl w-full h-36 p-4">12</div>
-      </section>
+    <div className="pt-14 md:pt-0 overflow-y-auto mt-4 w-full">
+      <div className="container mx-auto ">
+        <section className="w-full grid grid-cols-2 md:grid-cols-4">
+          <div className="border border-zinc-200 rounded-xl w-full h-36 p-4">12</div>
+        </section>
+      </div>
     </div>
   )
 }

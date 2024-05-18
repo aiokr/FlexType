@@ -13,14 +13,12 @@ async function getUserData() {
 
 export async function addNewDraft() {
   const { userId } = await getUserData()
-  console.log('into async actions' + userId)
   const newDraft = await prisma.draftPaper.create({
     data: {
       userId: userId,
       mainText: [{}]
     }
   })
-  console.log(newDraft)
   const newDraftId: number = newDraft.id
   redirect('./editor/' + newDraftId)
 }
