@@ -8,7 +8,7 @@ import '@blocknote/core/fonts/inter.css'
 import {useCreateBlockNote} from '@blocknote/react'
 import {BlockNoteView} from '@blocknote/mantine'
 import '@blocknote/mantine/style.css'
-import '@/app/blocknote.css'
+import '@/app/blocknote.scss'
 
 export default function VersionPreviewEditor({data}: {data: any}) {
   const [blocks, setBlocks] = useState<Block[]>([])
@@ -18,7 +18,7 @@ export default function VersionPreviewEditor({data}: {data: any}) {
     initialContent: data
   })
   return (
-    <div>
+    <div className="previewEditor">
       <BlockNoteView editor={editor} editable={false} />
     </div>
   )

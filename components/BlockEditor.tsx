@@ -8,14 +8,15 @@ import '@blocknote/core/fonts/inter.css'
 import {useCreateBlockNote} from '@blocknote/react'
 import {BlockNoteView} from '@blocknote/mantine'
 import '@blocknote/mantine/style.css'
+import '@/app/blocknote.scss'
 
-// Semi UI
+// UI
 import {SideSheet, Timeline, Modal, Dropdown, Skeleton} from '@douyinfe/semi-ui'
+import {IconMore} from '@/assets/icons'
 
 // Actions
 import {updateDraft, getDraftPaperData} from '@/app/dashboard/draftpaper/actions'
 import {saveAsVersion} from '@/app/dashboard/post/actions'
-import {IconMore} from '@/assets/icons'
 
 import VersionPreviewEditor from '@/components/VersionPreviewEditor'
 
@@ -38,7 +39,9 @@ export default function Editor({postId, id, data, postData}: {postId: number; id
   // This function will be called to update the draft
   const saveDraft = useCallback(() => {
     setIsSaving(true) // 保存状态，更改为正在保存
+    console.log('保存中...')
     updateDraft(id, blocks).then(() => {
+      console.log('保存完成')
       setIsSaving(false) // 保存状态，更改为已保存
     })
     lastSyncTimeRef.current = new Date() // Update the last sync time
@@ -70,7 +73,7 @@ export default function Editor({postId, id, data, postData}: {postId: number; id
         clearTimeout(saveTimeoutRef.current)
       }
     }
-  }, [])
+  }, [saveDraft])
 
   const changeHandler = () => {
     const newBlocks = editor.document

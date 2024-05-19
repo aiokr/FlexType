@@ -26,7 +26,7 @@ export async function addNewDraft() {
 export async function updateDraft(draftId: any, text: any) {
   const { userId } = await getUserData()
   if (Array.isArray(text) && text.length === 0) {
-    console.log('array is empty')
+    // console.log('array is empty')
     return
   } else {
     await prisma.draftPaper.update({
@@ -38,7 +38,7 @@ export async function updateDraft(draftId: any, text: any) {
         mainText: text
       }
     }).then(() => {
-      // console.log('draft paper updated')
+      // console.log('保存完成: ' + new Date())
     })
     return
   }

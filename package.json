@@ -30,7 +30,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-map-gl": "^7.1.7",
-    "reset-css": "^5.0.2"
+    "reset-css": "^5.0.2",
+    "sass": "^1.77.2"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
