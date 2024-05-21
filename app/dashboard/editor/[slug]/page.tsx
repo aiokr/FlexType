@@ -1,5 +1,6 @@
 import prisma from '@/libs/prisma'
 import dynamic from 'next/dynamic'
+import {Breadcrumb} from 'antd'
 
 const Editor = dynamic(() => import('@/components/BlockEditor'), {ssr: false})
 
@@ -18,14 +19,32 @@ export default async function EditorPage(props: any) {
   })
   const draftPaperMainText = draftPaperData?.mainText
 
+  const breadcrumbItem = [
+    {
+      title: '首页',
+      href: '/'
+    },
+    {
+      title: '仪表盘',
+      href: '/dashboard'
+    },
+    {
+      title: '文章',
+      href: '/dashboard/post'
+    },
+    {
+      title: postData?.Title,
+      herf: `/dashboard/editor/${postId}`
+    }
+  ]
+
   return (
-    <div className="pt-14 md:pt-0 overflow-y-auto mt-4 w-full">
-      <div className="container mx-auto h-full">
-        <section className="flex flex-col mx-auto h-full overflow-x-hidden max-w-[1000px]">
-          <h1 className="text-2xl font-bold px-4 pb-3">{postData?.Title}</h1>
-          <Editor postId={postId} postData={postData} id={draftPaperId} data={draftPaperMainText} />
-        </section>
-      </div>
+    <div className="px-2 md:px-0 pt-4 h-full">
+      <Breadcrumb items={breadcrumbItem} />
+      <section className="flex flex-col mx-auto overflow-x-hidden max-w-[1000px] pt-4  h-[calc(100%-22px)]">
+        <h1 className="text-2xl font-bold pl-12 pr-4 pb-3">{postData?.Title}</h1>
+        <Editor postId={postId} postData={postData} id={draftPaperId} data={draftPaperMainText} />
+      </section>
     </div>
   )
 }

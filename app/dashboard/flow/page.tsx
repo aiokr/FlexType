@@ -4,7 +4,7 @@ import {getAllFileInDatabase} from '@/libs/upyunFilesOperator'
 import convertDMSToDecimal from '@/libs/convertDMSToDecimal'
 import Link from 'next/link'
 
-export default async function Photos() {
+export default async function Flow() {
   let allPhotoFlowItems = await prisma.photo.findMany() // 从数据库获取所有照片流项目
   const fileData = (await getAllFileInDatabase()).sort((a, b) => new Date(b.uplishedAt).getTime() - new Date(a.uplishedAt).getTime()) // 从附件数据库获取照片流的附件信息
   let photoOriginalData = await prisma.assets.findMany({
@@ -68,15 +68,15 @@ export default async function Photos() {
   })
 
   return (
-    <main className="container max-w-[100vw] mx-auto ">
-      <div className="text-xs text-gray-300 pt-1 md:pt-2 lg:pt-3 px-2 md:px-0">
+    <main className="container max-w-[100vw] max-h-screen overflow-y-scroll mx-auto">
+      <div className="text-xs text-gray-300 pt-1 md:pt-2 lg:pt-3 px-2 md:px-0 fixed top-0">
         <Link href={'/'}>首页</Link>
         <> / </>
         <Link href={'/dashboard'}>仪表盘</Link>
         <> / </>
         <Link href={'/dashboard/flow'}>照片流</Link>
       </div>
-      <div className="text-2xl font-bold pt-2 py-4 md:py-4 px-2 md:px-0">照片流</div>
+      <div className="text-2xl font-bold pt-2 py-4 md:pb-4 md:pt-8 px-2 md:px-0">照片流</div>
       <PhotoListComponent
         photosData={allPhotoFlowItems}
         combinedData={combinedData.sort((a, b) =>

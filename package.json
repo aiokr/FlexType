@@ -12,6 +12,7 @@
     "cypress:open": "cypress open"
   },
   "dependencies": {
+    "@ant-design/nextjs-registry": "^1.0.0",
     "@blocknote/core": "^0.13.2",
     "@blocknote/mantine": "^0.13.2",
     "@blocknote/react": "^0.13.2",
@@ -24,6 +25,7 @@
     "@supabase/ssr": "^0.1.0",
     "@supabase/supabase-js": "^2.43.1",
     "@types/mapbox__mapbox-gl-geocoder": "^5.0.0",
+    "antd": "^5.17.3",
     "highlight.js": "^11.9.0",
     "mapbox-gl": "^3.3.0",
     "next": "14.1.4",
