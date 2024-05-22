@@ -9,7 +9,6 @@ import {Header, Content} from 'antd/es/layout/layout'
 export default async function DashboardLayout({children}: {children: React.ReactNode}) {
   const supabase = createClient()
   const {data, error} = await supabase.auth.getUser()
-  console.log(data)
 
   if (error || !data?.user) {
     redirect('/login')
@@ -27,7 +26,7 @@ export default async function DashboardLayout({children}: {children: React.React
 
   return (
     <Layout style={{minHeight: '100vh'}}>
-      <RootNav loginUserAvatar={loginUserAvatar} data={data} userData={userData} />
+      <RootNav loginUserAvatar={loginUserAvatar} data={data} userData={userData} style={{minHeight: '100vh'}} />
       <Layout>
         <Content className="px-4">{children}</Content>
       </Layout>
