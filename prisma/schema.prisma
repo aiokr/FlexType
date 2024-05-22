@@ -127,6 +127,12 @@ model Post {
   createdAt      DateTime    @default(now())
   uplishedAt     DateTime?
   published      Boolean     @default(false)
+  deleted        Boolean     @default(false)
+  deletedAt      DateTime?
+  category       Category?   @relation(fields: [categoryId], references: [id])
+  categoryId     Int?
+  tag            Tag?        @relation(fields: [tagId], references: [id])
+  tagId          Int?
 }
 
 model DraftPaper {
@@ -137,4 +143,16 @@ model DraftPaper {
   createdAt  DateTime  @default(now())
   uplishedAt DateTime?
   mainText   Json
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String
+  Post Post[]
+}
+
+model Tag {
+  id   Int    @id @default(autoincrement())
+  name String
+  Post Post[]
 }
