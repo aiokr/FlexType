@@ -89,3 +89,18 @@ export async function saveAsVersion(postId: any) {
 
   return (handleNewVersion())
 }
+
+// 修改文章信息
+export async function editPostInfo(postId: any, editedPostInfo: any) {
+  const { userId } = await getUserData()
+  const newPost = await prisma.post.update({
+    where: { id: parseInt(postId) },
+    data: {
+      Title: editedPostInfo.Title,
+      published: editedPostInfo.published,
+      uplishedAt: new Date(),
+    }
+  })
+  console.log(newPost)
+  return (newPost)
+}
