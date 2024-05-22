@@ -17,14 +17,16 @@ export const CreateNewPost = () => {
 
 export const PostTable = (data: any) => {
   // 重新构造数据
-  const tableData = data.data.map((item: any, index: number) => ({
-    no: index + 1,
-    id: item.id,
-    title: item.Title,
-    createdAt: item.createdAt,
-    isPublished: item.published,
-    historyNum: item.History.length
-  }))
+  const tableData = data.data
+    .filter((item: any) => item.deleted === false)
+    .map((item: any, index: number) => ({
+      no: index + 1,
+      id: item.id,
+      title: item.Title,
+      createdAt: item.createdAt,
+      isPublished: item.published,
+      historyNum: item.History.length
+    }))
 
   // 定义表格列
   const columns = [
