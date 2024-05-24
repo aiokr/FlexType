@@ -22,7 +22,7 @@ export default async function DraftPaperPage() {
   const postItem = await prisma.post.findMany()
   return (
     <div className="mx-auto px-2 md:px-0 pt-4">
-      <Breadcrumb items={breadcrumbItem} className="text-xs" />
+      <Breadcrumb items={breadcrumbItem} className="inline-block text-xs" />
       <div className="text-2xl font-bold pt-2 py-4 md:py-4">文章</div>
       <CreateNewPost />
       <PostTable data={postItem} />

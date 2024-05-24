@@ -140,6 +140,10 @@ export const PostTable = (data: any) => {
           <Switch checked={editedPostInfo.published} onChange={(checked: boolean) => setEditedPostInfo({...editedPostInfo, published: checked})} />
           {JSON.stringify(editedPostInfo.published) === 'true' ? <Tag color="blue">Published</Tag> : <Tag color="volcano">Draft</Tag>}
         </div>
+        <span className="block text-lg font-bold mt-6">Dangerous Area</span>
+        <Button className="mt-2" danger onClick={() => console.log('Clicked delete button')}>
+          Delete
+        </Button>
       </Modal>
     </>
   )

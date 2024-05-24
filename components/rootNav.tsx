@@ -7,7 +7,7 @@ import {FileIcon, PhotoIcon, SettingIcon} from '@/assets/icons'
 import HorizontalNavMenu from './horizontalNavMenu'
 import {redirect, useRouter} from 'next/navigation'
 import {signOut} from '@/app/login/actions'
-import {Dropdown, Layout, Menu, Button, Popover} from 'antd'
+import {Dropdown, Layout, Menu, Button, Popover, Select} from 'antd'
 import type {MenuProps} from 'antd'
 
 const {Header, Content, Footer, Sider} = Layout
@@ -29,21 +29,40 @@ const items: MenuItem[] = [
   getItem(<Link href={'/dashboard/post'}>文章管理</Link>, 'posts', <FileIcon className="h-5 w-5" />),
   getItem(<Link href={'/dashboard/flow'}>照片流</Link>, 'photos', <PhotoIcon className="h-5 w-5" />),
   getItem(<Link href={'/dashboard/assets'}>文件管理</Link>, 'assets', <FileIcon className="h-5 w-5" />),
+  getItem(<Link href={'/dashboard/collection'}>内容集</Link>, 'collections', <SettingIcon className="h-5 w-5" />),
   getItem(<Link href={'/dashboard/settings'}>设置</Link>, 'settings', <SettingIcon className="h-5 w-5" />)
 ]
 
-/*
-  { itemKey: 'posts', text: '文章管理' },
-  { itemKey: 'albums', text: '影集' },
-  { itemKey: 'sites', text: '站点管理' },
-  { itemKey: 'tags', text: '标签管理' },
-  { itemKey: 'categories', text: '分类管理' },
-*/
+// 切换内容集
+
+const handleCollectionChange = (value: string) => {
+  console.log(`Selected Collection ${value}`)
+}
 
 // AntD 导航
 export function RootNav(props: any) {
   const [collapsed, setCollapsed] = useState(false)
-  const {loginUserAvatar, data, userData} = props
+  const {loginUserAvatar, data, userData, collectionItem} = props
+
+  // 内容集
+  const collectionSelectItems = collectionItem.map((item: any) => {
+    return {
+      label: item.name,
+      value: item.id
+    }
+  })
+
+  collectionSelectItems.push({
+    label: 'All Collections',
+    value: 0
+  })
+
+  console.log(collectionSelectItems)
+
+  // 内容集搜索
+  const filterOption = (input: string, option?: {label: string; value: string}) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+
+  // 头像 Popover
   const PopoverContent = ({data, userData}: any) => {
     if (data) {
       return (
@@ -67,6 +86,17 @@ export function RootNav(props: any) {
           <Image src={loginUserAvatar} alt="avatar" width={32} height={32} className="rounded-full" unoptimized />
         </Popover>
         <button className={`${!collapsed ? 'inline-block' : 'hidden'}`}>FlexType /</button>
+      </div>
+      <div className="w-full pb-6 flex items-center justify-center">
+        <Select
+          options={collectionSelectItems}
+          defaultOpen={false}
+          showSearch
+          placeholder="选择内容集"
+          onChange={(value) => handleCollectionChange(value)}
+          filterOption={filterOption}
+          style={{width: 120}}
+        ></Select>
       </div>
       <Menu theme="light" defaultSelectedKeys={['1']} mode="inline" items={items} className="w-full pb-auto" />
     </Sider>
