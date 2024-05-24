@@ -9,18 +9,20 @@ datasource db {
 }
 
 model User {
-  id         String       @id @default(cuid())
-  uid        String?      @unique
-  name       String
-  email      String       @unique
-  image      String?
-  role       Role         @default(USER)
-  createdAt  DateTime     @default(now())
-  Assets     Assets[]
-  post       Post[]
-  draftPaper DraftPaper[]
-  accounts   Account[]
-  sessions   Session[]
+  id                    String                         @id @default(cuid())
+  uid                   String?                        @unique
+  name                  String
+  email                 String                         @unique
+  image                 String?
+  role                  Role                           @default(USER)
+  createdAt             DateTime                       @default(now())
+  Assets                Assets[]
+  post                  Post[]
+  draftPaper            DraftPaper[]
+  accounts              Account[]
+  sessions              Session[]
+  authorizedCollections AuthorizedUsersOnCollections[]
+  Collection            Collection[]
 }
 
 enum Role {
@@ -155,4 +157,24 @@ model Tag {
   id   Int    @id @default(autoincrement())
   name String
   Post Post[]
+}
+
+model Collection {
+  id             Int                            @id @default(autoincrement())
+  slug           String?                        @unique
+  name           String
+  info           Json?
+  admin          User                           @relation(fields: [adminId], references: [id])
+  adminId        String
+  authorizedUser AuthorizedUsersOnCollections[]
+}
+
+model AuthorizedUsersOnCollections {
+  collection       Collection @relation(fields: [collectionId], references: [id])
+  collectionId     Int
+  authorizedUser   User       @relation(fields: [authorizedUserId], references: [id])
+  authorizedUserId String
+  assignedAt       DateTime   @default(now())
+
+  @@id([collectionId, authorizedUserId])
 }
