@@ -19,10 +19,8 @@ model User {
   Assets                Assets[]
   post                  Post[]
   draftPaper            DraftPaper[]
-  accounts              Account[]
-  sessions              Session[]
   authorizedCollections AuthorizedUsersOnCollections[]
-  Collection            Collection[]
+  collection            Collection[]
 }
 
 enum Role {
@@ -68,53 +66,18 @@ model Assets {
 }
 
 model Photo {
-  id        String    @id @default(cuid())
-  title     String?
-  asset     Assets?   @relation(fields: [assetId], references: [assetId])
-  assetId   Int
-  createdAt DateTime? @default(now())
-  info      Json?
-}
-
-model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-}
-
-model Site {
-  id   String @id @default(cuid())
-  name String
-  url  String
+  id             String      @id @default(cuid())
+  title          String?
+  asset          Assets?     @relation(fields: [assetId], references: [assetId])
+  assetId        Int
+  createdAt      DateTime?   @default(now())
+  info           Json?
+  collection     Collection? @relation(fields: [collectionSlug], references: [slug])
+  collectionSlug String?
+  category       Category?   @relation(fields: [categoryId], references: [id])
+  categoryId     Int?
+  tag            Tag?        @relation(fields: [tagId], references: [id])
+  tagId          Int?
 }
 
 model Post {
@@ -135,6 +98,8 @@ model Post {
   categoryId     Int?
   tag            Tag?        @relation(fields: [tagId], references: [id])
   tagId          Int?
+  collection     Collection? @relation(fields: [collectionSlug], references: [slug])
+  collectionSlug String?
 }
 
 model DraftPaper {
@@ -148,15 +113,17 @@ model DraftPaper {
 }
 
 model Category {
-  id   Int    @id @default(autoincrement())
-  name String
-  Post Post[]
+  id    Int     @id @default(autoincrement())
+  name  String
+  post  Post[]
+  photo Photo[]
 }
 
 model Tag {
-  id   Int    @id @default(autoincrement())
-  name String
-  Post Post[]
+  id    Int     @id @default(autoincrement())
+  name  String
+  post  Post[]
+  photo Photo[]
 }
 
 model Collection {
@@ -167,6 +134,8 @@ model Collection {
   admin          User                           @relation(fields: [adminId], references: [id])
   adminId        String
   authorizedUser AuthorizedUsersOnCollections[]
+  post           Post[]
+  photo          Photo[]
 }
 
 model AuthorizedUsersOnCollections {
