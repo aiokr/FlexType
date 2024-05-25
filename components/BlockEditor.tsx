@@ -15,8 +15,8 @@ import {SideSheet, Timeline, Modal, Dropdown, Skeleton} from '@douyinfe/semi-ui'
 import {IconMore} from '@/assets/icons'
 
 // Actions
-import {updateDraft, getDraftPaperData} from '@/app/dashboard/draftpaper/actions'
-import {saveAsVersion} from '@/app/dashboard/post/actions'
+import {updateDraft, getDraftPaperData} from '@/app/dashboard/[coll]/draftpaper/actions'
+import {saveAsVersion} from '@/app/dashboard/[coll]/draftpaper/post/actions'
 
 import VersionPreviewEditor from '@/components/VersionPreviewEditor'
 

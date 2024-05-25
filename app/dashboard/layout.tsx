@@ -36,27 +36,5 @@ export default async function DashboardLayout({children}: {children: React.React
     }
   })
 
-  // 当前用户管理的内容集
-  const adminCollection = collectionItem.filter((item: any) => {
-    return item.adminId === userData.id
-  })
-
-  // 当前用户有权限的内容集
-  const authorizedCollection = collectionItem.filter((item: any) => {
-    return item.authorizedUser.some((user: any) => user.authorizedUserId === userData.id)
-  })
-
-  // 合并
-  authorizedCollection.push(...adminCollection)
-
-  console.log({authorizedCollection})
-
-  return (
-    <Layout style={{minHeight: '100vh'}}>
-      <RootNav loginUserAvatar={loginUserAvatar} data={data} userData={userData} collectionItem={authorizedCollection} style={{minHeight: '100vh'}} />
-      <Layout>
-        <Content className="px-4">{children}</Content>
-      </Layout>
-    </Layout>
-  )
+  return <>{children}</>
 }
