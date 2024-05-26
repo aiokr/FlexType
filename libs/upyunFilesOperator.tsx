@@ -1,7 +1,9 @@
-import { sign, getMD5 } from '@/libs/calcUpyunSecret'
+'use server'
+
+import {sign, getMD5} from '@/libs/calcUpyunSecret'
 import prisma from '@/libs/prisma'
 
-const date = new Date().toUTCString();
+const date = new Date().toUTCString()
 // 获取 UpYun 仓库信息
 const operator = process.env.UPYUN_OPERATOR // 操作员
 const password = process.env.UPYUN_PASSWORD // 操作员对应的密码
@@ -18,26 +20,26 @@ const upyunAvatarSuffix = process.env.UPYUN_THUMBFILE_AVATAR // 自定义版本�
 const upyunOptimizedSuffix = process.env.UPYUN_THUMBFILE_OPTIMIZED // 自定义版本：常规图片压缩
 const upyunInfoSuffix = process.env.UPYUN_THUMBFILE_INFO // 自定义版本：图片信息
 
-const key: any = operator?.toString();
-const secret: any = password?.toString();
+const key: any = operator?.toString()
+const secret: any = password?.toString()
 // const method = 'GET';
 
-const upyunUrl = "https://v0.api.upyun.com/"
+const upyunUrl = 'https://v0.api.upyun.com/'
 
 // 拼接服务名称 + 目录
-const uri = '/' + serverName + path;
+const uri = '/' + serverName + path
 
 // 获取目录下的所有文件列表
 async function getAllFileInUpyunDir() {
   const signsecret = sign(key, getMD5(secret), 'GET', uri, date)
-  const headers = new Headers();
-  headers.append('Authorization', signsecret);
-  headers.append('Date', date);
-  headers.append('Accept', 'application/json');
-  headers.append('x-list-order', 'asc');
+  const headers = new Headers()
+  headers.append('Authorization', signsecret)
+  headers.append('Date', date)
+  headers.append('Accept', 'application/json')
+  headers.append('x-list-order', 'asc')
   const fileList = await fetch(upyunUrl + serverName + path, {
     method: 'GET',
-    headers: headers,
+    headers: headers
   })
   const fileListjson = await fileList.json()
   return fileListjson
@@ -51,7 +53,6 @@ async function getAllFileInDatabase() {
 
 // 上传文件
 async function uploadFileToUpyun(formData: any, userID: string) {
-
   const fileName = encodeURI(formData.name)
   console.log(fileName)
 
@@ -61,9 +62,9 @@ async function uploadFileToUpyun(formData: any, userID: string) {
   const signsecret = sign(key, getMD5(secret), 'PUT', upuri, date)
 
   // 制作 Headers
-  const headers = new Headers();
-  headers.append('Authorization', signsecret);
-  headers.append('Date', date);
+  const headers = new Headers()
+  headers.append('Authorization', signsecret)
+  headers.append('Date', date)
 
   let uploadFileResult = null
 
@@ -71,8 +72,9 @@ async function uploadFileToUpyun(formData: any, userID: string) {
   const uploadFile = await fetch(upyunUrl + serverName + path + '/' + fileName, {
     method: 'PUT',
     headers: headers,
-    body: formData,
+    body: formData
   })
+  console.log(upyunUrl + serverName + path + '/' + fileName)
   console.log(fileName, uploadFile)
 
   // 写入数据库
@@ -82,17 +84,17 @@ async function uploadFileToUpyun(formData: any, userID: string) {
       uploadFileResult = writeFileRecord.assetId
     } else {
       console.error('上传到又拍云成功，写入数据库失败')
-      uploadFileResult = { error: "Failed to save file information to the database." }
+      uploadFileResult = {error: 'Failed to save file information to the database.'}
     }
   } else {
     console.error('上传到又拍云失败，状态码:', uploadFile.status)
-    uploadFileResult = { error: `Failed to upload file to UPYUN. Status code: ${uploadFile.status}` }
+    uploadFileResult = {error: `Failed to upload file to UPYUN. Status code: ${uploadFile.status}`}
   }
 
   console.log(uploadFileResult)
 
   // 返回上传结果
-  return { uploadFile, setFileDatabase, uploadFileResult }
+  return {uploadFile, setFileDatabase, uploadFileResult}
 }
 
 // 获取上传密钥
@@ -101,7 +103,7 @@ async function getUploadSecret(fileName: string) {
   const upuri = uri + '/' + fileNameEncode
   const url = upyunUrl + serverName + path + '/' + fileName
   const signsecret = sign(key, getMD5(secret), 'GET', upuri, date)
-  return { signsecret, upuri, date, url }
+  return {signsecret, upuri, date, url}
 }
 
 // 将文件列表存入数据库
@@ -110,19 +112,22 @@ async function setFileDatabase(formData: any, userID: string, ossProvider: strin
   const fileType = formData.type
   const fileSize = formData.size
   const fileUrl = serverDomain + path + '/' + fileName
-  const createFileRecord = await prisma.assets.create({
-    data: {
-      title: fileName,
-      url: fileUrl,
-      type: fileType,
-      uploadUserId: userID,
-      size: fileSize,
-      base: ossProvider
-    }
-  }).then().catch(e => {
-    console.log(e)
-    return e
-  })
+  const createFileRecord = await prisma.assets
+    .create({
+      data: {
+        title: fileName,
+        url: fileUrl,
+        type: fileType,
+        uploadUserId: userID,
+        size: fileSize,
+        base: ossProvider
+      }
+    })
+    .then()
+    .catch((e) => {
+      console.log(e)
+      return e
+    })
   return createFileRecord
 }
 
@@ -132,7 +137,7 @@ async function getAssetsID(fileName: string) {
     where: {
       title: fileName
     }
-  });
+  })
   return AssetsID
 }
 
@@ -142,13 +147,12 @@ async function getAssets(assetId: number) {
     where: {
       assetId: assetId
     }
-  });
+  })
   return assets
 }
 
 // 获取图片 Exif 信息
 async function getAssetsExif(assetId: number) {
-
   const assetTitle = await getAssets(assetId)
   const assetName = assetTitle?.title
   const response = await fetch(serverDomain + path + '/' + assetName + upyunInfoSuffix)
@@ -164,12 +168,11 @@ async function getAssetsExif(assetId: number) {
 
 // 获取图片其他信息（主色）
 async function getAssetsOtherInfo(assetId: number) {
-
   const assetTitle = await getAssets(assetId)
   const assetName = assetTitle?.title
   const response = await fetch(serverDomain + path + '/' + assetName + '_/excolor/3/exformat/hex') // 获取 3 个主色
   const mainColor = await response.json()
-  const mainColorHex = mainColor.map((colorObj: { color: string; }) => "#" + colorObj.color.substring(2)); // 创建只包含颜色代码的数组
+  const mainColorHex = mainColor.map((colorObj: {color: string}) => '#' + colorObj.color.substring(2)) // 创建只包含颜色代码的数组
   const info = {
     mainColor: mainColorHex
   }
@@ -179,24 +182,25 @@ async function getAssetsOtherInfo(assetId: number) {
     return JSON.stringify(writeOtherInfo) // writeOtherInfo
   }
   return
-
 }
 
 // 写入其他信息到数据库
 
 async function setAssetsOtherInfo(assetId: number, info: any) {
-
-  const writeOtherInfo = await prisma.assets.update({
-    where: {
-      assetId: assetId
-    },
-    data: {
-      info: info
-    }
-  }).then().catch(e => {
-    console.log(e)
-    return e
-  })
+  const writeOtherInfo = await prisma.assets
+    .update({
+      where: {
+        assetId: assetId
+      },
+      data: {
+        info: info
+      }
+    })
+    .then()
+    .catch((e) => {
+      console.log(e)
+      return e
+    })
   return writeOtherInfo
 }
 
@@ -205,7 +209,7 @@ async function setAssetsExif(assetId: number, exifInfo: any) {
   let width = exifInfo.width // 图片宽度
   let height = exifInfo.height // 图片高度
   let type = exifInfo.type // 图片格式
-  let Make = exifInfo.EXIF.Make  // 相机厂商
+  let Make = exifInfo.EXIF.Make // 相机厂商
   let Model = exifInfo.EXIF.Model // 相机型号
   let ApertureValue = exifInfo.EXIF.ApertureValue // 光圈值（以分数计）
   let ISOSpeedRatings = exifInfo.EXIF.ISOSpeedRatings // ISO 值
@@ -225,7 +229,7 @@ async function setAssetsExif(assetId: number, exifInfo: any) {
   let GPSSpeedRef = exifInfo.EXIF.GPSSpeedRef // 速度参考
 
   if (exifInfo.EXIF['0xA434']) {
-    LensModel = exifInfo.EXIF['0xA434'];
+    LensModel = exifInfo.EXIF['0xA434']
   }
 
   let takenTime = exifInfo.EXIF.DateTimeOriginal // 拍摄时间
@@ -241,47 +245,49 @@ async function setAssetsExif(assetId: number, exifInfo: any) {
 
   // 格式化拍摄时间
   function formatToISO8601(takenTime: string) {
-    const regex = /^(\d{4}):(\d{2}):(\d{2}) (\d{2}):(\d{2}):(\d{2})$/;
-    const match = takenTime.match(regex);
+    const regex = /^(\d{4}):(\d{2}):(\d{2}) (\d{2}):(\d{2}):(\d{2})$/
+    const match = takenTime.match(regex)
 
     if (match) {
       // 构建一个 ISO 8601 格式的日期字符串
-      const timeFormatting: string = `${match[1]}-${match[2]}-${match[3]}T${match[4]}:${match[5]}:${match[6]}${timeZone}`;
+      const timeFormatting: string = `${match[1]}-${match[2]}-${match[3]}T${match[4]}:${match[5]}:${match[6]}${timeZone}`
       console.log(timeFormatting)
-      const date = new Date(timeFormatting).toISOString();
+      const date = new Date(timeFormatting).toISOString()
       return date
     } else {
-      throw new Error('Input string is not in the expected format "YYYY:MM:DD HH:MM:SS"');
+      throw new Error('Input string is not in the expected format "YYYY:MM:DD HH:MM:SS"')
     }
   }
   let DateTimeOriginal = formatToISO8601(takenTime)
 
-  const updateExif = await prisma.assets.update({
-    where: {
-      assetId: assetId
-    },
-    data: {
-      width: width,
-      height: height,
-      Make: Make,
-      Model: Model,
-      ApertureValue: ApertureValue,
-      ISOSpeedRatings: ISOSpeedRatings,
-      LensMake: LensMake,
-      LensModel: LensModel,
-      ExposureTime: ExposureTime,
-      FNumber: FNumber,
-      DateTimeOriginal: DateTimeOriginal,
-      FocalLength: FocalLength,
-      FocalLengthIn35mmFilm: FocalLengthIn35mmFilm,
-      GPSLatitude: GPSLatitude,
-      GPSLongitude: GPSLongitude,
-      GPSAltitude: GPSAltitude,
-    },
-  }).catch(e => {
-    console.log('Write exif info to database error' + e)
-    return e
-  })
+  const updateExif = await prisma.assets
+    .update({
+      where: {
+        assetId: assetId
+      },
+      data: {
+        width: width,
+        height: height,
+        Make: Make,
+        Model: Model,
+        ApertureValue: ApertureValue,
+        ISOSpeedRatings: ISOSpeedRatings,
+        LensMake: LensMake,
+        LensModel: LensModel,
+        ExposureTime: ExposureTime,
+        FNumber: FNumber,
+        DateTimeOriginal: DateTimeOriginal,
+        FocalLength: FocalLength,
+        FocalLengthIn35mmFilm: FocalLengthIn35mmFilm,
+        GPSLatitude: GPSLatitude,
+        GPSLongitude: GPSLongitude,
+        GPSAltitude: GPSAltitude
+      }
+    })
+    .catch((e) => {
+      console.log('Write exif info to database error' + e)
+      return e
+    })
   console.log('Write exif info to database success' + updateExif)
   return updateExif
 }
@@ -303,13 +309,13 @@ async function deleteFileFromUpyun(assetId: number) {
   const fileName = encodeURI(asset?.title)
   const deluri = uri + '/' + fileName
   const signsecret = sign(key, getMD5(secret), 'DELETE', deluri, date)
-  const headers = new Headers();
-  headers.append('Authorization', signsecret);
-  headers.append('Date', date);
+  const headers = new Headers()
+  headers.append('Authorization', signsecret)
+  headers.append('Date', date)
   let deleteFileResult = null
   const deleteFile = await fetch(upyunUrl + serverName + path + '/' + fileName, {
     headers: headers,
-    method: 'DELETE',
+    method: 'DELETE'
   })
 
   // 删除数据库中的记录
@@ -318,26 +324,37 @@ async function deleteFileFromUpyun(assetId: number) {
     if (delFileRecord) {
       deleteFileResult = delFileRecord
     } else {
-      deleteFileResult = { error: "Failed to delete file." }
+      deleteFileResult = {error: 'Failed to delete file.'}
     }
   }
   console.log(deleteFileResult)
-  return { deleteFile, deleteFileResult }
+  return {deleteFile, deleteFileResult}
 }
 
 // 从数据库删除文件记录
 async function setDelFileDatabase(assetId: number) {
-  const delFileDatabase = await prisma.assets.delete({
-    where: {
-      assetId: assetId
-    }
-  }).then().catch(e => {
-    console.log(e)
-    return e
-  })
+  const delFileDatabase = await prisma.assets
+    .delete({
+      where: {
+        assetId: assetId
+      }
+    })
+    .then()
+    .catch((e) => {
+      console.log(e)
+      return e
+    })
   return delFileDatabase
 }
 
 export {
-  getAllFileInUpyunDir, uploadFileToUpyun, getAllFileInDatabase, deleteFileFromUpyun, getAssetsID, getAssetsOtherInfo, getAssetsExif, getUploadSecret, refreshFileList
+  getAllFileInUpyunDir,
+  uploadFileToUpyun,
+  getAllFileInDatabase,
+  deleteFileFromUpyun,
+  getAssetsID,
+  getAssetsOtherInfo,
+  getAssetsExif,
+  getUploadSecret,
+  refreshFileList
 }

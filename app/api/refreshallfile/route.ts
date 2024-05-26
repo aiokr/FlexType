@@ -1,19 +1,18 @@
-import { refreshFileList } from "@/libs/upyunFilesOperator"
+import {refreshFileList} from '@/libs/upyunFilesOperator'
 import AuthSession from '@/components/getAuthSession'
 import prisma from '@/libs/prisma'
 
 export async function GET() {
-
   const session = await AuthSession()
   const userMail = session.user.email
   const existingUser = await prisma.user.findMany({
     where: {
       email: userMail,
       role: {
-        in: ['ADMIN', 'EDITOR'],
-      },
+        in: ['ADMIN', 'EDITOR']
+      }
     }
-  });
+  })
 
   if (session && existingUser.length !== 0) {
     const response = await refreshFileList()
@@ -21,10 +20,7 @@ export async function GET() {
     if (response) {
       return Response.json(response)
     }
+  } else {
+    return Response.json({message: 'Not authenticated'}, {status: 403})
   }
-
-  else {
-    return Response.json({ message: "Not authenticated" }, { status: 403 })
-  }
-
 }

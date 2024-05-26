@@ -1,8 +1,8 @@
-"use server";
+'use server'
 
-import { revalidateTag } from "next/cache";
+import { revalidateTag } from 'next/cache'
 
-export default async function action() {
-  console.log("Auto revalidate");
-  revalidateTag("/");
+export async function autoRevalidate() {
+  console.log('Auto revalidate')
+  revalidateTag('/')
 }
