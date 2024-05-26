@@ -115,9 +115,9 @@ export default function Editor({postId, id, data, postData}: {postId: number; id
 
   return (
     <>
-      <div className="relative h-full">
+      <div className="relative pb-[50vh]">
         <BlockNoteView editor={editor} slashMenu tableHandles formattingToolbar onChange={changeHandler} />
-        <div className="absolute border left-0 right-0 bottom-[48px] w-[90%] md:w-[80%] mx-auto rounded-full shadow-lg px-4 py-2 flex flex-between gap-3">
+        <div className="fixed border left-0 right-0 bottom-[48px] w-[80%] md:w-[80%] mx-auto rounded-full shadow-lg px-4 py-2 flex flex-between gap-3 bg-white z-50">
           <button onClick={showHistory}>History</button>
           <span className="block mr-auto"></span>
           <button onClick={saveDraft}>Save</button>

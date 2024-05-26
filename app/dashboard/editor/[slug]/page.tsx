@@ -28,9 +28,9 @@ export default async function EditorPage(props: any) {
   ]
 
   return (
-    <div className="px-2 md:px-0 pt-4 h-full">
-      <Breadcrumb items={breadcrumbItem} />
-      <section className="flex flex-col mx-auto overflow-x-hidden max-w-[1000px] pt-4  h-[calc(100%-22px)]">
+    <div className="relative px-2 md:px-0 pt-4 h-screen overflow-y-auto no-scrollbar">
+      <Breadcrumb items={breadcrumbItem} className="absolute" />
+      <section className="flex flex-col mx-auto overflow-x-hidden max-w-[1000px] pt-8 h-[calc(100%-22px)] no-scrollbar">
         <EditorClient data={postData} />
         <Editor postId={postId} postData={postData} id={draftPaperId} data={draftPaperMainText} />
       </section>
