@@ -9,11 +9,14 @@ export const CollectionTable = (data: any) => {
   const tableData = data.data.map((item: any) => ({
     key: item.id,
     name: item.name,
+    slug: item.slug,
     admin: userData.find((user: any) => user.id === item.adminId),
     adminId: item.adminId,
     adminUsername: userData.find((user: any) => user.id === item.adminId)?.name,
     authorizedUser: item.authorizedUser.map((user: any) => user.authorizedUser)
   }))
+
+  console.log(tableData)
 
   const columns = [
     {
@@ -25,7 +28,12 @@ export const CollectionTable = (data: any) => {
     {
       title: '集合名称',
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
+      render: (text: any, record: any) => (
+        <Link href={`/dashboard/${record.slug}`} target="_blank">
+          {text}
+        </Link>
+      )
     },
     {
       title: '管理员',

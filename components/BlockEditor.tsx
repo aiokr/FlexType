@@ -16,7 +16,7 @@ import {IconMore} from '@/assets/icons'
 
 // Actions
 import {updateDraft, getDraftPaperData} from '@/app/dashboard/[coll]/draftpaper/actions'
-import {saveAsVersion} from '@/app/dashboard/[coll]/draftpaper/post/actions'
+import {saveAsVersion} from '@/app/dashboard/[coll]/post/actions'
 
 import VersionPreviewEditor from '@/components/VersionPreviewEditor'
 

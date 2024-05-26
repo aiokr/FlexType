@@ -22,11 +22,14 @@ export const PostTable = (data: any) => {
     .map((item: any, index: number) => ({
       no: index + 1,
       id: item.id,
+      collection: item.collectionSlug,
       title: item.Title,
       createdAt: item.createdAt,
       isPublished: item.published,
       historyNum: item.History.length
     }))
+
+  // console.log(tableData)
 
   // 定义表格列
   const columns = [
@@ -44,6 +47,12 @@ export const PostTable = (data: any) => {
           {text}
         </Link>
       )
+    },
+    {
+      title: 'Collection',
+      dataIndex: 'collection',
+      key: 'collection',
+      render: (text: any) => <span>{text}</span>
     },
     {
       title: 'Created At',

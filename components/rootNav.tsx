@@ -12,8 +12,15 @@ const {Header, Content, Footer, Sider} = Layout
 
 type MenuItem = Required<MenuProps>['items'][number]
 
-function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
+function getItem(
+  type: 'group' | 'divider' | 'dropdown' | 'item',
+  label: React.ReactNode,
+  key: React.Key,
+  icon?: React.ReactNode,
+  children?: MenuItem[]
+): MenuItem {
   return {
+    type,
     key,
     icon,
     children,
@@ -23,13 +30,15 @@ function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode,
 
 // 导航内容
 const items = (currentCollectionSlug: string) => [
-  getItem(<Link href={`/dashboard`}>仪表盘</Link>, 'dashboard', <SettingIcon className="h-5 w-5" />),
-  getItem(<Link href={`/dashboard/${currentCollectionSlug}`}>内容集首页</Link>, 'collectionDashboard', <SettingIcon className="h-5 w-5" />),
-  getItem(<Link href={`/dashboard/${currentCollectionSlug}/post`}>文章管理</Link>, 'posts', <FileIcon className="h-5 w-5" />),
-  getItem(<Link href={`/dashboard/${currentCollectionSlug}/flow`}>照片流</Link>, 'photos', <PhotoIcon className="h-5 w-5" />),
-  getItem(<Link href={`/dashboard/assets`}>文件管理</Link>, 'assets', <FileIcon className="h-5 w-5" />),
-  getItem(<Link href={`/dashboard/collection`}>内容集</Link>, 'collections', <SettingIcon className="h-5 w-5" />),
-  getItem(<Link href={`/dashboard/settings`}>设置</Link>, 'settings', <SettingIcon className="h-5 w-5" />)
+  getItem('item', <Link href={`/dashboard`}>仪表盘</Link>, 'dashboard', <SettingIcon className="h-5 w-5" />),
+  getItem('group', '内容集', 'collectionItem'),
+  getItem('item', <Link href={`/dashboard/${currentCollectionSlug}`}>内容集首页</Link>, 'collectionDashboard', <SettingIcon className="h-5 w-5" />),
+  getItem('item', <Link href={`/dashboard/${currentCollectionSlug}/post`}>文章</Link>, 'posts', <FileIcon className="h-5 w-5" />),
+  getItem('item', <Link href={`/dashboard/${currentCollectionSlug}/flow`}>照片流</Link>, 'photos', <PhotoIcon className="h-5 w-5" />),
+  getItem('group', '全局', 'nonCollection'),
+  getItem('item', <Link href={`/dashboard/${currentCollectionSlug}/assets`}>文件管理</Link>, 'assets', <FileIcon className="h-5 w-5" />),
+  getItem('item', <Link href={`/dashboard/${currentCollectionSlug}/collection`}>内容集管理</Link>, 'collections', <SettingIcon className="h-5 w-5" />),
+  getItem('item', <Link href={`/dashboard/${currentCollectionSlug}/settings`}>设置</Link>, 'settings', <SettingIcon className="h-5 w-5" />)
 ]
 
 // AntD 导航
@@ -45,10 +54,15 @@ export function RootNav(props: any) {
   })
 
   // 切换内容集
-  const handleCollectionChange = (value: string) => {
-    const newCollectionSlug = collectionItem.find((item: any) => item.id === value).slug || 'all'
-    console.log(`Selected Collection ${value} - ${newCollectionSlug}`)
-    router.push(`/dashboard/${newCollectionSlug}`)
+  const handleCollectionChange = (value: number) => {
+    console.log('handleCollectionChange value: ', value)
+    if (value === 0) {
+      router.push(`/dashboard/all`)
+    } else {
+      const newCollectionSlug = collectionItem.find((item: any) => item.id === value).slug
+      console.log(`Selected Collection ${value} - ${newCollectionSlug}`)
+      router.push(`/dashboard/${newCollectionSlug}`)
+    }
   }
 
   collectionSelectItems.push({label: 'All Collections', value: 0, slug: 'all'}) // 增加一个全部内容集
@@ -73,6 +87,11 @@ export function RootNav(props: any) {
       )
     }
   }
+
+  const currentCollectionId = currentCollection.length == 0 ? 0 : currentCollection[0].id
+
+  const menuItems = currentCollection.length == 0 ? items('all') : items(currentCollection[0].slug)
+
   return (
     <Sider theme="light" collapsible collapsed={collapsed} onCollapse={() => setCollapsed(!collapsed)}>
       <div className="w-full py-6 text-xl font-semibold flex items-center justify-center gap-2 transition-all">
@@ -84,7 +103,7 @@ export function RootNav(props: any) {
       <div className="w-full pb-6 flex items-center justify-center">
         <Select
           options={collectionSelectItems} // 内容集选项列表
-          defaultValue={currentCollection[0].id} // 当前内容集
+          defaultValue={currentCollectionId} // 当前内容集
           showSearch
           placeholder="选择内容集"
           onChange={(value) => handleCollectionChange(value)}
@@ -92,7 +111,7 @@ export function RootNav(props: any) {
           style={{width: 120}}
         ></Select>
       </div>
-      <Menu theme="light" defaultSelectedKeys={['1']} mode="inline" items={items(currentCollection[0].slug)} className="w-full pb-auto" />
+      <Menu theme="light" defaultSelectedKeys={['1']} mode="inline" items={menuItems} className="w-full pb-auto" />
     </Sider>
   )
 }

@@ -10,10 +10,6 @@
   @apply !bg-white;
 }
 
-a {
-  color: #222831;
-}
-
 .ant-breadcrumb {
   @apply opacity-20 hover:opacity-100 transition-all;
 }
