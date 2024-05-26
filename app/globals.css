@@ -5,3 +5,11 @@
 .btn {
   @apply relative justify-center cursor-pointer inline-flex items-center space-x-2 text-center ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border-[1px] border-gray-200 hover:border-gray-400 bg-transparent shadow-sm text-xs px-2.5 py-1 h-[26px];
 }
+
+.ant-layout {
+  @apply !bg-white;
+}
+
+.ant-breadcrumb {
+  @apply opacity-20 hover:opacity-100 transition-all;
+}

@@ -5,7 +5,7 @@ import {Table, Avatar, Toast, Popconfirm, Modal, Button} from '@douyinfe/semi-ui
 const {Column} = Table
 import Link from 'next/link'
 import Image from 'next/image'
-import action from '@/app/actions'
+import {autoRevalidate} from '@/app/actions'
 
 export default function TableComponent(this: any, data: any, refresh: any) {
   const [tableData, setTableData] = useState(data)
@@ -26,7 +26,7 @@ export default function TableComponent(this: any, data: any, refresh: any) {
     })
       .then((response) => {
         if (response.ok) {
-          action()
+          autoRevalidate()
           Toast.success(`File ID ${id} deleted successfully.`)
           // 可以在这里刷新列表或删除状态中的项目
         } else {
@@ -44,7 +44,7 @@ export default function TableComponent(this: any, data: any, refresh: any) {
     if (type.includes('image')) {
       const url = `/api/exif/${id}`
       fetch(url, {method: 'GET'}).then((response) => {
-        action()
+        autoRevalidate()
         Toast.success(`Get ${id} Exif Info Successfully.`)
       })
     } else {
@@ -98,7 +98,7 @@ export default function TableComponent(this: any, data: any, refresh: any) {
   const handleOk = (record: any) => {
     setVisible(false)
     getAssetsInfo(record.assetId, record.title, record.type)
-    action()
+    autoRevalidate()
     console.log('Ok button clicked')
   }
   const handleCancel = (record: any) => {

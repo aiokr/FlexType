@@ -9,16 +9,18 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  uid       String?   @unique
-  name      String
-  email     String    @unique
-  image     String?
-  role      Role      @default(USER)
-  createdAt DateTime  @default(now())
-  Assets    Assets[]
-  accounts  Account[]
-  sessions  Session[]
+  id                    String                         @id @default(cuid())
+  uid                   String?                        @unique
+  name                  String
+  email                 String                         @unique
+  image                 String?
+  role                  Role                           @default(USER)
+  createdAt             DateTime                       @default(now())
+  Assets                Assets[]
+  post                  Post[]
+  draftPaper            DraftPaper[]
+  authorizedCollections AuthorizedUsersOnCollections[]
+  collection            Collection[]
 }
 
 enum Role {
@@ -64,51 +66,84 @@ model Assets {
 }
 
 model Photo {
-  id         String  @id @default(cuid())
-  title      String?
-  asset      Assets? @relation(fields: [assetId], references: [assetId])
-  assetId    Int
-  createdAt  DateTime?  @default(now())
-  info       Json?
+  id             String      @id @default(cuid())
+  title          String?
+  asset          Assets?     @relation(fields: [assetId], references: [assetId])
+  assetId        Int
+  createdAt      DateTime?   @default(now())
+  info           Json?
+  collection     Collection? @relation(fields: [collectionSlug], references: [slug])
+  collectionSlug String?
+  category       Category?   @relation(fields: [categoryId], references: [id])
+  categoryId     Int?
+  tag            Tag?        @relation(fields: [tagId], references: [id])
+  tagId          Int?
 }
 
-model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
+model Post {
+  id             Int         @id @default(autoincrement())
+  user           User        @relation(fields: [userId], references: [id])
+  userId         String
+  currentDraft   DraftPaper? @relation(fields: [currentDraftId], references: [id])
+  currentDraftId Int
+  currentVersion Int?
+  Title          String
+  History        Json?
+  createdAt      DateTime    @default(now())
+  uplishedAt     DateTime?
+  published      Boolean     @default(false)
+  deleted        Boolean     @default(false)
+  deletedAt      DateTime?
+  category       Category?   @relation(fields: [categoryId], references: [id])
+  categoryId     Int?
+  tag            Tag?        @relation(fields: [tagId], references: [id])
+  tagId          Int?
+  collection     Collection? @relation(fields: [collectionSlug], references: [slug])
+  collectionSlug String?
 }
 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model DraftPaper {
+  id         Int       @id @default(autoincrement())
+  user       User?     @relation(fields: [userId], references: [id])
+  userId     String
+  post       Post[]
+  createdAt  DateTime  @default(now())
+  uplishedAt DateTime?
+  mainText   Json
 }
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
+model Category {
+  id    Int     @id @default(autoincrement())
+  name  String
+  post  Post[]
+  photo Photo[]
 }
 
-model Site {
-  id   String @id @default(cuid())
-  name String
-  url  String
+model Tag {
+  id    Int     @id @default(autoincrement())
+  name  String
+  post  Post[]
+  photo Photo[]
+}
+
+model Collection {
+  id             Int                            @id @default(autoincrement())
+  slug           String?                        @unique
+  name           String
+  info           Json?
+  admin          User                           @relation(fields: [adminId], references: [id])
+  adminId        String
+  authorizedUser AuthorizedUsersOnCollections[]
+  post           Post[]
+  photo          Photo[]
+}
+
+model AuthorizedUsersOnCollections {
+  collection       Collection @relation(fields: [collectionId], references: [id])
+  collectionId     Int
+  authorizedUser   User       @relation(fields: [authorizedUserId], references: [id])
+  authorizedUserId String
+  assignedAt       DateTime   @default(now())
+
+  @@id([collectionId, authorizedUserId])
 }

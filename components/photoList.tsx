@@ -3,7 +3,6 @@ import * as React from 'react'
 import {useState, useEffect, useCallback} from 'react'
 import {Rating, Input, Toast, Select, Modal, DatePicker, Card} from '@douyinfe/semi-ui'
 import Image from 'next/image'
-import {auth} from '@/auth'
 import Link from 'next/link'
 import Map, {Marker, NavigationControl, GeolocateControl} from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -11,7 +10,7 @@ import '@/components/mapbox-gl-geocoder.css'
 import GeocoderControl from '@/components/geocoder-control'
 import type {LngLat} from 'react-map-gl'
 import convertDMSToDecimal from '@/libs/convertDMSToDecimal'
-import action from '@/app/actions'
+import {autoRevalidate} from '@/app/actions'
 
 const {Meta} = Card
 
@@ -183,7 +182,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({photosData, combinedData,
         body: json
       })
       if (response.ok) {
-        action()
+        autoRevalidate()
         console.log(response)
         Toast.success(`Flow item edited successfully.`)
       } else {
@@ -202,7 +201,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({photosData, combinedData,
         method: 'DELETE'
       })
       if (response.ok) {
-        action()
+        autoRevalidate()
         Toast.success(`ID ${id} deleted successfully.`)
         setVisible(false)
       } else {
@@ -248,7 +247,7 @@ const PhotoListComponent: React.FC<PhotoListProps> = ({photosData, combinedData,
 
   // After close PhotoFlow Item Editor
   const handleAfterClose = () => {
-    action()
+    autoRevalidate()
     console.log('After Close callback executed')
   }
 

@@ -1,8 +1,8 @@
 import './globals.css'
 import type {Metadata, Viewport} from 'next'
+import {AntdRegistry} from '@ant-design/nextjs-registry'
 import prisma from '@/libs/prisma'
 import {createClient} from '@/utils/supabase/server'
-import {RenderHorizontal, RenderVertical} from '../components/rootNav'
 
 export const metadata: Metadata = {
   title: 'FlexType',
@@ -17,10 +17,12 @@ export const viewport: Viewport = {
   userScalable: false
 }
 
-export default async function DashboardLayout({children}: {children: React.ReactNode}) {
+export default async function RootLayout({children}: React.PropsWithChildren) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AntdRegistry>{children}</AntdRegistry>
+      </body>
     </html>
   )
 }

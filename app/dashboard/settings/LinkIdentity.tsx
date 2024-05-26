@@ -1,7 +1,5 @@
 'use client'
-import Link from 'next/link'
 import {linkWithGithub, unLinkWithGithub} from '@/app/login/actions'
-import exp from 'constants'
 
 export function LinkToGithub() {
   return (
