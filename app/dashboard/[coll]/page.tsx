@@ -1,6 +1,7 @@
 import {redirect} from 'next/navigation'
 import {createClient} from '@/utils/supabase/server'
 import {Card, Col, Breadcrumb, Statistic} from 'antd'
+import prisma from '@/libs/prisma'
 
 export default async function CollecntionHomePage({params}: {params: {coll: string}}) {
   const collName =
@@ -31,8 +32,9 @@ export default async function CollecntionHomePage({params}: {params: {coll: stri
 
   let collectionData = null
 
+  // 获取内容集数据
   if (params.coll === 'all') {
-    // 获取所有内容集
+    // 如果是所有内容集，获取所有内容集
     let preCollection = await prisma.collection.findMany({
       include: {
         post: true,
@@ -52,6 +54,7 @@ export default async function CollecntionHomePage({params}: {params: {coll: stri
       authorizedUser: preCollection.map((item) => item.authorizedUser).flat()
     }
   } else {
+    // 如果是单个内容集
     collectionData = await prisma.collection.findUnique({
       where: {
         slug: params.coll
@@ -68,7 +71,7 @@ export default async function CollecntionHomePage({params}: {params: {coll: stri
     })
   }
 
-  console.log(collectionData)
+  // console.log(collectionData)
 
   return (
     <div className="pt-14 md:pt-0 mt-4 w-full">

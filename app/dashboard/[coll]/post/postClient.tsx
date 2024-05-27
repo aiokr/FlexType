@@ -1,7 +1,7 @@
 'use client'
 import React, {useState} from 'react'
 import Link from 'next/link'
-import {Button, Table, Tag, Modal, Input, Switch} from 'antd'
+import {Button, Table, Tag, Modal, Input, Switch, Select} from 'antd'
 import {addNewPost, editPostInfo} from './actions'
 import {autoRevalidate} from '@/app/actions'
 
@@ -22,14 +22,14 @@ export const PostTable = (data: any) => {
     .map((item: any, index: number) => ({
       no: index + 1,
       id: item.id,
-      collection: item.collectionSlug,
+      collection: data.collectionItem.find((coll: any) => coll.slug === item.collectionSlug),
       title: item.Title,
       createdAt: item.createdAt,
       isPublished: item.published,
       historyNum: item.History.length
     }))
 
-  // console.log(tableData)
+  console.log(tableData)
 
   // 定义表格列
   const columns = [
@@ -52,7 +52,7 @@ export const PostTable = (data: any) => {
       title: 'Collection',
       dataIndex: 'collection',
       key: 'collection',
-      render: (text: any) => <span>{text}</span>
+      render: (collection: any) => <span>{collection.name}</span>
     },
     {
       title: 'Created At',
@@ -87,20 +87,30 @@ export const PostTable = (data: any) => {
     }
   ]
 
-  // 编辑框
+  // 编辑模态框
   const [editModalVisible, setEditModalVisible] = useState(false) // 编辑框是否可见
   const [editPostId, setEditPostId] = useState(0) // 编辑的文章id
   const [editedPostInfo, setEditedPostInfo] = useState({} as EditPostInfo)
 
+  // 可编辑的文章信息类型
   type EditPostInfo = {
     Title: string
     published: boolean
+    collection: string
+    collectionSlug: string
   }
 
-  // 显示编辑框
+  // 文章信息编辑弹框中的 Collection 选项
+  const collectionOptions = data.collectionItem.map((item: any) => ({
+    label: item.name,
+    value: item.slug
+  }))
+
+  // 显示文章信息编辑弹框
   const showModal = (postId: any) => {
     setEditPostId(postId) // 设置编辑的文章id
     setEditedPostInfo(data.data.find((item: any) => item.id === postId)) // 设置待编辑的文章信息
+    console.log(editedPostInfo)
     setEditModalVisible(true) // 显示编辑框
   }
 
@@ -129,7 +139,13 @@ export const PostTable = (data: any) => {
 
   // 关闭后
   const handleAfterClose = () => {
-    setEditPostId(0)
+    setEditPostId(0) // 清空编辑的文章id
+  }
+
+  const filterOption = (input: string, option?: {label: string; value: string}) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase()) // 文章选择 Collection 时的搜索
+
+  const collectionOnChange = (value: string) => {
+    setEditedPostInfo({...editedPostInfo, collectionSlug: value})
   }
 
   return (
@@ -144,6 +160,14 @@ export const PostTable = (data: any) => {
           value={editedPostInfo.Title}
           onChange={(e: any) => setEditedPostInfo({...editedPostInfo, Title: e.target.value})}
         ></Input>
+        <span className="block font-bold mt-4 mb-2">Transfer Collection</span>
+        <Select
+          options={collectionOptions}
+          value={editedPostInfo.collectionSlug}
+          filterOption={filterOption}
+          onChange={collectionOnChange}
+          style={{width: '100%'}}
+        ></Select>
         <span className="block text-lg font-bold mt-6">Post Status</span>
         <div className="flex items-center gap-2 mt-2">
           <Switch checked={editedPostInfo.published} onChange={(checked: boolean) => setEditedPostInfo({...editedPostInfo, published: checked})} />
@@ -151,7 +175,7 @@ export const PostTable = (data: any) => {
         </div>
         <span className="block text-lg font-bold mt-6">Dangerous Area</span>
         <Button className="mt-2" danger onClick={() => console.log('Clicked delete button')}>
-          Delete
+          Delete //TODO
         </Button>
       </Modal>
     </>

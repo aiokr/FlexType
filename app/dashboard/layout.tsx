@@ -1,9 +1,6 @@
 import prisma from '@/libs/prisma'
 import {redirect} from 'next/navigation'
 import {createClient} from '@/utils/supabase/server'
-import {RootNav} from '@/components/rootNav'
-import {Breadcrumb, Layout, Menu} from 'antd'
-import {Header, Content} from 'antd/es/layout/layout'
 
 //TODO 新增用户的流程还没有写
 
@@ -24,17 +21,6 @@ export default async function DashboardLayout({children}: {children: React.React
   } else {
     loginUserAvatar = '/icon.png'
   }
-
-  // 获取所有内容集
-  const collectionItem = await prisma.collection.findMany({
-    include: {
-      authorizedUser: {
-        include: {
-          authorizedUser: true // 包含授权用户的信息
-        }
-      }
-    }
-  })
 
   return <>{children}</>
 }

@@ -98,6 +98,7 @@ export async function editPostInfo(postId: any, editedPostInfo: any) {
     data: {
       Title: editedPostInfo.Title,
       published: editedPostInfo.published,
+      collectionSlug: editedPostInfo.collectionSlug,
       uplishedAt: new Date(),
     }
   })
