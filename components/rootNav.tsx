@@ -38,7 +38,7 @@ const items = (currentCollectionSlug: string) => [
   getItem('group', '全局', 'nonCollection'),
   getItem('item', <Link href={`/dashboard/${currentCollectionSlug}/assets`}>文件管理</Link>, 'assets', <FileIcon className="h-5 w-5" />),
   getItem('item', <Link href={`/dashboard/${currentCollectionSlug}/collection`}>内容集管理</Link>, 'collections', <SettingIcon className="h-5 w-5" />),
-  getItem('item', <Link href={`/dashboard/${currentCollectionSlug}/settings`}>设置</Link>, 'settings', <SettingIcon className="h-5 w-5" />)
+  getItem('item', <Link href={`/dashboard/settings`}>设置</Link>, 'settings', <SettingIcon className="h-5 w-5" />)
 ]
 
 // AntD 导航

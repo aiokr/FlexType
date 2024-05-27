@@ -1,10 +1,11 @@
 import prisma from '@/libs/prisma'
 import {redirect} from 'next/navigation'
 import {createClient} from '@/utils/supabase/server'
+import Link from 'next/link'
 
 //TODO 新增用户的流程还没有写
 
-export default async function DashboardLayout({children}: {children: React.ReactNode}) {
+export default async function DashboardLayout(props: {children: React.ReactNode; modal: React.ReactNode}) {
   const supabase = createClient()
   const {data, error} = await supabase.auth.getUser() // Supabase Auth 中的用户信息
 
@@ -22,5 +23,11 @@ export default async function DashboardLayout({children}: {children: React.React
     loginUserAvatar = '/icon.png'
   }
 
-  return <>{children}</>
+  return (
+    <>
+      {props.children}
+      {props.modal}
+      <div id="modal-root" />
+    </>
+  )
 }

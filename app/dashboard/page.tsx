@@ -50,7 +50,7 @@ export default async function Dashboard() {
   return (
     <div className="pt-14 md:pt-0 overflow-y-auto mt-4 w-full">
       <div className="container mx-auto">
-        <div className="pt-12 text-3xl font-bold">Welcome, {userData.name}</div>
+        <div className="pt-12 text-3xl font-bold text-main">Welcome, {userData.name}</div>
         <section className="w-full grid grid-cols-2 md:grid-cols-4 pt-6 gap-4">
           <Link href={'/dashboard/all/post'} className="w-full h-full">
             <div className="border border-zinc-200 rounded-xl w-full h-36 p-4">
@@ -68,17 +68,19 @@ export default async function Dashboard() {
             </div>
           </Link>
         </section>
-        <div className="pt-8 text-2xl font-bold">Your Collections</div>
+        <Link href={'/dashboard/all'} target="_blank">
+          <div className="pt-8 text-2xl font-bold">Your Collections</div>
+        </Link>
         <div className="flex flex-col gap-4 pt-6">
           {collectionItem?.map((collection) => (
-            <Link key={collection.id} href={'/dashboard/' + collection.slug} className="w-full h-full">
+            <Link key={collection.id} target="_blank" href={'/dashboard/' + collection.slug} className="w-full h-full">
               <div className="border border-zinc-100 hover:border-zinc-400 transition-all rounded-xl w-full h-36 p-4">
                 {collection.name}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <Link href={'/dashboard/' + collection.slug + '/post'} className="block w-full h-full">
+                  <Link target="_blank" href={'/dashboard/' + collection.slug + '/post'} className="block w-full h-full">
                     <Statistic title="Posts" value={collection?.post?.length} />
                   </Link>
-                  <Link href={'/dashboard/' + collection.slug + '/photo'} className="block w-full h-full">
+                  <Link target="_blank" href={'/dashboard/' + collection.slug + '/photo'} className="block w-full h-full">
                     <Statistic title="Photos" value={collection?.photo?.length} />
                   </Link>
                 </div>
@@ -103,7 +105,7 @@ export default async function Dashboard() {
           <Link
             href="https://github.com/aiokr/flextype"
             target="_blank"
-            className="text-sm px-12 whitespace-nowrap text-zinc-400 hover:text-zinc-950 transition-all"
+            className="text-sm px-12 whitespace-nowrap text-zinc-400 hover:text-main transition-all"
           >
             FlexType by aiokr
           </Link>
