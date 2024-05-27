@@ -4,22 +4,12 @@ import prisma from '@/libs/prisma'
 import {createClient} from '@/utils/supabase/server'
 import {CollectionTable} from './collectionClient'
 
-const breadcrumbItem = [
-  {
-    title: '首页',
-    href: '/'
-  },
-  {
-    title: '仪表盘',
-    href: '/dashboard'
-  },
-  {
-    title: '内容集',
-    href: '/dashboard/collection'
-  }
-]
+export default async function DraftPaperPage(data: any) {
+  const supabase = createClient()
+  const authData = await supabase.auth.getUser()
+  const userData = await prisma.user.findMany()
 
-export default async function DraftPaperPage() {
+  // 获取所有内容集
   const collectionItem = await prisma.collection.findMany({
     include: {
       authorizedUser: {
@@ -30,9 +20,12 @@ export default async function DraftPaperPage() {
     }
   })
 
-  const supabase = createClient()
-  const authData = await supabase.auth.getUser()
-  const userData = await prisma.user.findMany()
+  const breadcrumbItem = [
+    {title: '首页', href: '/'},
+    {title: '仪表盘', href: '/dashboard'},
+    {title: '内容集管理', href: `/dashboard/${data.params.coll}/collection`}
+  ]
+
   return (
     <div className="mx-auto px-2 md:px-0 pt-4">
       <Breadcrumb items={breadcrumbItem} className="inline-block text-xs" />
