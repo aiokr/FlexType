@@ -29,7 +29,6 @@ export default async function Settings(paramsData: any) {
         <h2 className="text-xl font-bold pt-6 pb-4">界面设置</h2>
         <InterfaceSettings />
         <h2 className="text-xl font-bold pt-6 pb-4">功能管理</h2>
-        <Link href=""> self </Link>
       </div>
     </div>
   )

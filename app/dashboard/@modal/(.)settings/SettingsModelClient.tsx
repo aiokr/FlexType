@@ -18,7 +18,7 @@ export function SettingsModel({children}: {children: React.ReactNode}) {
   }
 
   return createPortal(
-    <Modal open={visible} className="modal" onCancel={onDismiss}>
+    <Modal open={visible} className="modal" title="设置" onCancel={onDismiss}>
       {children}
     </Modal>,
     document.getElementById('modal-root')!

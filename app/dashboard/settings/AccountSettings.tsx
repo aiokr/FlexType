@@ -17,7 +17,7 @@ export default async function AccountSettings() {
 
   return (
     <>
-      <div className="p-4 flex items-center justify-between rounded lg:min-w-[800px] border border-zinc-200 mb-4">
+      <div className="p-4 flex items-center justify-between rounded border border-zinc-200 mb-4">
         <div className="flex gap-4">
           <Image className="rounded-full" src={userAvatar} alt={userEmail} width={64} height={64} unoptimized />
           <div className="flex flex-col justify-between pl-[auto]">

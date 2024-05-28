@@ -93,7 +93,7 @@ export function RootNav(props: any) {
   const menuItems = currentCollection.length == 0 ? items('all') : items(currentCollection[0].slug)
 
   return (
-    <Sider theme="light" collapsible collapsed={collapsed} onCollapse={() => setCollapsed(!collapsed)}>
+    <Sider theme="light" collapsible collapsed={collapsed} onCollapse={() => setCollapsed(!collapsed)} className="no-scrollbar" style={{maxHeight: '100vh'}}>
       <div className="w-full py-6 text-xl font-semibold flex items-center justify-center gap-2 transition-all">
         <Popover content={PopoverContent({data, userData})}>
           <Image src={loginUserAvatar} alt="avatar" width={32} height={32} className="rounded-full" unoptimized />
@@ -111,7 +111,7 @@ export function RootNav(props: any) {
           style={{width: 120}}
         ></Select>
       </div>
-      <Menu theme="light" defaultSelectedKeys={['1']} mode="inline" items={menuItems} className="w-full pb-auto" />
+      <Menu theme="light" items={menuItems} className="no-scrollbar" mode="inline" style={{maxHeight: `calc( 100vh - 186px)`, overflowY: 'scroll'}} />
     </Sider>
   )
 }
