@@ -36,7 +36,7 @@ export default async function EditorPage(props: any) {
     {title: '首页', href: '/'},
     {title: '仪表盘', href: '/dashboard'},
     {title: `${collectionName}`, href: `/dashboard/${collectionSlug}`},
-    {title: '文章', href: '/dashboard/post'},
+    {title: '文章', href: `/dashboard/${collectionSlug}/post`},
     {title: postData?.Title, herf: `/dashboard/editor/${postId}`}
   ]
 

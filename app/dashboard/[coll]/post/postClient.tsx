@@ -52,7 +52,7 @@ export const PostTable = (data: any) => {
       title: 'Collection',
       dataIndex: 'collection',
       key: 'collection',
-      render: (collection: any) => <span>{collection.name}</span>
+      render: (collection: any) => <span>{collection?.name || ''}</span>
     },
     {
       title: 'Created At',
@@ -98,6 +98,7 @@ export const PostTable = (data: any) => {
     published: boolean
     collection: string
     collectionSlug: string
+    deleted: boolean
   }
 
   // 文章信息编辑弹框中的 Collection 选项
@@ -124,6 +125,15 @@ export const PostTable = (data: any) => {
   const handleOk = () => {
     console.log('Clicked ok button')
     editPostInfo(editPostId, editedPostInfo).then(() => {
+      setEditPostId(0)
+      setEditedPostInfo({} as EditPostInfo)
+      autoRevalidate()
+      setEditModalVisible(false)
+    })
+  }
+
+  const setPostDeleted = (editPostId: number) => {
+    editPostInfo(editPostId, {...editedPostInfo, deleted: true}).then(() => {
       setEditPostId(0)
       setEditedPostInfo({} as EditPostInfo)
       autoRevalidate()
@@ -174,7 +184,7 @@ export const PostTable = (data: any) => {
           {JSON.stringify(editedPostInfo.published) === 'true' ? <Tag color="blue">Published</Tag> : <Tag color="volcano">Draft</Tag>}
         </div>
         <span className="block text-lg font-bold mt-6">Dangerous Area</span>
-        <Button className="mt-2" danger onClick={() => console.log('Clicked delete button')}>
+        <Button className="mt-2" danger onClick={() => setPostDeleted(editPostId)}>
           Delete //TODO
         </Button>
       </Modal>

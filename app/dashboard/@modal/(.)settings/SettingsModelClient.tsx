@@ -1,33 +1,26 @@
 'use client'
 
-import {type ElementRef, useEffect, useRef} from 'react'
+import {type ElementRef, useEffect, useRef, useState} from 'react'
 import {useRouter} from 'next/navigation'
 import {createPortal} from 'react-dom'
+import {Modal} from 'antd'
 
-export function Modal({children}: {children: React.ReactNode}) {
+export function SettingsModel({children}: {children: React.ReactNode}) {
+  const [visible, setVisible] = useState(false)
   const router = useRouter()
-  const dialogRef = useRef<ElementRef<'dialog'>>(null)
 
   useEffect(() => {
-    if (!dialogRef.current?.open) {
-      dialogRef.current?.showModal()
-    }
+    setVisible(true)
   }, [])
 
   function onDismiss() {
-    console.log('onDismiss')
     router.back()
   }
 
-  console.log('Modal Client')
-
   return createPortal(
-    <div className="modal-backdrop">
-      <dialog ref={dialogRef} className="modal" onClose={onDismiss}>
-        {children}
-        <button onClick={onDismiss} className="btn" />
-      </dialog>
-    </div>,
+    <Modal open={visible} className="modal" onCancel={onDismiss}>
+      {children}
+    </Modal>,
     document.getElementById('modal-root')!
   )
 }

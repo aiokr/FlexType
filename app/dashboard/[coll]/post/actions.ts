@@ -20,12 +20,17 @@ export async function addNewPost() {
     }
   })
 
+  const defaultCollection = (await prisma.collection.findFirst({
+    where: { adminId: userId }
+  })).slug
+
   const newPost = await prisma.post.create({
     data: {
       userId: userId,
       currentDraftId: newDraft.id,
       currentVersion: 1,
       Title: 'New Post',
+      collectionSlug: defaultCollection,
       History: [
         {
           draftId: newDraft.id,
@@ -36,7 +41,7 @@ export async function addNewPost() {
     }
   })
 
-  redirect('./editor/' + newPost.id)
+  redirect('../editor/' + newPost.id)
 }
 
 // 将文章的当前状态保存为版本，并新建一个新版本
@@ -99,6 +104,7 @@ export async function editPostInfo(postId: any, editedPostInfo: any) {
       Title: editedPostInfo.Title,
       published: editedPostInfo.published,
       collectionSlug: editedPostInfo.collectionSlug,
+      deleted: editedPostInfo.deleted,
       uplishedAt: new Date(),
     }
   })

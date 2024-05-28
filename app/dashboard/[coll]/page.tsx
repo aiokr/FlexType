@@ -7,13 +7,13 @@ export default async function CollecntionHomePage({params}: {params: {coll: stri
   const collName =
     params.coll === 'all'
       ? '所有内容集'
-      : (
-          await prisma.collection.findUnique({
+      : await prisma.collection
+          .findUnique({
             where: {
               slug: params.coll
             }
           })
-        ).name
+          .then((res) => res.name)
 
   const breadcrumbItem = [
     {

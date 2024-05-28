@@ -5,7 +5,7 @@ import {createClient} from '@/utils/supabase/server'
 import InterfaceSettings from '@/app/dashboard/settings/InterfaceSettings'
 import AccountSettings from '@/app/dashboard/settings/AccountSettings'
 import {Breadcrumb} from 'antd'
-import {Modal} from './SettingsModelClient'
+import {SettingsModel} from './SettingsModelClient'
 
 export default async function ModalSettings(params: any) {
   const supabase = createClient()
@@ -17,7 +17,9 @@ export default async function ModalSettings(params: any) {
     {title: '设置', href: `/dashboard/settings`}
   ]
 
-  console.log('This is settings modal route server')
-
-  return <Modal>12123</Modal>
+  return (
+    <SettingsModel>
+      <Breadcrumb items={breadcrumbItem} />
+    </SettingsModel>
+  )
 }
